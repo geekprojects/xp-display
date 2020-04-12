@@ -25,6 +25,18 @@
 #ifndef Z737_FMC_H_
 #define Z737_FMC_H_
 
+
+#define Z737_CDU_LINES 14
+
+#define Z737_CDU_BUF_LEN 80
+#define Z737_CDU_LINE_WIDTH 24
+
+// Default rate is 15 Callbacks par second
+// Send CDU Message 2 times per second
+#define Z737_MAX_MSG_COUNT 7
+
+float sendZibo737MsgCallback(float, float, int, void *);
+
 int createZibo737ExtendedFmsPackets(void);
 
 float sendZibo737ExtendedFmsCallback(

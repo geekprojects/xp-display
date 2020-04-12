@@ -2,14 +2,6 @@
 #define DATAREFS_Z_737_H_
 
 #define Z737_FMC_LINES 6
-#define Z737_CDU_LINES 14
-
-#define Z737_CDU_BUF_LEN 80
-#define Z737_CDU_LINE_WIDTH 24
-
-// Default rate is 15 Callbacks par second
-// Send CDU Message 2 times per second
-#define Z737_MAX_MSG_COUNT 7
 
 // global vars
 
@@ -168,7 +160,7 @@ extern XPLMDataRef laminar_B738_fms_legs_alt_calc;  // laminar/B738/fms/legs_alt
 extern XPLMDataRef laminar_B738_fms_legs_alt_rest1; // laminar/B738/fms/legs_alt_rest1 float[128]
 extern XPLMDataRef laminar_B738_fms_legs_spd;       // laminar/B738/fms/legs_spd float[128]
 extern XPLMDataRef laminar_B738_fms_num_of_wpts;    // laminar/B738/fms/num_of_wpts float
-
+extern XPLMDataRef laminar_B738_fms_legs_step_ctr;  // laminar/B738/fms/legs_step_ctr float
 
 extern int z737_ready;
 extern int z737_version;
@@ -357,8 +349,7 @@ extern int z737_fmc_keypressed;
 extern XPLMCommandRef z737_command[Z737_KEY_MAX];
 
 // global functions
-float	checkZibo737Callback(float, float, int, void *);
-float	sendZibo737MsgCallback(float, float, int, void *);
+float checkZibo737Callback(float, float, int, void *);
 
 void writeZibo737DataRef(int, float);
 
