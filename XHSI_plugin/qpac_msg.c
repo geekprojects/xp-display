@@ -129,6 +129,9 @@ XPLMDataRef qpac_mcdu2_scratch_amber;
 XPLMPluginID qpacV1PluginId = XPLM_NO_PLUGIN_ID;
 XPLMPluginID qpacPaPluginId = XPLM_NO_PLUGIN_ID;
 XPLMPluginID qpacV2PluginId = XPLM_NO_PLUGIN_ID;
+XPLMPluginID xp10_ToLissA321PluginId = XPLM_NO_PLUGIN_ID;
+XPLMPluginID xp11_ToLissA321PluginId = XPLM_NO_PLUGIN_ID;
+
 int qpac_mcdu_ready = 0;
 int qpac_ewd_ready = 0;
 
@@ -155,8 +158,15 @@ void findQpacMsgDataRefs(void) {
     qpacV2PluginId = XPLMFindPluginBySignature("QPAC.airbus.fbw");  // QPAC version 2
     qpacV1PluginId = XPLMFindPluginBySignature("QPAC.A320.airbus.fbw");  // QPAC version 1
     qpacPaPluginId = XPLMFindPluginBySignature("A320.airbus.fbw");  // QPAC Peter Aircraft
+    xp10_ToLissA321PluginId = XPLMFindPluginBySignature("XP10.ToLiss.A321.systems");  // ToLiss A321
+    xp11_ToLissA321PluginId = XPLMFindPluginBySignature("XP11.ToLiss.A321.systems");  // ToLiss A321
+
     // TODO: RWDesign A330 plugin signature
-    if((qpacV1PluginId != XPLM_NO_PLUGIN_ID) || (qpacV2PluginId != XPLM_NO_PLUGIN_ID) || (qpacPaPluginId != XPLM_NO_PLUGIN_ID)) {
+    if(        (qpacV1PluginId != XPLM_NO_PLUGIN_ID)
+    		|| (qpacV2PluginId != XPLM_NO_PLUGIN_ID)
+			|| (qpacPaPluginId != XPLM_NO_PLUGIN_ID)
+    		|| (xp10_ToLissA321PluginId != XPLM_NO_PLUGIN_ID)
+			|| (xp11_ToLissA321PluginId!= XPLM_NO_PLUGIN_ID) ) {
         sprintf(buf, "XHSI: QPAC plugin found - loading EWD datarefs\n");
         XPLMDebugString(buf);
         qpac_ewd_ready = 1;
@@ -177,7 +187,10 @@ void findQpacMsgDataRefs(void) {
     	qpac_ewd_ready = 0;
     }
 
-    if((qpacV2PluginId != XPLM_NO_PLUGIN_ID) || (qpacPaPluginId != XPLM_NO_PLUGIN_ID)) {
+    if(        (qpacV2PluginId != XPLM_NO_PLUGIN_ID)
+    		|| (qpacPaPluginId != XPLM_NO_PLUGIN_ID)
+    		|| (xp10_ToLissA321PluginId != XPLM_NO_PLUGIN_ID)
+			|| (xp11_ToLissA321PluginId!= XPLM_NO_PLUGIN_ID) ) {
     	sprintf(buf, "XHSI: QPAC v2 plugin found - loading MCDU datarefs\n");
     	XPLMDebugString(buf);
     	qpac_mcdu_ready = 1;
