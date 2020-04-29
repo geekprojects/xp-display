@@ -681,12 +681,62 @@ void findQpacDataRefs(void) {
             qpac_command[QPAC_KEY_RMP3_FREQ_UP_LRG] = XPLMFindCommand("AirbusFBW/RMP3FreqUpLrg");
             qpac_command[QPAC_KEY_RMP3_FREQ_UP_SML] = XPLMFindCommand("AirbusFBW/RMP3FreqUpSml");
             qpac_command[QPAC_KEY_RMP3_SWAP] = XPLMFindCommand("AirbusFBW/RMP3Swap");
+            // VHF
+            qpac_command[QPAC_KEY_LISTEN_VHF1] = XPLMFindCommand("AirbusFBW/ListenVHF1");
+            qpac_command[QPAC_KEY_LISTEN_VHF2] = XPLMFindCommand("AirbusFBW/ListenVHF2");
             // CAB PRESSURE
             qpac_command[QPAC_KEY_CAB_VS_UP] = XPLMFindCommand("AirbusFBW/CabVSUp");
             qpac_command[QPAC_KEY_CAB_VS_DOWN] = XPLMFindCommand("AirbusFBW/CabVSDown");
             // CHRONO
             qpac_command[QPAC_KEY_CHRONO_CAPT] = XPLMFindCommand("AirbusFBW/CaptChronoButton");
             qpac_command[QPAC_KEY_CHRONO_FO] = XPLMFindCommand("AirbusFBW/CoChronoButton");
+            // Fire test
+            qpac_command[QPAC_KEY_FIRE_TEST_ALL] = XPLMFindCommand("AirbusFBW/FireTestAll");
+            qpac_command[QPAC_KEY_FIRE_TEST_APU] = XPLMFindCommand("AirbusFBW/FireTestAPU");
+            qpac_command[QPAC_KEY_FIRE_TEST_CARGO] = XPLMFindCommand("AirbusFBW/FireTestCargo");
+            qpac_command[QPAC_KEY_FIRE_TEST_ENG1] = XPLMFindCommand("AirbusFBW/FireTestENG1");
+            qpac_command[QPAC_KEY_FIRE_TEST_ENG2] = XPLMFindCommand("AirbusFBW/FireTestENG2");
+            qpac_command[QPAC_KEY_FIRE_TEST_ENG3] = XPLMFindCommand("AirbusFBW/FireTestENG3");
+            qpac_command[QPAC_KEY_FIRE_TEST_ENG4] = XPLMFindCommand("AirbusFBW/FireTestENG4");
+            // Transponder
+            qpac_command[QPAC_KEY_ATC_0] = XPLMFindCommand("AirbusFBW/ATCCodeKey0");
+            qpac_command[QPAC_KEY_ATC_1] = XPLMFindCommand("AirbusFBW/ATCCodeKey1");
+            qpac_command[QPAC_KEY_ATC_2] = XPLMFindCommand("AirbusFBW/ATCCodeKey2");
+            qpac_command[QPAC_KEY_ATC_3] = XPLMFindCommand("AirbusFBW/ATCCodeKey3");
+            qpac_command[QPAC_KEY_ATC_4] = XPLMFindCommand("AirbusFBW/ATCCodeKey4");
+            qpac_command[QPAC_KEY_ATC_5] = XPLMFindCommand("AirbusFBW/ATCCodeKey5");
+            qpac_command[QPAC_KEY_ATC_6] = XPLMFindCommand("AirbusFBW/ATCCodeKey6");
+            qpac_command[QPAC_KEY_ATC_7] = XPLMFindCommand("AirbusFBW/ATCCodeKey7");
+            qpac_command[QPAC_KEY_ATC_CLR] = XPLMFindCommand("AirbusFBW/ATCCodeKeyCLR");
+
+            // GPWS
+            qpac_command[QPAC_KEY_GPWS_MUTE] = XPLMFindCommand("AirbusFBW/GPWSMute");
+            qpac_command[QPAC_KEY_GPWS_SHUTOFF] = XPLMFindCommand("AirbusFBW/GPWSShutoff");
+
+            // CVR
+            qpac_command[QPAC_KEY_CVR_ERASE] = XPLMFindCommand("AirbusFBW/CVRErase");
+            qpac_command[QPAC_KEY_CVR_TEST] = XPLMFindCommand("AirbusFBW/CVRTest");
+
+            // Purser
+            qpac_command[QPAC_KEY_PURSER_AFT] = XPLMFindCommand("AirbusFBW/purser/aft");
+            qpac_command[QPAC_KEY_PURSER_ALL] = XPLMFindCommand("AirbusFBW/purser/all");
+            qpac_command[QPAC_KEY_PURSER_EXIT] = XPLMFindCommand("AirbusFBW/purser/exit");
+            qpac_command[QPAC_KEY_PURSER_FWD] = XPLMFindCommand("AirbusFBW/purser/fwd");
+            qpac_command[QPAC_KEY_PURSER_MECH] = XPLMFindCommand("AirbusFBW/purser/mech");
+            qpac_command[QPAC_KEY_PURSER_MID] = XPLMFindCommand("AirbusFBW/purser/mid");
+
+            // EVAC
+			qpac_command[QPAC_KEY_EVAC_HORN_SHUTOFF] = XPLMFindCommand("AirbusFBW/EvacHornShutoff");
+
+            // ECAM
+			qpac_command[QPAC_KEY_ECAM_ALL] = XPLMFindCommand("AirbusFBW/ECAMAll");
+			qpac_command[QPAC_KEY_ECAM_RECALL] = XPLMFindCommand("AirbusFBW/ECAMRecall");
+			qpac_command[QPAC_KEY_ECAM_EMER_CANCEL] = XPLMFindCommand("AirbusFBW/EmerCancel");
+
+            // CONFIG
+			qpac_command[QPAC_KEY_ADIRU_FAST_ALIGN] = XPLMFindCommand("AirbusFBW/ADIRU_fast_align");
+			qpac_command[QPAC_KEY_SET_WEIGHT_CG] = XPLMFindCommand("AirbusFBW/SetWeightAndCG");
+
             // MCDU1 Keys
             qpac_command[QPAC_KEY_MDCU1_INIT] = XPLMFindCommand("AirbusFBW/MCDU1Init");
             qpac_command[QPAC_KEY_MDCU1_DATA] = XPLMFindCommand("AirbusFBW/MCDU1Data");
@@ -694,6 +744,9 @@ void findQpacDataRefs(void) {
             qpac_command[QPAC_KEY_MDCU1_PERF] = XPLMFindCommand("AirbusFBW/MCDU1Perf");
             qpac_command[QPAC_KEY_MDCU1_PROG] = XPLMFindCommand("AirbusFBW/MCDU1Prog");
             qpac_command[QPAC_KEY_MDCU1_FPLN] = XPLMFindCommand("AirbusFBW/MCDU1Fpln");
+            qpac_command[QPAC_KEY_MDCU1_SEC_FPLN] = XPLMFindCommand("AirbusFBW/MCDU1SecFpln");
+            qpac_command[QPAC_KEY_MDCU1_FUEL_PRED] = XPLMFindCommand("AirbusFBW/MCDU1FuelPred");
+            qpac_command[QPAC_KEY_MDCU1_ATC_COMM] = XPLMFindCommand("AirbusFBW/MCDU1ATC");
             qpac_command[QPAC_KEY_MDCU1_DIR_TO] = XPLMFindCommand("AirbusFBW/MCDU1DirTo");
             qpac_command[QPAC_KEY_MDCU1_RAD_NAV] = XPLMFindCommand("AirbusFBW/MCDU1RadNav");
             qpac_command[QPAC_KEY_MDCU1_AIRPORT] = XPLMFindCommand("AirbusFBW/MCDU1Airport");
@@ -824,14 +877,20 @@ void findQpacDataRefs(void) {
             qpac_command[QPAC_KEY_MDCU2_Y] = XPLMFindCommand("AirbusFBW/MCDU2KeyY");
             qpac_command[QPAC_KEY_MDCU2_Z] = XPLMFindCommand("AirbusFBW/MCDU2KeyZ");
 
+
+
+            // airbus_qpac/.. or toliss_airbus/..
             qpac_command[QPAC_KEY_AP1_PUSH] = XPLMFindCommand("airbus_qpac/ap1_push");
             qpac_command[QPAC_KEY_AP2_PUSH] = XPLMFindCommand("airbus_qpac/ap2_push");
             qpac_command[QPAC_KEY_FD1_PUSH] = XPLMFindCommand("airbus_qpac/fd1_push");
             qpac_command[QPAC_KEY_FD2_PUSH] = XPLMFindCommand("airbus_qpac/fd2_push");
-
-            // GPWS
-            qpac_command[QPAC_KEY_GPWS_MUTE] = XPLMFindCommand("AirbusFBW/GPWSMute");
-            qpac_command[QPAC_KEY_GPWS_SHUTOFF] = XPLMFindCommand("AirbusFBW/GPWSShutoff");
+            if ( qpac_command[QPAC_KEY_AP1_PUSH] == NULL ) {
+            	// Try with toliss_airbus
+                qpac_command[QPAC_KEY_AP1_PUSH] = XPLMFindCommand("toliss_airbus/ap1_push");
+                qpac_command[QPAC_KEY_AP2_PUSH] = XPLMFindCommand("toliss_airbus/ap2_push");
+                qpac_command[QPAC_KEY_FD1_PUSH] = XPLMFindCommand("toliss_airbus/fd1_push");
+                qpac_command[QPAC_KEY_FD2_PUSH] = XPLMFindCommand("toliss_airbus/fd2_push");
+            }
 
 
             for (i=0; i<QPAC_SD_LINES; i++) {
