@@ -11,7 +11,7 @@
 * 
 * Copyright (C) 2007  Georg Gruetter (gruetter@gmail.com)
 * Copyright (C) 2009  Marc Rogiers (marrog.123@gmail.com)
-* Copyright (C) 2015  Nicolas Carel
+* Copyright (C) 2015-2020  Nicolas Carel
 * 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -79,16 +79,16 @@ public class CDUDefault extends CDUSubcomponent {
     int upper_y = 2;
     double scratch_y_coef = 13.0;
     double char_width_coef = 1.5; 
-    
+      
     // 14 lines
     String CduLine[] = { 
     		"lg10XHSI",    		
-    		"sw00Software version",	"lb00"+XHSI.RELEASE,
-    		"sw00Active NAV data base", "",
-    		"sw00Engines", "", 
-    		"sw00A/C Registration", "",
-    		"sw00Gears", "",
-    		"sw00Fuel tanks", "",
+    		"sw00SOFTWARE VERSION",	"lb00"+XHSI.RELEASE,
+    		"sw00ACTIVE NAV DATA BASE", "",
+    		"sw00ENGINES", "", 
+    		"sw00A/C REGISTRATION", "",
+    		"sw00GEARS", "",
+    		"sw00FUEL TANKS", "",
     		"", "",
     		""};
 
@@ -143,7 +143,7 @@ public class CDUDefault extends CDUSubcomponent {
             border_x = (double)cdu_gc.border_left;
             border_y = (double)cdu_gc.border_top;
             drawDisplayLines(g2);
-        }         
+        }   
     }
     
     private void drawFullPanel(Graphics2D g2) {
@@ -195,7 +195,7 @@ public class CDUDefault extends CDUSubcomponent {
     		switch ( str.charAt(i) ) {
     		case '`' : c = '°'; break;
     		case '|' : c = 'Δ'; break;    		
-    		case '0' : c = 'O'; break;
+    		// case '0' : c = 'O'; break;
     		default :  c = str.charAt(i); 
     		}
     		result += c;

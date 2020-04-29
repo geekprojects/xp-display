@@ -72,12 +72,12 @@ public class CDUGraphicsConfig extends GraphicsConfig implements ComponentListen
     public Font cdu_normal_font;
     public int cdu_digit_width;
 
-    // QPAC MCDU is calibated for 24 columns 
+    // QPAC MCDU is calibrated for 24 columns 
     public Font cdu_24_small_font;
     public Font cdu_24_normal_font;
     public int cdu_24_digit_width;
 
-    // JarDesing MCDU is calibated for 25 columns 
+    // JarDesing MCDU is calibrated for 25 columns 
     public Font cdu_25_small_font;
     public Font cdu_25_normal_font;
     public int cdu_25_digit_width;
@@ -161,9 +161,16 @@ public class CDUGraphicsConfig extends GraphicsConfig implements ComponentListen
             	cdu_first_line = cdu_screen_topleft_y + line_height_fixed_zl;
             	cdu_scratch_line = cdu_screen_topleft_y + cdu_size - line_height_fixed_zl/10;
             } else {
+            	/* Old settings with OS Fonts
             	cdu_screen_topleft_x = panel_rect.x+panel_rect.width*81/480;
             	cdu_screen_topleft_y = panel_rect.y+panel_rect.height*65/800;
             	cdu_screen_width = panel_rect.width*338/480;
+            	cdu_screen_height = panel_rect.height*315/800;           	 
+            	 */
+            	// New settings with AircraftCDU Font
+            	cdu_screen_topleft_x = panel_rect.x+panel_rect.width*92/480;
+            	cdu_screen_topleft_y = panel_rect.y+panel_rect.height*65/800;
+            	cdu_screen_width = panel_rect.width*316/480;
             	cdu_screen_height = panel_rect.height*315/800;
             	
                
@@ -186,7 +193,8 @@ public class CDUGraphicsConfig extends GraphicsConfig implements ComponentListen
             	float delta_24 = 1.0f-((digit_width_fixed_xxl*25.5f)/cdu_screen_width);
             	attributes.put(TextAttribute.TRACKING, delta_24);
             	cdu_24_normal_font = font_fixed_xxl.deriveFont(attributes);
-            	attributes.put(TextAttribute.TRACKING, 1.0f-((digit_width_fixed_xl*27.0f)/cdu_screen_width) );
+            	// attributes.put(TextAttribute.TRACKING, 1.0f-((digit_width_fixed_xl*27.0f)/cdu_screen_width) );
+            	attributes.put(TextAttribute.TRACKING, 1.0f-((digit_width_fixed_xl*25.5f)/cdu_screen_width) );
             	cdu_24_small_font= font_fixed_xl.deriveFont(attributes);
             	cdu_24_digit_width = Math.round(digit_width_fixed_xxl*(1+delta_24));           	
 

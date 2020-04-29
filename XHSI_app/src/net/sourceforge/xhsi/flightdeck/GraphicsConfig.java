@@ -193,8 +193,9 @@ public class GraphicsConfig implements ComponentListener {
     public Color color_airbusgray = new Color(0x585860); // was: 0x7f7f87
 
     // Airbus PFD Colors
-    public Color color_airbus_selected = new Color(0x00B2FF); // Color.cyan; //00b2ff
-    public Color color_airbus_armed = new Color(0x00B2FF); // Color.cyan;
+    // 00cfc9
+    public Color color_airbus_selected = new Color(0x00D0FF); // Color.cyan; //00b2ff 
+    public Color color_airbus_armed = new Color(0x00D0FF); // Color.cyan; 
     public Color color_airbus_managed = Color.magenta;
     public Color color_airbussky = new Color(0x10A0FF); 
  
@@ -366,7 +367,12 @@ public class GraphicsConfig implements ComponentListener {
     Font font_aircraft_instrument_bold;
     String font_aircraft_instrument_name = "AircraftInstruments";
     String font_aircraft_instrument_bold_name = "AircraftInstruments Bold";
-    
+
+    Font font_aircraft_cdu;
+    Font font_aircraft_cdu_bold;
+    String font_aircraft_cdu_name = "AircraftCDU";
+    String font_aircraft_cdu_bold_name = "AircraftCDU Bold";
+
     String font_name = "Verdana";
     // String font_name = "AircraftInstruments";
     public Font font_statusbar;
@@ -570,6 +576,19 @@ public class GraphicsConfig implements ComponentListener {
     		e.printStackTrace();
     		font_aircraft_instrument_bold = null;
     	} 
+    	try {
+    		InputStream font_stream =  GraphicsConfig.class.getResourceAsStream("AircraftCDU.ttf");    		    		
+    		font_aircraft_cdu = Font.createFont(Font.TRUETYPE_FONT, font_stream);    		 
+    		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    		ge.registerFont(font_aircraft_cdu);
+    		font_stream.close();
+    	} catch (Exception e) {
+    		// Handle exception
+    		logger.warning("Cannot load AircraftCDU.ttf font");
+    		logger.warning(e.getMessage());
+    		e.printStackTrace();
+    		font_aircraft_instrument = null;
+    	} 
     }
 
     private Font getAircraftInstrumentsFont(float size, boolean bold) {
@@ -577,6 +596,14 @@ public class GraphicsConfig implements ComponentListener {
     	return derive.deriveFont(size);
     }
 
+    /**
+     * Bold is ignored
+     */
+    private Font getAircraftCDUFont(float size, boolean bold) {
+    	Font derive = font_aircraft_cdu;
+    	return derive.deriveFont(size);
+    }
+    
     public void init() {
 
         this.preferences = XHSIPreferences.get_instance();
@@ -768,17 +795,34 @@ public class GraphicsConfig implements ComponentListener {
     	// Fixed fonts (CDU)
     	boolean use_builtin_cdu_font = this.preferences.get_preference(XHSIPreferences.PREF_CDU_FONT).equals("Builtin");
     	if (!use_builtin_cdu_font) { 
-    		this.font_fixed_name = this.preferences.get_preference(XHSIPreferences.PREF_CDU_FONT);
+    		this.font_fixed_name = this.preferences.get_preference(XHSIPreferences.PREF_CDU_FONT);    		
+        	this.font_fixed_zl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(41.0f * scale));
+        	this.font_fixed_xxxl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(31.0f * scale));
+        	this.font_fixed_xxl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(27.0f * scale));
+        	this.font_fixed_xl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(23.0f * scale));
+        	this.font_fixed_l = new Font( this.font_fixed_name, Font.PLAIN, Math.round(20.0f * scale));
+        	this.font_fixed_m = new Font( this.font_fixed_name, Font.PLAIN, Math.round(16.0f * scale));        	
     	} else {
-    		this.font_fixed_name = "Andale Mono";
+    		this.font_fixed_name = "AircraftCDU";
+    		   		
+        	this.font_fixed_zl = getAircraftCDUFont(Math.round(41.0f * scale), bold_font);
+        	this.font_fixed_xxxl = getAircraftCDUFont(Math.round(28.7f * scale), bold_font);
+        	this.font_fixed_xxl = getAircraftCDUFont(Math.round(25.0f * scale), bold_font);
+        	this.font_fixed_xl = getAircraftCDUFont(Math.round(17.5f * scale), bold_font);
+        	this.font_fixed_l = getAircraftCDUFont(Math.round(17.0f * scale), bold_font);
+        	this.font_fixed_m = getAircraftCDUFont(Math.round(15.0f * scale), bold_font);
+        	
+    		/*
+        	this.font_fixed_zl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(41.0f * scale));
+        	this.font_fixed_xxxl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(28.7f * scale)); // font zl * 0.7
+        	this.font_fixed_xxl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(25.0f * scale));
+        	this.font_fixed_xl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(17.5f * scale));  // font xxl * 0.7
+        	this.font_fixed_l = new Font( this.font_fixed_name, Font.PLAIN, Math.round(17.0f * scale));
+        	this.font_fixed_m = new Font( this.font_fixed_name, Font.PLAIN, Math.round(15.0f * scale));
+        	*/
     	}
     	
-    	this.font_fixed_zl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(41.0f * scale));
-    	this.font_fixed_xxxl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(31.0f * scale));
-    	this.font_fixed_xxl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(27.0f * scale));
-    	this.font_fixed_xl = new Font( this.font_fixed_name, Font.PLAIN, Math.round(23.0f * scale));
-    	this.font_fixed_l = new Font( this.font_fixed_name, Font.PLAIN, Math.round(20.0f * scale));
-    	this.font_fixed_m = new Font( this.font_fixed_name, Font.PLAIN, Math.round(16.0f * scale));
+
 
     	// Get metrics for fixed fonts
     	fm = g2.getFontMetrics(this.font_fixed_zl);

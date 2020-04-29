@@ -72,7 +72,7 @@ public class CDUQpac extends CDUSubcomponent {
     List<ClickRegion> qpac_regions;
     List<ClickRegion> qpac_do_regions;
 
-    boolean drawregions = false;
+    boolean draw_regions = false;
     XPlaneUDPSender udp_sender = null; 
     QpacMcduData qpac_mcdu_data;
     
@@ -104,39 +104,42 @@ public class CDUQpac extends CDUSubcomponent {
     public static final int QPAC_KEY_ABRK_MED  = 15;
     public static final int QPAC_KEY_ABRK_MAX  = 16;
     // MCDU1 KEYS
-    public static final int QPAC_KEY_MDCU1_INIT       = 43;
-    public static final int QPAC_KEY_MDCU1_DATA       = 44;
-    public static final int QPAC_KEY_MDCU1_MENU       = 45;
-    public static final int QPAC_KEY_MDCU1_PERF       = 46;
-    public static final int QPAC_KEY_MDCU1_PROG       = 47;
-    public static final int QPAC_KEY_MDCU1_FPLN       = 48;
-    public static final int QPAC_KEY_MDCU1_DIR_TO     = 49;
-    public static final int QPAC_KEY_MDCU1_RAD_NAV    = 50;
-    public static final int QPAC_KEY_MDCU1_AIRPORT    = 51;
-    public static final int QPAC_KEY_MDCU1_SLEW_UP    = 52;
-    public static final int QPAC_KEY_MDCU1_SLEW_DOWN  = 53;
-    public static final int QPAC_KEY_MDCU1_SLEW_LEFT  = 54;
-    public static final int QPAC_KEY_MDCU1_SLEW_RIGHT = 55;
-    public static final int QPAC_KEY_MDCU1_LSK1L      = 56;
-    public static final int QPAC_KEY_MDCU1_LSK2L      = 57;
-    public static final int QPAC_KEY_MDCU1_LSK3L      = 58;
-    public static final int QPAC_KEY_MDCU1_LSK4L      = 59;
-    public static final int QPAC_KEY_MDCU1_LSK5L      = 60;
-    public static final int QPAC_KEY_MDCU1_LSK6L      = 61;
-    public static final int QPAC_KEY_MDCU1_LSK1R      = 62;
-    public static final int QPAC_KEY_MDCU1_LSK2R      = 63;
-    public static final int QPAC_KEY_MDCU1_LSK3R      = 64;
-    public static final int QPAC_KEY_MDCU1_LSK4R      = 65;
-    public static final int QPAC_KEY_MDCU1_LSK5R      = 66;
-    public static final int QPAC_KEY_MDCU1_LSK6R      = 67;
-    public static final int QPAC_KEY_MDCU1_DEL        = 68;
-    public static final int QPAC_KEY_MDCU1_SPACE      = 69;
-    public static final int QPAC_KEY_MDCU1_OVERFL     = 70;
-    public static final int QPAC_KEY_MDCU1_PLUS_M     = 71;
-    public static final int QPAC_KEY_MDCU1_DOT        = 72;
-    public static final int QPAC_KEY_MDCU1_SLASH      = 73;
-    public static final int QPAC_KEY_MDCU1_0          = 74;
-    public static final int QPAC_KEY_MDCU1_A          = 84;
+    public static final int QPAC_KEY_MDCU1_INIT       = 80;
+    public static final int QPAC_KEY_MDCU1_DATA       = 81;
+    public static final int QPAC_KEY_MDCU1_MENU       = 82;
+    public static final int QPAC_KEY_MDCU1_PERF       = 83;
+    public static final int QPAC_KEY_MDCU1_PROG       = 84;
+    public static final int QPAC_KEY_MDCU1_FPLN       = 85;
+    public static final int QPAC_KEY_MDCU1_DIR_TO     = 86;
+    public static final int QPAC_KEY_MDCU1_RAD_NAV    = 87;
+    public static final int QPAC_KEY_MDCU1_AIRPORT    = 88;    
+    public static final int QPAC_KEY_MDCU1_SEC_FPLN   = 89;
+    public static final int QPAC_KEY_MDCU1_FUEL_PRED  = 90;
+    public static final int QPAC_KEY_MDCU1_ATC_COMM   = 91;    
+    public static final int QPAC_KEY_MDCU1_SLEW_UP    = 92;
+    public static final int QPAC_KEY_MDCU1_SLEW_DOWN  = 93;
+    public static final int QPAC_KEY_MDCU1_SLEW_LEFT  = 94;
+    public static final int QPAC_KEY_MDCU1_SLEW_RIGHT = 95;
+    public static final int QPAC_KEY_MDCU1_LSK1L      = 96;
+    public static final int QPAC_KEY_MDCU1_LSK2L      = 97;
+    public static final int QPAC_KEY_MDCU1_LSK3L      = 98;
+    public static final int QPAC_KEY_MDCU1_LSK4L      = 99;
+    public static final int QPAC_KEY_MDCU1_LSK5L      = 100;
+    public static final int QPAC_KEY_MDCU1_LSK6L      = 101;
+    public static final int QPAC_KEY_MDCU1_LSK1R      = 102;
+    public static final int QPAC_KEY_MDCU1_LSK2R      = 103;
+    public static final int QPAC_KEY_MDCU1_LSK3R      = 104;
+    public static final int QPAC_KEY_MDCU1_LSK4R      = 105;
+    public static final int QPAC_KEY_MDCU1_LSK5R      = 106;
+    public static final int QPAC_KEY_MDCU1_LSK6R      = 107;
+    public static final int QPAC_KEY_MDCU1_DEL        = 108;
+    public static final int QPAC_KEY_MDCU1_SPACE      = 109;
+    public static final int QPAC_KEY_MDCU1_OVERFL     = 110;
+    public static final int QPAC_KEY_MDCU1_PLUS_M     = 111;
+    public static final int QPAC_KEY_MDCU1_DOT        = 112;
+    public static final int QPAC_KEY_MDCU1_SLASH      = 113;
+    public static final int QPAC_KEY_MDCU1_0          = 114;
+    public static final int QPAC_KEY_MDCU1_A          = 124;
 
     
     public CDUQpac(ModelFactory model_factory, CDUGraphicsConfig cdu_gc, Component parent_component) {
@@ -176,28 +179,29 @@ public class CDUQpac extends CDUSubcomponent {
         // A..Z, SP, DEL, /, CLR
         qpac_regions.add(new ClickRegion(new Point(192, 490), new Point(440, 785), 5, 6,
                         new int[][] {
-            {84, 85, 86, 87, 88},
-            {89, 90, 91, 92, 93},
-            {94, 95, 96, 97, 98},
-            {99, 100, 101, 102, 103},
-            {104, 105, 106, 107, 108},
-            {109, QPAC_KEY_MDCU1_SLASH, QPAC_KEY_MDCU1_SPACE, QPAC_KEY_MDCU1_OVERFL, QPAC_KEY_MDCU1_DEL}} ));
+            {124, 125, 126, 127, 128},
+            {129, 130, 131, 132, 133},
+            {134, 135, 136, 137, 138},
+            {139, 140, 141, 142, 143},
+            {144, 145, 146, 147, 148},
+            {149, QPAC_KEY_MDCU1_SLASH, QPAC_KEY_MDCU1_SPACE, QPAC_KEY_MDCU1_OVERFL, QPAC_KEY_MDCU1_DEL}} ));
 
         // 1..9, ., 0, +/-
         qpac_regions.add(new ClickRegion(new Point(43, 608), new Point(186, 785), 3, 4, 
                         new int[][] {
-        	{75, 76, 77},
-        	{78, 79, 80},
-        	{81, 82, 83}, 
+        	{115, 116, 117},
+        	{118, 119, 120},
+        	{121, 122, 123}, 
         	{QPAC_KEY_MDCU1_DOT, QPAC_KEY_MDCU1_0, QPAC_KEY_MDCU1_PLUS_M}} ));
 
         
-        // DIR, PROG, PERF, INIT, DATA, blank
-        // F-PLN, RAD-NAV, FUEL-PRED, SEC-FPLN, ATC-COMM, MCDU MENU
-        qpac_regions.add(new ClickRegion(new Point(46, 400), new Point(402, 485), 6, 2, 
+        // DIR, PROG, PERF, INIT, DATA, blank, BRT
+        // F-PLN, RAD-NAV, FUEL-PRED, SEC-FPLN, ATC-COMM, MCDU MENU, DIM
+        // qpac_regions.add(new ClickRegion(new Point(46, 400), new Point(402, 485), 6, 2, 
+        qpac_regions.add(new ClickRegion(new Point(46, 400), new Point(461, 485), 7, 2,
                         new int[][] {
-        	{QPAC_KEY_MDCU1_DIR_TO, QPAC_KEY_MDCU1_PROG, QPAC_KEY_MDCU1_PERF, QPAC_KEY_MDCU1_INIT, QPAC_KEY_MDCU1_DATA, -1},
-        	{QPAC_KEY_MDCU1_FPLN, QPAC_KEY_MDCU1_RAD_NAV, -1, -1, -1, QPAC_KEY_MDCU1_MENU}} ));
+        	{QPAC_KEY_MDCU1_DIR_TO, QPAC_KEY_MDCU1_PROG, QPAC_KEY_MDCU1_PERF, QPAC_KEY_MDCU1_INIT, QPAC_KEY_MDCU1_DATA, -1, -1 },
+        	{QPAC_KEY_MDCU1_FPLN, QPAC_KEY_MDCU1_RAD_NAV, QPAC_KEY_MDCU1_FUEL_PRED, QPAC_KEY_MDCU1_SEC_FPLN, QPAC_KEY_MDCU1_ATC_COMM, QPAC_KEY_MDCU1_MENU, -1}} ));
 
         // AIRPORT, blank
         // LEFT, UP
@@ -237,6 +241,7 @@ public class CDUQpac extends CDUSubcomponent {
     			) {
     		QpacMcduData.updated = false;
     		int mcdu_side = avionics.get_cdu_side();
+    		draw_regions = preferences.get_draw_mouse_areas();
     		if ( this.preferences.cdu_display_only() ) {
     			drawDisplayOnly(g2,mcdu_side);
     		} else {
@@ -273,8 +278,8 @@ public class CDUQpac extends CDUSubcomponent {
         }
         
         // for debugging
-        if ( drawregions ) {
-            g2.setColor(cdu_gc.dim_markings_color);
+        if ( draw_regions ) {            
+            g2.setColor(Color.yellow);
             for(ClickRegion r2 : qpac_do_regions){
                     r2.draw(g2, scalex, scaley, border, border);
             }
@@ -301,8 +306,8 @@ public class CDUQpac extends CDUSubcomponent {
         }
         g2.setTransform(orig);
         // for debugging
-        if ( drawregions ) {
-            g2.setColor(cdu_gc.dim_markings_color);
+        if ( draw_regions ) {
+            g2.setColor(Color.yellow);
             for(ClickRegion r2 : qpac_regions){
                     r2.draw(g2, scalex, scaley, border, border);
             }
@@ -335,14 +340,14 @@ public class CDUQpac extends CDUSubcomponent {
     	char c;
     	for (int i=0; i<str.length(); i++) {
     		switch ( str.charAt(i) ) {
-    		case '`' : c = '°'; break;
-    		case '|' : c = 'Δ'; break;    		
-    		case '0' : c = 'O'; break;
-    		case 30 : c = '←'; break; 
-    		case 31 : c = '→'; break;
-    		case 26 : c = '↑'; break;
-    		case 27 : c = '↓'; break;
-    		case 28 : c = '⎕'; break;
+    		case '`' : c = '°'; break;  // Unicode U+00B0 Degree sign
+    		case '|' : c = 'Δ'; break;  // Unicode U+0394 Greek capital letter delta  		
+    		// case '0' : c = 'O'; break;  // Don't convert 0 - real MCDU displays 0 with slash inside
+    		case 30 : c = '←'; break;   // Unicode U+2190 Leftwards arrow
+    		case 31 : c = '→'; break;   // Unicode U+2192 Rightwards arrow
+    		case 26 : c = '↑'; break;   // Unicode U+2191 Upwards arrow
+    		case 27 : c = '↓'; break;   // Unicode U+2193 Downwards arrow
+    		case 28 : c = '⎕'; break;   // Unicode U+2395 Apl functional symbol quad
     		default : c = str.charAt(i);
     		}
     		result += c;

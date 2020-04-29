@@ -126,7 +126,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     private JComboBox instruments_font_combobox;
     private String instruments_fonts[] = { "Builtin", "Verdana", "Tahoma", "boeingGlass", "Arial", "Arial Rounded MT Bold", "DejaVu Sans Mono", "FreeSans", "Lucida Sans", "MS Reference Sans Serif", "Ubuntu", "Ubuntu Mono", "Lucida Sans" };
     private JComboBox cdu_font_combobox;
-    private String cdu_fonts[] = { "Builtin", "Andale Mono", "DejaVu Sans Mono", "Ubuntu Mono"};
+    private String cdu_fonts[] = { "Builtin", "Andale Mono", "DejaVu Sans Mono", "Ubuntu Mono" };
 
     // TODO: Get system fonts list
     private JCheckBox bold_fonts_checkbox;    
