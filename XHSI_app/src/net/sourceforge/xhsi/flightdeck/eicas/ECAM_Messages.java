@@ -169,7 +169,7 @@ public class ECAM_Messages extends EICASSubcomponent {
                     if (eicas_gc.font_monospaced) {
                     	g2.drawString(o.text, x, y);
                     } else {
-                    	g2.drawString(insertSpaces(o.text), x, y);	
+                        g2.drawString(insertSpaces(o.text), x, y);	
                     }
                     
             }

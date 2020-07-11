@@ -30,6 +30,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.font.TextAttribute;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.flightdeck.GraphicsConfig;
@@ -418,10 +421,17 @@ public class EICASGraphicsConfig extends GraphicsConfig implements ComponentList
             /*
              * Adjust messages position, 24 characters wide
              */
+            // float delta_24 = 1.0f-((digit_width_xl*24.6f)/(panel_rect.width)*520/1000);  
+            // Map<TextAttribute, Object> attributes = new HashMap<TextAttribute, Object>();
+            // attributes.put(TextAttribute.TRACKING, delta_24);            
             messages_font = font_xl;
-            messages_font_digit_width = this.digit_width_fixed_xl;
+            int line24_width = this.get_text_width(g2, messages_font, "123456789012345678901234");
+            // messages_font = font_xl.deriveFont(attributes); 
+            // messages_font_digit_width = this.digit_width_fixed_xl;
+            messages_font_digit_width = Math.round((line24_width / 24.0f)+0.17f);
+            // messages_font_digit_width = Math.round(digit_width_fixed_xl*(1+delta_24));
             message_x = panel_rect.x + panel_rect.width*40/1000 
-            		    + (panel_rect.width*560/1000 - this.get_text_width(g2, messages_font, "000000000000000000000000"))/2; 
+                        + (panel_rect.width*560/1000 - line24_width)/2;
             messages_line_height = line_height_xl;
             		
             

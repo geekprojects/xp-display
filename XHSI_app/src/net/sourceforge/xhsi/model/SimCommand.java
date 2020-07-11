@@ -42,6 +42,8 @@ public interface SimCommand {
     public static final int CMD_EFIS_CAPT_BARO_STD = 115;
     public static final int CMD_EFIS_CAPT_BARO_INC = 116;
     public static final int CMD_EFIS_CAPT_BARO_DEC = 117;
+    public static final int CMD_EFIS_CAPT_BARO_HPA = 137;
+    public static final int CMD_EFIS_CAPT_BARO_INHG = 138;
     public static final int CMD_EFIS_CAPT_RANGE_INC = 118;
     public static final int CMD_EFIS_CAPT_RANGE_DEC = 119;
     public static final int CMD_EFIS_CAPT_RANGE_10 = 120;
@@ -81,6 +83,8 @@ public interface SimCommand {
     public static final int CMD_EFIS_FO_BARO_STD = 215;
     public static final int CMD_EFIS_FO_BARO_INC = 216;
     public static final int CMD_EFIS_FO_BARO_DEC = 217;
+    public static final int CMD_EFIS_FO_BARO_HPA = 237;
+    public static final int CMD_EFIS_FO_BARO_INHG = 238;
     public static final int CMD_EFIS_FO_RANGE_INC = 218;
     public static final int CMD_EFIS_FO_RANGE_DEC = 219;
     public static final int CMD_EFIS_FO_RANGE_10 = 220;

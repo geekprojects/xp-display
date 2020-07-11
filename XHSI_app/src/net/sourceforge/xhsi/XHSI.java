@@ -160,7 +160,10 @@ public class XHSI implements ActionListener {
         } else {
             display_usage_info();
         }
-
+        logger.config("End of XHSI instantiation - memory status");
+        logger.config("Free  Memory: " + (java_run.freeMemory()/1024/1024) + "M");
+        logger.config("Total Memory: " + (java_run.totalMemory()/1024/1024) + "M");
+        logger.config("Max  Memory: " + (java_run.maxMemory()/1024/1024) + "M");
     }
 
 

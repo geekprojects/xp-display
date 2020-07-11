@@ -197,6 +197,8 @@ public class XPlaneSimDataRepository implements SimDataRepository {
     public static final int XHSI_RTU_SELECTED_RADIO = 186; // 0:none, 1:COM1, 2:NAV1, 3:ADF1, 4:XPDR_CODE, 5:XPDR_MODE, 6:ADF2, 7:NAV2, 8:COM2
     public static final int XHSI_RTU_PILOTEDGE_RX = 187; // works only for PilotEdge
     
+    // Radio commands
+    public static final int XHSI_RADIOS_CMD = 188;
     
     // Clock mode
     public static final int SIM_COCKPIT2_CLOCK_TIMER_MODE = 190; // 0 = GMT, 1 = Local Time, 2 = Date, 3 = Timer
@@ -276,6 +278,8 @@ public class XPlaneSimDataRepository implements SimDataRepository {
     public static final int XHSI_EFIS_COPILOT_ILS = 273;
     public static final int XHSI_EFIS_COPILOT_TRK_FPA = 274;
     public static final int XHSI_EFIS_COPILOT_METRIC_ALT = 275;
+    // EFIS commands
+    public static final int XHSI_EFIS_CMD = 279;
     
     // EICAS
     public static final int XHSI_ENGINE_TYPE = 280;

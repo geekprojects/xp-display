@@ -1,3 +1,25 @@
+/**
+* XPlaneCommand.java
+* 
+* No description yet !
+* 
+* Copyright (C) 2015  Nicolas Carel
+* 
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2 
+* of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 package net.sourceforge.xhsi.model.xplane;
 
 import java.util.logging.Logger;
@@ -10,6 +32,7 @@ import net.sourceforge.xhsi.model.Avionics.InstrumentSide;
 import net.sourceforge.xhsi.model.xplane.XPlaneUDPSender;
 
 public class XPlaneCommand implements SimCommand {
+	// Codes must be in sync with datarefs_qpac.h
     public static final int QPAC_KEY_TO_CONFIG = 1;
     public static final int QPAC_KEY_PUSH_ALT  = 2;
     public static final int QPAC_KEY_PULL_ALT  = 3;
@@ -26,10 +49,10 @@ public class XPlaneCommand implements SimCommand {
     public static final int QPAC_KEY_ABRK_LOW  = 14;
     public static final int QPAC_KEY_ABRK_MED  = 15;
     public static final int QPAC_KEY_ABRK_MAX  = 16;
-    public static final int QPAC_KEY_AP1_PUSH =  177;
-    public static final int QPAC_KEY_AP2_PUSH =  178;
-    public static final int QPAC_KEY_FD1_PUSH =  179;
-    public static final int QPAC_KEY_FD2_PUSH =  180;
+    public static final int QPAC_KEY_AP1_PUSH =  220;
+    public static final int QPAC_KEY_AP2_PUSH =  221;
+    public static final int QPAC_KEY_FD1_PUSH =  222;
+    public static final int QPAC_KEY_FD2_PUSH =  223;
     
     public static final int QPAC_SD_ENGINE = 0; 
     public static final int QPAC_SD_BLEED = 1; 
@@ -97,7 +120,20 @@ public class XPlaneCommand implements SimCommand {
     // Systems
     public static final int AP_KEY_PITOT_HEAT_TOGGLE = 60;
     
+    // Values for XHSI_EFIS_CMD
+    // Must be in sync with datarefs.h
+    public static final int  EFIS_CMD_BARO_CAPT_INC   = 1;
+    public static final int  EFIS_CMD_BARO_CAPT_DEC   = 2;
+    public static final int  EFIS_CMD_BARO_CAPT_STD   = 3;
+    public static final int  EFIS_CMD_BARO_CAPT_HPA   = 4;
+    public static final int  EFIS_CMD_BARO_CAPT_INHG  = 5;
+    public static final int  EFIS_CMD_BARO_FO_INC     = 21;
+    public static final int  EFIS_CMD_BARO_FO_DEC     = 22;
+    public static final int  EFIS_CMD_BARO_FO_STD     = 23;
+    public static final int  EFIS_CMD_BARO_FO_HPA     = 24;
+    public static final int  EFIS_CMD_BARO_FO_INHG    = 25;
 
+    
     ModelFactory model_factory;
     Aircraft aircraft;
     Avionics avionics;
@@ -174,18 +210,27 @@ public class XPlaneCommand implements SimCommand {
                 break;
             
             case CMD_EFIS_CAPT_BARO_STD:
-            	// XPlaneSimDataRepository.QPAC_FCU_BARO & 0x04
-                break;
-            
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_CAPT_STD);
+            	break;
+            	
             case CMD_EFIS_CAPT_BARO_INC:
-            	// aircraft.qnh (hPa) or altimeter_in_hg(boolean pilot)
-            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.SIM_COCKPIT2_GAUGES_ACTUATORS_BAROMETER_SETTING_IN_HG_PILOT, aircraft.altimeter_in_hg(true) + 0.01f);
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_CAPT_INC);
+            	// this method is too slow with rotary encoders
+            	// this.udp_sender.sendDataPoint(XPlaneSimDataRepository.SIM_COCKPIT2_GAUGES_ACTUATORS_BAROMETER_SETTING_IN_HG_PILOT, aircraft.altimeter_in_hg(true) + 0.01f);
                 break;
-            
+                
             case CMD_EFIS_CAPT_BARO_DEC:
-            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.SIM_COCKPIT2_GAUGES_ACTUATORS_BAROMETER_SETTING_IN_HG_PILOT, aircraft.altimeter_in_hg(true) - 0.01f);
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_CAPT_DEC);
                 break;
             
+            case CMD_EFIS_CAPT_BARO_HPA:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_CAPT_HPA);            	
+                break;
+                
+            case CMD_EFIS_CAPT_BARO_INHG:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_CAPT_INHG);
+                break;
+                
             case CMD_EFIS_CAPT_RANGE_INC:
                 if (this.avionics.map_range_index(InstrumentSide.PILOT) >= 5) break;
                 this.udp_sender.sendDataPoint(XPlaneSimDataRepository.SIM_COCKPIT_SWITCHES_EFIS_MAP_RANGE_SELECTOR, (float)this.avionics.map_range_index(InstrumentSide.PILOT) + 1.0f);
@@ -294,35 +339,89 @@ public class XPlaneCommand implements SimCommand {
                 
             case CMD_EFIS_FO_INHG: break;
             case CMD_EFIS_FO_HPA: break;
-            case CMD_EFIS_FO_NAVAID1_ADF: break;
-            case CMD_EFIS_FO_NAVAID1_OFF: break;
-            case CMD_EFIS_FO_NAVAID1_VOR: break;
-            case CMD_EFIS_FO_NAVAID2_ADF: break;
-            case CMD_EFIS_FO_NAVAID2_OFF: break;
-            case CMD_EFIS_FO_NAVAID2_VOR: break;
-            case CMD_EFIS_FO_BARO_STD: break;
+            case CMD_EFIS_FO_NAVAID1_ADF:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_RADIO1, 0.0f);
+            	break;
+            case CMD_EFIS_FO_NAVAID1_OFF:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_RADIO1, 1.0f);
+            	break;
+            case CMD_EFIS_FO_NAVAID1_VOR:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_RADIO1, 2.0f);
+            	break;
+            case CMD_EFIS_FO_NAVAID2_ADF:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_RADIO2, 0.0f);
+            	break;
+            case CMD_EFIS_FO_NAVAID2_OFF:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_RADIO2, 1.0f);
+            	break;
+            case CMD_EFIS_FO_NAVAID2_VOR:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_RADIO2, 2.0f);
+            	break;
+            case CMD_EFIS_FO_BARO_STD:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_FO_STD);
+            	break;
             case CMD_EFIS_FO_BARO_INC:
-            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.SIM_COCKPIT2_GAUGES_ACTUATORS_BAROMETER_SETTING_IN_HG_COPILOT, aircraft.altimeter_in_hg(true) + 0.01f);
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_FO_INC);
             	break;
-            case CMD_EFIS_FO_BARO_DEC: 
-            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.SIM_COCKPIT2_GAUGES_ACTUATORS_BAROMETER_SETTING_IN_HG_COPILOT, aircraft.altimeter_in_hg(true) - 0.01f);
+            case CMD_EFIS_FO_BARO_DEC:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_FO_DEC);
             	break;
-            case CMD_EFIS_FO_RANGE_INC: break;
-            case CMD_EFIS_FO_RANGE_DEC: break;
-            case CMD_EFIS_FO_RANGE_10: break;
-            case CMD_EFIS_FO_RANGE_20: break;
-            case CMD_EFIS_FO_RANGE_40: break;
-            case CMD_EFIS_FO_RANGE_80: break;
-            case CMD_EFIS_FO_RANGE_160: break;
-            case CMD_EFIS_FO_RANGE_320: break;
-            case CMD_EFIS_FO_RANGE_640: break;
-            case CMD_EFIS_FO_MODE_ILS: break;
-            case CMD_EFIS_FO_MODE_VOR: break;
-            case CMD_EFIS_FO_MODE_NAV: break;
-            case CMD_EFIS_FO_MODE_ARC: break;
-            case CMD_EFIS_FO_MODE_PLN: break;
-            case CMD_EFIS_FO_MODE_INC: break;
-            case CMD_EFIS_FO_MODE_DEC: break;
+            case CMD_EFIS_FO_BARO_HPA:
+              	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_FO_HPA);            	
+                break;
+            case CMD_EFIS_FO_BARO_INHG:
+               	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_CMD, EFIS_CMD_BARO_FO_INHG);
+                break;
+            case CMD_EFIS_FO_RANGE_INC:
+            	if (this.avionics.map_range_index(InstrumentSide.COPILOT) >= 5) break;
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, (float)this.avionics.map_range_index(InstrumentSide.COPILOT) + 1.0f);
+            	break;        
+            case CMD_EFIS_FO_RANGE_DEC:
+            	if (this.avionics.map_range_index(InstrumentSide.COPILOT) <= 0) break;
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, (float)this.avionics.map_range_index(InstrumentSide.COPILOT) - 1.0f);
+            	break;            
+            case CMD_EFIS_FO_RANGE_10:
+                this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, 0.0f);
+                break;
+            case CMD_EFIS_FO_RANGE_20: 
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, 1.0f);
+            	break;
+            case CMD_EFIS_FO_RANGE_40:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, 2.0f);
+            	break;
+            case CMD_EFIS_FO_RANGE_80:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, 3.0f);
+            	break;
+            case CMD_EFIS_FO_RANGE_160:	
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, 4.0f);
+            	break;
+            case CMD_EFIS_FO_RANGE_320:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, 5.0f);
+            	break;
+            case CMD_EFIS_FO_RANGE_640:
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_RANGE, 6.0f);
+            	break;
+            case CMD_EFIS_FO_MODE_ILS:
+                this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_MODE, 1.0f);
+                break;
+            case CMD_EFIS_FO_MODE_VOR: 
+                this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_MODE, 2.0f);
+                break;
+            case CMD_EFIS_FO_MODE_NAV: 
+                this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_MODE, 3.0f);
+                break;
+            case CMD_EFIS_FO_MODE_ARC: 
+                this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_MODE, 4.0f);
+                break;
+            case CMD_EFIS_FO_MODE_PLN: 
+                this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_MODE, 5.0f);
+                break;
+            case CMD_EFIS_FO_MODE_INC:
+                this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_MODE, (float)this.avionics.map_submode(InstrumentSide.COPILOT) + 1.0f);
+                break;            
+            case CMD_EFIS_FO_MODE_DEC: 
+                this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_MAP_MODE, (float)this.avionics.map_submode(InstrumentSide.COPILOT) - 1.0f);
+                break;           
             case CMD_EFIS_FO_CHRONO: 
             	this.avionics.chr_control(Avionics.CHR_ACT_FO_START_RESET);
             	break;
