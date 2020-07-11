@@ -3882,10 +3882,6 @@ void findDataRefs(void) {
 
 void writeDataRef(int id, float value) {
 
-//    char info_string[80];
-//    sprintf(info_string, "XHSI: received setting : ID=%d  VALUE=%f\n", id, value);
-//    XPLMDebugString(info_string);
-
     switch (id) {
 
 		// general
@@ -4161,6 +4157,74 @@ void writeDataRef(int id, float value) {
             XPLMSetDatai(efis_copilot_map_zoomin, (int)value);
             break;
 
+        case SIM_COCKPIT2_GAUGES_ACTUATORS_BAROMETER_SETTING_IN_HG_PILOT :
+            XPLMSetDataf(baro_pilot, value);
+            break;
+
+        case SIM_COCKPIT2_GAUGES_ACTUATORS_BAROMETER_SETTING_IN_HG_COPILOT :
+            XPLMSetDataf(baro_copilot, value);
+            break;
+
+        case XHSI_EFIS_CMD :
+             switch ((int)value) {
+                // Altimeter buttons
+                case EFIS_CMD_BARO_CAPT_INC :
+                    XPLMSetDataf(baro_pilot, XPLMGetDataf(baro_pilot) + 0.01f);
+                    break;
+                case EFIS_CMD_BARO_CAPT_DEC :
+                    XPLMSetDataf(baro_pilot, XPLMGetDataf(baro_pilot) - 0.01f);
+                    break;
+                case EFIS_CMD_BARO_CAPT_STD :
+                	if (qpac_ready) {
+                		XPLMSetDatai(qpac_baro_std_capt, XPLMGetDatai(qpac_baro_std_capt) == 0 ? 1 : 0);
+                	} else {
+                		XPLMSetDataf(baro_pilot, 29.92f);
+                	}
+                    break;
+                case EFIS_CMD_BARO_CAPT_HPA :
+                	if (qpac_ready) {
+                		XPLMSetDatai(qpac_baro_unit_capt, 1);
+                	}
+                	// TODO: JarDesign
+                	// TODO: XHSI
+                    break;
+                case EFIS_CMD_BARO_CAPT_INHG :
+                	if (qpac_ready) {
+                		XPLMSetDatai(qpac_baro_unit_capt, 0);
+                	}
+                	// TODO: JarDesign
+                	// TODO: XHSI
+                    break;
+                case EFIS_CMD_BARO_FO_INC :
+                    XPLMSetDataf(baro_copilot, XPLMGetDataf(baro_copilot) + 0.01f);
+                    break;
+                case EFIS_CMD_BARO_FO_DEC :
+                    XPLMSetDataf(baro_copilot, XPLMGetDataf(baro_copilot) - 0.01f);
+                    break;
+                case EFIS_CMD_BARO_FO_STD :
+                	if (qpac_ready) {
+                		XPLMSetDatai(qpac_baro_std_fo, XPLMGetDatai(qpac_baro_std_fo) == 0 ? 1 : 0);
+                	} else {
+                		XPLMSetDataf(qpac_baro_std_fo, 29.92f);
+                	}
+                    break;
+                case EFIS_CMD_BARO_FO_HPA :
+                	if (qpac_ready) {
+                		XPLMSetDatai(qpac_baro_unit_fo, 1);
+                	}
+                	// TODO: JarDesign
+                	// TODO: XHSI
+                    break;
+                case EFIS_CMD_BARO_FO_INHG :
+                	if (qpac_ready) {
+                		XPLMSetDatai(qpac_baro_unit_fo, 0);
+                	}
+                	// TODO: JarDesign
+                	// TODO: XHSI
+                    break;
+             }
+             break;
+
         // EGPWS
         case XHSI_EPGWS_MODES :
         	XPLMSetDatai(egpws_flaps_mode, ((int)value)>>2 & 0x01 );
@@ -4248,10 +4312,6 @@ void writeDataRef(int id, float value) {
             } else {
                 XPLMSetDataf(autopilot_vertical_velocity, value);
             }
-            break;
-
-        case SIM_COCKPIT2_GAUGES_ACTUATORS_BAROMETER_SETTING_IN_HG_PILOT :
-            XPLMSetDataf(baro_pilot, value);
             break;
 
         case SIM_COCKPIT_AUTOPILOT_AUTOPILOT_STATE :

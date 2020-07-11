@@ -44,6 +44,7 @@
 #include "globals.h"
 #include "ids.h"
 #include "structs.h"
+#include "settings.h"
 #include "datarefs.h"
 #include "datarefs_ufmc.h"
 #include "datarefs_x737.h"
@@ -144,12 +145,17 @@ void decodeIncomingPacket(void) {
     int i, nb;
     int id;
     float float_value;
+    char info_string[80];
 
     nb = custom_ntohi(efis_packet.nb_of_data_points);
 
     for (i=0; i<nb; i++) {
         id = custom_ntohi(efis_packet.data_points[i].id);
         float_value = custom_ntohf(efis_packet.data_points[i].value);
+        if (log_level >= LOG_LEVEL_ALL) {
+        	sprintf(info_string, "XHSI: received setting : ID=%d  VALUE=%f\n", id, float_value);
+        	XPLMDebugString(info_string);
+        }
         if ((id > QPAC_STATUS) && (id <=QPAC_ID_END)) {
             writeQpacDataRef(id, float_value);
         } else 	if ((id >= JAR_A320NEO_STATUS) && (id <= JAR_A320NEO_ID_END)) {
@@ -846,7 +852,7 @@ int createAvionicsPacket(void) {
     int egpws_modes;
     int std_gauges_failures_pilot;
     int std_gauges_failures_copilot;
-
+    int baro_modes;
     int xhsi_cdu_source;
     int xhsi_cdu_side;
 
@@ -1287,6 +1293,29 @@ int createAvionicsPacket(void) {
     }
     i++;
 
+    // TODO: XHSI_EFIS_PILOT_BARO_MODES
+    sim_packet.sim_data_points[i].id = custom_htoni(XHSI_EFIS_PILOT_BARO_MODES);
+    baro_modes = 0;
+    if (pa_a320_ready) {
+    	baro_modes =
+    			XPLMGetDatai(qpac_baro_std_fo) << 6 |
+    			XPLMGetDatai(qpac_baro_unit_fo) << 5 |
+    			XPLMGetDatai(pa_a320_baro_hide) << 4 |
+    			XPLMGetDatai(qpac_baro_std_capt) << 2 |
+    			XPLMGetDatai(qpac_baro_unit_capt) << 1 |
+    			XPLMGetDatai(pa_a320_baro_hide) ;
+    } else {
+    	baro_modes =
+    			XPLMGetDatai(qpac_baro_std_fo) << 6 |
+    			XPLMGetDatai(qpac_baro_unit_fo) << 5 |
+    			XPLMGetDatai(qpac_baro_hide_fo) << 4 |
+    			XPLMGetDatai(qpac_baro_std_capt) << 2 |
+    			XPLMGetDatai(qpac_baro_unit_capt) << 1 |
+    			XPLMGetDatai(qpac_baro_hide_capt) ;
+    }
+    sim_packet.sim_data_points[i].value = custom_htonf((float) baro_modes);
+    i++;
+
     sim_packet.sim_data_points[i].id = custom_htoni(XHSI_EFIS_PILOT_DA_BUG);
     sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(efis_pilot_da_bug));
     i++;
@@ -1388,6 +1417,10 @@ int createAvionicsPacket(void) {
     sim_packet.sim_data_points[i].id = custom_htoni(XHSI_EFIS_COPILOT_METRIC_ALT);
     sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(efis_copilot_metric_alt));
     i++;
+
+    // TODO: XHSI_EFIS_COPILOT_BARO_MODES
+    sim_packet.sim_data_points[i].id = custom_htoni(XHSI_EFIS_COPILOT_BARO_MODES);
+
     sim_packet.sim_data_points[i].id = custom_htoni(XHSI_EFIS_COPILOT_DA_BUG);
     sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(efis_copilot_da_bug));
     i++;

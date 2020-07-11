@@ -35,6 +35,7 @@ unsigned long int   recv_rate;
 float               recv_delay;
 
 unsigned long int   expert_settings;
+int                 log_level;
 
 unsigned long int   adc_data_rate;
 unsigned long int   avionics_data_rate;
@@ -100,6 +101,7 @@ void defaultSettings() {
 	cdu_data_rate = 15;
 	cdu_data_delay = 1.0f / (float)cdu_data_rate;
 	expert_settings = 0;
+	log_level=0;
 
 	fms_source = FMS_SOURCE_LEGACY;
 
@@ -190,6 +192,10 @@ void readConfig() {
 				expert_settings = d_value;
 			}
 
+			if (strcmp(param, "log_level")==0) {
+				log_level = d_value;
+			}
+
 			if (strcmp(param, "fms_source")==0) {
 				fms_source = d_value;
 			}
@@ -256,6 +262,7 @@ void writeSettings() {
 		fprintf(cfg_file, "static_data_rate %ld\n", static_data_rate);
 		fprintf(cfg_file, "cdu_data_rate %ld\n", cdu_data_rate);
 		fprintf(cfg_file, "expert_settings %ld\n", expert_settings);
+		fprintf(cfg_file, "log_level %ld\n", log_level);
 		fprintf(cfg_file, "fms_source %ld\n", fms_source);
 
 		for (i=0; i<NUM_DEST; i++) {

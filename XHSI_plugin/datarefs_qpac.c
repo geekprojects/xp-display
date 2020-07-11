@@ -1064,7 +1064,7 @@ void writeQpacDataRef(int id, float value) {
 					sprintf(info_string, "XHSI: Null pointer QPAC Command Once VALUE=%d\n", (int) value);
 					XPLMDebugString(info_string);
 				} else {
-					if (value == 1.0) {
+					if (value == QPAC_KEY_TO_CONFIG) {
 						// Special behaviour for TO Config
 						XPLMCommandBegin(qpac_command[(int)value]);
 						qpac_release_command=(int)value;

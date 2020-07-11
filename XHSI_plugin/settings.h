@@ -19,6 +19,8 @@ extern float                recv_delay;
 
 extern unsigned long int    expert_settings;
 
+extern int                  log_level;
+
 extern unsigned long int    adc_data_rate;
 extern unsigned long int    avionics_data_rate;
 extern unsigned long int    aux_sys_data_rate;
@@ -43,7 +45,10 @@ extern unsigned long int   fms_source;
 #define FMS_SOURCE_UFMC   2
 #define FMS_SOURCE_Z737   3
 
-
+#define LOG_LEVEL_OFF     0
+#define LOG_LEVEL_ERROR   1
+#define LOG_LEVEL_WARNING 2
+#define LOG_LEVEL_ALL     3
 
 // settings public functions
 void	initSettings();

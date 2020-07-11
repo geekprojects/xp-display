@@ -43,6 +43,20 @@
 #define AP_KEY_STICK_CAPT 71
 #define AP_KEY_STICK_FO 72
 
+/*
+ * EFIS commands
+ */
+#define EFIS_CMD_BARO_CAPT_INC  1
+#define EFIS_CMD_BARO_CAPT_DEC  2
+#define EFIS_CMD_BARO_CAPT_STD  3
+#define EFIS_CMD_BARO_CAPT_HPA  4
+#define EFIS_CMD_BARO_CAPT_INHG 5
+#define EFIS_CMD_BARO_FO_INC    21
+#define EFIS_CMD_BARO_FO_DEC    22
+#define EFIS_CMD_BARO_FO_STD    23
+#define EFIS_CMD_BARO_FO_HPA    24
+#define EFIS_CMD_BARO_FO_INHG   25
+
 
 // global vars
 extern XPLMDataRef groundspeed;
