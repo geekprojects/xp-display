@@ -2860,15 +2860,17 @@ int createCustomAvionicsPacket(void) {
         if (qpac_door_pax_array != NULL) {
         	XPLMGetDatavf(qpac_door_pax_array, qpac_door_pax_tab, 0, 4);
         	XPLMGetDatavf(qpac_door_cargo_array, qpac_door_cargo_tab, 0, 4);
-        	door_status = (XPLMGetDataf(qpac_door_bulk_door)>0.0f) |
-        			(qpac_door_pax_tab[0]>0.0) << 1 |
-        			(qpac_door_pax_tab[1]>0.0) << 2 |
-        			(qpac_door_pax_tab[2]>0.0) << 3 |
-        			(qpac_door_pax_tab[3]>0.0) << 4 |
-        			(qpac_door_cargo_tab[0]>0.0) << 5 |
-        			(qpac_door_cargo_tab[1]>0.0) << 6 ;
+        	door_status =
+        			(XPLMGetDataf(qpac_door_bulk_door)>0.0f ? 0x01 : 0 ) |
+        			(qpac_door_pax_tab[0]>0.0  ? 0x02 : 0) |
+        			(qpac_door_pax_tab[1]>0.0  ? 0x04 : 0) |
+        			(qpac_door_pax_tab[2]>0.0  ? 0x08 : 0) |
+        			(qpac_door_pax_tab[3]>0.0  ? 0x10 : 0) |
+        			(qpac_door_cargo_tab[0]>0.0 ? 0x20 : 0) |
+        			(qpac_door_cargo_tab[1]>0.0 ? 0x40 : 0) ;
         } else {
         	// TODO: based on beacon
+        	// TODO : XP11 : misc/door_open_ratio [float Array] or switches/door_open [int Array]
         	door_status = 0x01;
         }
         sim_packet.sim_data_points[i].id = custom_htoni(QPAC_DOOR_STATUS);

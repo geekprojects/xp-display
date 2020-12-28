@@ -105,6 +105,7 @@
 #define MFD_FCTL 13
 #define MFD_SYS 14
 #define MFD_STATUS 15
+#define MFD_DEBUG 31
 #define MFD_RESET_FUEL_USED 32
 
 
@@ -606,6 +607,7 @@ XPLMCommandRef mfd_mode_wheel;
 XPLMCommandRef mfd_mode_fctl;
 XPLMCommandRef mfd_mode_sys;
 XPLMCommandRef mfd_mode_status;
+XPLMCommandRef mfd_mode_debug;
 XPLMCommandRef mfd_mode_down;
 XPLMCommandRef mfd_mode_up;
 XPLMCommandRef mfd_mode_cycle;
@@ -3995,6 +3997,9 @@ void registerCommands(void) {
     mfd_mode_status = XPLMCreateCommand("xhsi/mfd/mode_status", "MFD mode STATUS");
     XPLMRegisterCommandHandler(mfd_mode_status, (XPLMCommandCallback_f)mfd_handler, 1, (void *)MFD_STATUS);
 
+    mfd_mode_debug = XPLMCreateCommand("xhsi/mfd/mode_debug", "MFD mode DEBUG");
+    XPLMRegisterCommandHandler(mfd_mode_debug, (XPLMCommandCallback_f)mfd_handler, 1, (void *)MFD_DEBUG);
+
     mfd_mode_down = XPLMCreateCommand("xhsi/mfd/mode_down", "Previous MFD mode");
     XPLMRegisterCommandHandler(mfd_mode_down, (XPLMCommandCallback_f)mfd_handler, 1, (void *)DOWN);
 
@@ -4930,6 +4935,7 @@ void unregisterCommands(void) {
     XPLMUnregisterCommandHandler(mfd_mode_fctl, (XPLMCommandCallback_f)mfd_handler, 1, (void *)MFD_FCTL);
     XPLMUnregisterCommandHandler(mfd_mode_sys, (XPLMCommandCallback_f)mfd_handler, 1, (void *)MFD_SYS);
     XPLMUnregisterCommandHandler(mfd_mode_status, (XPLMCommandCallback_f)mfd_handler, 1, (void *)MFD_STATUS);
+    XPLMUnregisterCommandHandler(mfd_mode_debug, (XPLMCommandCallback_f)mfd_handler, 1, (void *)MFD_DEBUG);
     XPLMUnregisterCommandHandler(mfd_mode_down, (XPLMCommandCallback_f)mfd_handler, 1, (void *)DOWN);
     XPLMUnregisterCommandHandler(mfd_mode_up, (XPLMCommandCallback_f)mfd_handler, 1, (void *)UP);
     XPLMUnregisterCommandHandler(mfd_mode_cycle, (XPLMCommandCallback_f)mfd_handler, 1, (void *)CYCLE);
