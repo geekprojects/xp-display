@@ -332,6 +332,8 @@ public class XPlaneSimDataRepository implements SimDataRepository {
     public static final int SIM_AIRCRAFT_OVERFLOW_ACF_VYSE = 330;
     public static final int SIM_AIRCRAFT_VIEW_ACF_TAILNUM_0_3 = 10331; // the 4 first characters of the aircraft registration
     public static final int SIM_AIRCRAFT_VIEW_ACF_TAILNUM_4_7 = 10332; // the next 4 characters of the aircraft registration
+    public static final int SIM_AIRCRAFT_VIEW_ACF_ICAO_0_3 = 10347;    // the 4 first characters of the aircraft ICAO Type
+    public static final int SIM_AIRCRAFT_VIEW_ACF_ICAO_4_7 = 10348;    // the next 4 characters of the aircraft ICAO Type
     public static final int SIM_AIRCRAFT_CONTROLS_ACL_ELEV_DN = 333;
     public static final int SIM_AIRCRAFT_CONTROLS_ACL_ELEV_UP = 334;
     public static final int SIM_AIRCRAFT_CONTROLS_ACL_AIL_UP = 335;
@@ -346,6 +348,7 @@ public class XPlaneSimDataRepository implements SimDataRepository {
     public static final int SIM_AIRCRAFT_ENGINE_RED_EPR = 344;
     public static final int XHSI_AIRCRAFT_NOSE_TIRE_REF_PRESSURE = 345;
     public static final int XHSI_AIRCRAFT_MAIN_TIRE_REF_PRESSURE = 346;
+
     
     // Controls & annunciators
     public static final int SIM_COCKPIT2_ANNUNCIATORS_MASTER_ACCEPT = 349;
@@ -781,10 +784,10 @@ public class XPlaneSimDataRepository implements SimDataRepository {
     public static final int QPAC_TPI_ACCU = 1098;
     // Nacelle temperature [array 4]
     public static final int QPAC_NACELLE_TEMP_ = 1100; // Array [4]
-    // Doors
-    public static final int QPAC_DOOR_STATUS = 1104;
     // Engines Ignition
-    public static final int QPAC_ENG_IGNITION = 1105;
+    public static final int QPAC_ENG_IGNITION = 1104;
+    // Doors
+    public static final int QPAC_DOOR_STATUS = 1105;
     // IDs reserved for QPAC up to 1199
     
     // JarDesign Airbus A320neo [1200-1399]

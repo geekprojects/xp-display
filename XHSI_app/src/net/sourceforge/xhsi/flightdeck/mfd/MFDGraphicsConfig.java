@@ -720,6 +720,10 @@ public class MFDGraphicsConfig extends GraphicsConfig implements ComponentListen
     public int press_pack2_x;
     
     // Systems Status 
+    // Text info and actions column
+    public int sys_info_x;
+    public int sys_info_top_y;
+    public int sys_info_bottom_y;
     // Vertical separation line
     public int sys_line_x;
     public int sys_line_top_y;
@@ -1701,6 +1705,10 @@ public class MFDGraphicsConfig extends GraphicsConfig implements ComponentListen
             press_pack2_x = panel_rect.x + panel_rect.width * 819/1000;
             
             // Systems Status 
+            // Info and action column
+            sys_info_x = panel_rect.x + panel_rect.width * 50/1000;
+            sys_info_top_y = panel_rect.y + mfd_size * 150/1000;
+            sys_info_bottom_y = panel_rect.y + mfd_size * 680/1000;
             // Vertical separation line
             sys_line_x = panel_rect.x + panel_rect.width * 650/1000;
             sys_line_top_y = panel_rect.y + mfd_size * 100/1000;

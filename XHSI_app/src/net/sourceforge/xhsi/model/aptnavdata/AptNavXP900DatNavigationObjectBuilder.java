@@ -65,6 +65,7 @@ public class AptNavXP900DatNavigationObjectBuilder implements PreferencesObserve
     private NavigationObjectRepository nor;
     private ProgressObserver progressObserver;
     private Fix fix;
+    private boolean load_helipads;
     
     private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
@@ -73,6 +74,7 @@ public class AptNavXP900DatNavigationObjectBuilder implements PreferencesObserve
         this.pathname_to_aptnav = pathname_to_aptnav;
         this.nor = NavigationObjectRepository.get_instance();
         this.progressObserver = null;
+        this.load_helipads=XHSIPreferences.get_instance().get_nd_show_helipads();
     }
 
 
@@ -192,7 +194,7 @@ public class AptNavXP900DatNavigationObjectBuilder implements PreferencesObserve
         String airport_icao_code = "";
         String airport_name = "";
         boolean is_heliport=false;
-        boolean current_airport_saved = true; // this is a trick to say that there is no previous airport when starting to read the first 
+        boolean current_airport_saved = true; // this is a trick to say that there is no previous airport when starting to read the first        
         ArrayList<Runway> runways = new ArrayList<Runway>();
         ArrayList<Helipad> helipads = new ArrayList<Helipad>();
         float width;
@@ -330,7 +332,7 @@ public class AptNavXP900DatNavigationObjectBuilder implements PreferencesObserve
                             }
                             //lat = lat_sum / rwy_count;
                             //lon = lon_sum / rwy_count;
-                        } else if (info_type == 102) {
+                        } else if (info_type == 102 && load_helipads) {
                             // an helipad
                             // we need more tokens
                         	// 102 H1  35.59011673 -117.63945737   0.00 24.40 24.40 5 0 0 0.00 1
@@ -748,6 +750,7 @@ public class AptNavXP900DatNavigationObjectBuilder implements PreferencesObserve
         if (key.equals(XHSIPreferences.PREF_APTNAV_DIR)) {
             // reload navigation databases
             this.pathname_to_aptnav = XHSIPreferences.get_instance().get_preference(XHSIPreferences.PREF_APTNAV_DIR);
+            this.load_helipads=XHSIPreferences.get_instance().get_nd_show_helipads();
             if (XHSIStatus.nav_db_status.equals(XHSIStatus.STATUS_NAV_DB_NOT_FOUND) == false) {
                 try {
                     logger.config("Reload navigation tables");

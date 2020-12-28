@@ -188,6 +188,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     private JCheckBox nd_navaid_frequencies;
     private JCheckBox nd_write_ap_hdg;
     private JCheckBox nd_show_clock;
+    private JCheckBox nd_show_helipads;
     
     /*
      * EGPWS tab
@@ -472,6 +473,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         this.nd_write_ap_hdg.setSelected(preferences.get_preference(XHSIPreferences.PREF_ND_WRITE_AP_HDG).equalsIgnoreCase("true"));
 
         this.nd_show_clock.setSelected(preferences.get_preference(XHSIPreferences.PREF_ND_SHOW_CLOCK).equalsIgnoreCase("true"));
+        
+        this.nd_show_helipads.setSelected(preferences.get_preference(XHSIPreferences.PREF_ND_SHOW_HELIPADS).equalsIgnoreCase("true"));
 
         // EGPWS Terrain options
         this.nd_terrain_sweep.setSelected(preferences.get_preference(XHSIPreferences.PREF_TERRAIN_SWEEP).equalsIgnoreCase("true"));
@@ -1663,7 +1666,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.symbols_multiselection_checkbox = new JCheckBox("  ( unchecked: Airbus radio buttons, checked Boeing push buttons )");
+        this.symbols_multiselection_checkbox = new JCheckBox("  (unchecked: Airbus radio buttons, checked Boeing push buttons)");
         nd_options_panel.add(this.symbols_multiselection_checkbox, cons);
         dialog_line++;
 
@@ -1872,7 +1875,19 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         nd_options_panel.add(this.nd_show_clock, cons);
         dialog_line++;
 
-
+        // Load and display helipads
+        cons.gridx = 0;
+        cons.gridwidth = 1;
+        cons.gridy = dialog_line;
+        cons.anchor = GridBagConstraints.EAST;
+        nd_options_panel.add(new JLabel("Load and display helipads", JLabel.TRAILING), cons);
+        cons.gridx = 2;
+        cons.gridwidth = 1;
+        cons.gridy = dialog_line;
+        cons.anchor = GridBagConstraints.WEST;
+        this.nd_show_helipads = new JCheckBox("  (requires a restart)");
+        nd_options_panel.add(this.nd_show_helipads, cons);
+        dialog_line++;
         
         
 //        // A reminder
@@ -2740,6 +2755,9 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 
             if ( this.nd_show_clock.isSelected() != this.preferences.get_preference(XHSIPreferences.PREF_ND_SHOW_CLOCK).equals("true") )
                 this.preferences.set_preference(XHSIPreferences.PREF_ND_SHOW_CLOCK, this.nd_show_clock.isSelected()?"true":"false");
+
+            if ( this.nd_show_helipads.isSelected() != this.preferences.get_preference(XHSIPreferences.PREF_ND_SHOW_HELIPADS).equals("true") )
+                this.preferences.set_preference(XHSIPreferences.PREF_ND_SHOW_HELIPADS, this.nd_show_helipads.isSelected()?"true":"false");
 
             // TODO: EGPWS options [ TERRAIN ]
             if ( this.nd_terrain_sweep.isSelected() != this.preferences.get_preference(XHSIPreferences.PREF_TERRAIN_SWEEP).equals("true") )

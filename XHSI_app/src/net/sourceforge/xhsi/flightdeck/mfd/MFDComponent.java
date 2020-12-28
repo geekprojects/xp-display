@@ -55,7 +55,7 @@ public class MFDComponent extends Component implements Observer, PreferencesObse
 
     // subcomponents --------------------------------------------------------
     ArrayList<MFDSubcomponent> subcomponents = new ArrayList<MFDSubcomponent>();
-    long[] subcomponent_paint_times = new long[20];
+    long[] subcomponent_paint_times = new long[21];
     long total_paint_times = 0;
     long nb_of_paints = 0;
     Graphics2D g2;
@@ -97,6 +97,7 @@ public class MFDComponent extends Component implements Observer, PreferencesObse
         subcomponents.add(new Wheels(model_factory, mfd_gc, this));
         subcomponents.add(new SystemsStatus(model_factory, mfd_gc, this));
         subcomponents.add(new RadioTuningUnit(model_factory, mfd_gc, this));
+        subcomponents.add(new DebugInformation(model_factory, mfd_gc, this));
         subcomponents.add(new MFDFail(model_factory, mfd_gc, this));
         subcomponents.add(new MFDInstrumentFrame(model_factory, mfd_gc));
 

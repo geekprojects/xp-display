@@ -92,6 +92,10 @@ public class XPlaneAircraft implements Aircraft {
         return sim_data.get_sim_string(XPlaneSimDataRepository.SIM_AIRCRAFT_VIEW_ACF_TAILNUM_0_3) + sim_data.get_sim_string(XPlaneSimDataRepository.SIM_AIRCRAFT_VIEW_ACF_TAILNUM_4_7);
     }
     
+    public String aircraft_icao_type() {
+        return sim_data.get_sim_string(XPlaneSimDataRepository.SIM_AIRCRAFT_VIEW_ACF_ICAO_0_3) + sim_data.get_sim_string(XPlaneSimDataRepository.SIM_AIRCRAFT_VIEW_ACF_ICAO_4_7);
+    }
+    
     public boolean battery() {
         if ( XHSIPreferences.get_instance().get_instrument_operator().equals( XHSIPreferences.INSTRUCTOR ) ||
                 ! XHSIPreferences.get_instance().get_use_power() ) {

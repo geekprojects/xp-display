@@ -95,6 +95,7 @@ public interface Avionics {
     public static final int MFD_MODE_FCTL = 13;
     public static final int MFD_MODE_SYS = 14; // SYS on Boeing, CRUIZE on Airbus
     public static final int MFD_MODE_STATUS = 15;
+    public static final int MFD_MODE_DEBUG_INFORMATION = 31;
     
     public static final int CDU_SOURCE_AIRCRAFT_OR_DUMMY = 0;
     public static final int CDU_SOURCE_XFMC = 1;

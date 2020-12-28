@@ -73,6 +73,11 @@ public interface Aircraft {
     public String aircraft_registration();
 
     /**
+     * @return String - aircraft_icao_type
+     */
+    public String aircraft_icao_type();
+    
+    /**
      * @return boolean - battery power is on
      */
     public boolean battery();

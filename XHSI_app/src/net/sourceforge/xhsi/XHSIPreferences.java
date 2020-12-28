@@ -109,7 +109,8 @@ public class XHSIPreferences {
     public static final String PREF_COLORED_HSI_COURSE = "pfd.colored.hsi.course";
     public static final String PREF_ND_NAVAID_FREQ = "nd.navaid.frequencies";
     public static final String PREF_ND_WRITE_AP_HDG = "nd.write.ap.heading";
-    public static final String PREF_ND_SHOW_CLOCK = "nd.show.clock";    
+    public static final String PREF_ND_SHOW_CLOCK = "nd.show.clock";
+    public static final String PREF_ND_SHOW_HELIPADS = "nd.show.helipads";
     // ND - EGPWS options
     public static final String PREF_TERRAIN_SWEEP = "nd.terrain.sweep";
     public static final String PREF_TERRAIN_SWEEP_BAR = "nd.terrain.sweep_bar";
@@ -760,7 +761,6 @@ public class XHSIPreferences {
     public boolean get_nd_write_ap_hdg() {
         return get_preference(PREF_ND_WRITE_AP_HDG).equalsIgnoreCase("true");
     }
-
     
     /**
      * @return            - Display the Clock/Chronograph
@@ -769,7 +769,15 @@ public class XHSIPreferences {
     public boolean get_nd_show_clock() {
         return get_preference(PREF_ND_SHOW_CLOCK).equalsIgnoreCase("true");
     }
-
+    
+    /**
+     * @return            - Load and display helipads
+     *
+     */
+    public boolean get_nd_show_helipads() {
+        return get_preference(PREF_ND_SHOW_HELIPADS).equalsIgnoreCase("true");
+    }
+    
     // EGPWS 
 
     /**
@@ -1421,6 +1429,12 @@ public class XHSIPreferences {
             this.preferences.setProperty(PREF_ND_SHOW_CLOCK, "true");
             this.unsaved_changes = true;
         }
+
+        if ( ! this.preferences.containsKey(PREF_ND_SHOW_HELIPADS) ) {
+            this.preferences.setProperty(PREF_ND_SHOW_HELIPADS, "false");
+            this.unsaved_changes = true;
+        }
+
         // ND - EGPWS options
         if ( ! this.preferences.containsKey(PREF_TERRAIN_SWEEP) ) {
             this.preferences.setProperty(PREF_TERRAIN_SWEEP, "false");
