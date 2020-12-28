@@ -408,6 +408,7 @@ XPLMDataRef retractable_gear;
 XPLMDataRef acf_vmca;
 XPLMDataRef acf_vyse;
 XPLMDataRef acf_tailnum;
+XPLMDataRef acf_icao;
 
 
 XPLMDataRef master_caution;
@@ -3639,6 +3640,7 @@ void findDataRefs(void) {
     acf_vmca = XPLMFindDataRef("sim/aircraft/overflow/acf_Vmca");
     acf_vyse = XPLMFindDataRef("sim/aircraft/overflow/acf_Vyse");
     acf_tailnum = XPLMFindDataRef("sim/aircraft/view/acf_tailnum");
+    acf_icao = XPLMFindDataRef("sim/aircraft/view/acf_ICAO");
     // Control surfaces limits (constant)
     acf_controls_elev_dn = XPLMFindDataRef("sim/aircraft/controls/acf_elev_dn");
     acf_controls_elev_up = XPLMFindDataRef("sim/aircraft/controls/acf_elev_up");

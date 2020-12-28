@@ -538,6 +538,61 @@ int createADCPacket(void) {
 
     }
 
+    /*
+     * Flight director bars - needs the best refresh ratio - moved in ADC Packet
+     */
+    if (x737_ready) {
+    	sim_packet.sim_data_points[i].id = custom_htoni(X737_AFDS_A_PITCH);
+    	sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(x737_A_PITCH));
+    	i++;
+    	sim_packet.sim_data_points[i].id = custom_htoni(X737_AFDS_B_PITCH);
+    	sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(x737_B_PITCH));
+    	i++;
+    	sim_packet.sim_data_points[i].id = custom_htoni(X737_AFDS_A_ROLL);
+    	sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(x737_A_ROLL));
+    	i++;
+    	sim_packet.sim_data_points[i].id = custom_htoni(X737_AFDS_B_ROLL);
+    	sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(x737_B_ROLL));
+    	i++;
+    }
+    if (qpac_ready) {
+        // FD
+        sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD1_VER_BAR);
+        sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd1_ver_bar));
+        i++;
+        sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD1_HOR_BAR);
+        sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd1_hor_bar));
+        i++;
+        sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD2_VER_BAR);
+        sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd2_ver_bar));
+        i++;
+        sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD2_HOR_BAR);
+        sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd2_hor_bar));
+        i++;
+/*
+        sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD1_YAW_BAR);
+        sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd1_yaw_bar));
+        i++;
+*/
+        sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD2_YAW_BAR);
+        sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd2_yaw_bar));
+        i++;
+    }
+    /*
+     * Bultin X-Plane FD bars
+     */
+    sim_packet.sim_data_points[i].id = custom_htoni(SIM_COCKPIT_AUTOPILOT_FD_PITCH);
+    sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(autopilot_fd_pitch));
+    i++;
+    sim_packet.sim_data_points[i].id = custom_htoni(DUPLICATE_THETA_FOR_PITCH);
+    sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(theta));
+    i++;
+    sim_packet.sim_data_points[i].id = custom_htoni(SIM_COCKPIT_AUTOPILOT_FD_ROLL);
+    sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(autopilot_fd_roll));
+    i++;
+    sim_packet.sim_data_points[i].id = custom_htoni(DUPLICATE_PHI_FOR_BANK);
+    sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(phi));
+    i++;
 
     // now we know the number of datapoints
     sim_packet.nb_of_sim_data_points = custom_htoni( i );
@@ -1523,6 +1578,7 @@ int createAvionicsPacket(void) {
     sim_packet.sim_data_points[i].id = custom_htoni(SIM_COCKPIT_AUTOPILOT_AIRSPEED_IS_MACH);
     sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(autopilot_airspeed_is_mach));
     i++;
+    /* Moved inside ADC packet
     sim_packet.sim_data_points[i].id = custom_htoni(SIM_COCKPIT_AUTOPILOT_FD_PITCH);
     sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(autopilot_fd_pitch));
     i++;
@@ -1535,6 +1591,7 @@ int createAvionicsPacket(void) {
     sim_packet.sim_data_points[i].id = custom_htoni(DUPLICATE_PHI_FOR_BANK);
     sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(phi));
     i++;
+    */
     sim_packet.sim_data_points[i].id = custom_htoni(SIM_COCKPIT_AUTOPILOT_MODE);
     sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(autopilot_mode));
     i++;
@@ -1634,7 +1691,7 @@ int createCustomAvionicsPacket(void) {
     int qpac_air_valves;
     // float ram_air_valve;
     int bleed_valves;
-    float qpac_door_pax_tab[4];
+    float qpac_door_pax_tab[20];
     float qpac_door_cargo_tab[4];
     int elec_status;
     int qpac_elec_buttons;
@@ -1711,7 +1768,7 @@ int createCustomAvionicsPacket(void) {
         sim_packet.sim_data_points[i].id = custom_htoni(X737_PFD_PWR);
         sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(x737_PFD_pwr));
         i++;
-
+        /* Moved inside ADC packet
         sim_packet.sim_data_points[i].id = custom_htoni(X737_AFDS_FD_A);
         sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(x737_fdA_status));
         i++;
@@ -1724,7 +1781,7 @@ int createCustomAvionicsPacket(void) {
         sim_packet.sim_data_points[i].id = custom_htoni(X737_AFDS_CMD_B);
         sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(x737_CMD_B));
         i++;
-
+		*/
         sim_packet.sim_data_points[i].id = custom_htoni(X737_PFD_MCPSPD);
         sim_packet.sim_data_points[i].value = custom_htonf((float) XPLMGetDatai(x737_MCPSPD_mode));
         i++;
@@ -2145,6 +2202,7 @@ int createCustomAvionicsPacket(void) {
     	i++;
 
         // FD
+    	/* Moved to ADC packet
         sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD1_VER_BAR);
         sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd1_ver_bar));
         i++;
@@ -2157,14 +2215,17 @@ int createCustomAvionicsPacket(void) {
         sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD2_HOR_BAR);
         sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd2_hor_bar));
         i++;
+        */
 /*
         sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD1_YAW_BAR);
         sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd1_yaw_bar));
         i++;
 */
+    	/*
         sim_packet.sim_data_points[i].id = custom_htoni(QPAC_FD2_YAW_BAR);
         sim_packet.sim_data_points[i].value = custom_htonf(XPLMGetDataf(qpac_fd2_yaw_bar));
         i++;
+        */
 
         // V Speeds
         sim_packet.sim_data_points[i].id = custom_htoni(QPAC_V1_VALUE);
@@ -3944,6 +4005,7 @@ int createStaticPacket(void) {
     XPLMNavRef arpt_navref;
     char arpt_id[40];
     char registration[40];
+    char icao_type[40];
     // default tire reference pressures
     float nose_tire_ref_pressure = 180.0f;
     float main_tire_ref_pressure = 200.0f;
@@ -3974,13 +4036,20 @@ int createStaticPacket(void) {
     strncpy( (char *)&sim_packet.sim_data_points[i].value, arpt_id, 4 );
     i++;
 
-
+    // Aircraft ICAO Type & Registration
     sim_packet.sim_data_points[i].id = custom_htoni(SIM_AIRCRAFT_VIEW_ACF_TAILNUM_0_3);
     XPLMGetDatab(acf_tailnum, registration, 0, 40);
     strncpy( (char *)&sim_packet.sim_data_points[i].value, registration, 4 );
     i++;
     sim_packet.sim_data_points[i].id = custom_htoni(SIM_AIRCRAFT_VIEW_ACF_TAILNUM_4_7);
     strncpy( (char *)&sim_packet.sim_data_points[i].value, registration + 4, 4 );
+    i++;
+    sim_packet.sim_data_points[i].id = custom_htoni(SIM_AIRCRAFT_VIEW_ACF_ICAO_0_3);
+    XPLMGetDatab(acf_icao, icao_type, 0, 40);
+    strncpy( (char *)&sim_packet.sim_data_points[i].value, icao_type, 4 );
+    i++;
+    sim_packet.sim_data_points[i].id = custom_htoni(SIM_AIRCRAFT_VIEW_ACF_ICAO_4_7);
+    strncpy( (char *)&sim_packet.sim_data_points[i].value, icao_type + 4, 4 );
     i++;
 
     sim_packet.sim_data_points[i].id = custom_htoni(SIM_AIRCRAFT_VIEW_ACF_VSO);

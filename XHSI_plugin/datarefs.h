@@ -294,6 +294,7 @@ extern XPLMDataRef clock_show_date;
 extern XPLMDataRef clock_time_day;
 extern XPLMDataRef clock_time_month;
 
+// Aircraft constants
 extern XPLMDataRef acf_vso;
 extern XPLMDataRef acf_vs;
 extern XPLMDataRef acf_vfe;
@@ -306,6 +307,7 @@ extern XPLMDataRef retractable_gear;
 extern XPLMDataRef acf_vmca;
 extern XPLMDataRef acf_vyse;
 extern XPLMDataRef acf_tailnum;
+extern XPLMDataRef acf_icao;
 
 
 extern XPLMDataRef master_caution;
