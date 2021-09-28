@@ -3,7 +3,7 @@
 * 
 * Model class for an sending commands to simulators.
 * 
-* Copyright (C) 2016  Nicolas Carel
+* Copyright (C) 2016-2020  Nicolas Carel
 * 
 * 
 * This program is free software; you can redistribute it and/or
@@ -169,5 +169,8 @@ public interface SimCommand {
     public static final int CMD_CHRONO_RESET = 371;
     // Next is 372
     
+    
     public void send(int var1);
+    
+    public int commandFromName(String name);
 }

@@ -28,6 +28,7 @@ import java.awt.Graphics2D;
 
 import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.model.QpacMcduData;
 import net.sourceforge.xhsi.model.SimDataRepository;
 import net.sourceforge.xhsi.model.xplane.XPlaneSimDataRepository;
 
@@ -47,7 +48,7 @@ public class DebugInformation extends MFDSubcomponent {
 
 	public void paint(Graphics2D g2) {
 
-		if ( mfd_gc.powered && avionics.get_mfd_mode() == Avionics.MFD_MODE_DEBUG_INFORMATION) {
+		if ( avionics.get_mfd_mode() == Avionics.MFD_MODE_DEBUG_INFORMATION) {
 			// Page ID
 			drawPageID(g2, "XHSI DBG INFO");
 			drawSeparation(g2);
@@ -80,7 +81,7 @@ public class DebugInformation extends MFDSubcomponent {
 	}
 	
 	private void drawDebugInformations(Graphics2D g2) {
-		String str_legend = "DATAREF";
+		String str_legend = "DATAREF / FUNCTION";
 		String str_value = "VALUE";
 		g2.setColor(mfd_gc.ecam_caution_color);
 		g2.setFont(mfd_gc.font_xl);
@@ -97,8 +98,16 @@ public class DebugInformation extends MFDSubcomponent {
         drawInformationsLine(g2, 2, "sim/aircraft/view/acf_tailnum", aircraft.aircraft_registration());
         drawInformationsLine(g2, 3, "QPAC status", ""+sim_data.get_sim_float(XPlaneSimDataRepository.QPAC_STATUS));
         int door_status = (int) sim_data.get_sim_float(XPlaneSimDataRepository.QPAC_DOOR_STATUS);
-        drawInformationsLine(g2, 4, "QPAC door status", Integer.toBinaryString(door_status));
-  
+        drawInformationsLine(g2, 4, "QPAC door status", "(bin) "+Integer.toBinaryString(door_status));
+        drawInformationsLine(g2, 5, "avionics.get_cdu_source()","(bool) "+avionics.get_cdu_source());
+        drawInformationsLine(g2, 6, "avionics.preferences.cdu_display_only()","(bool) "+ preferences.cdu_display_only());
+        drawInformationsLine(g2, 7, "avionics.get_fms_type()","(int) "+ avionics.get_fms_type());
+        drawInformationsLine(g2, 8, "avionics.is_qpac()","(bool) "+ avionics.is_qpac());
+        drawInformationsLine(g2, 9, "avionics.is_jar_a320neo()","(bool) "+ avionics.is_jar_a320neo());
+        drawInformationsLine(g2, 10,"avionics.is_zibo_mod_737()","(bool) "+ avionics.is_zibo_mod_737());
+        drawInformationsLine(g2, 11,"avionics.get_cdu_side()","(int) "+ avionics.get_cdu_side());
+        drawInformationsLine(g2, 12,"QpacMcduData.getLine(cdu_side,0)",QpacMcduData.getLine(avionics.get_cdu_side(),0));
+        
 	}
 	
 }

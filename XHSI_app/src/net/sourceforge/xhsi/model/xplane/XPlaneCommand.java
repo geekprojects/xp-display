@@ -1,9 +1,9 @@
 /**
 * XPlaneCommand.java
 * 
-* No description yet !
+* Implements SimCommand interface for X-Plane
 * 
-* Copyright (C) 2015  Nicolas Carel
+* Copyright (C) 2015,2020  Nicolas Carel
 * 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@
 
 package net.sourceforge.xhsi.model.xplane;
 
-import java.util.logging.Logger;
+import java.util.Hashtable;
 import net.sourceforge.xhsi.XHSIPreferences;
 import net.sourceforge.xhsi.model.Aircraft;
 import net.sourceforge.xhsi.model.Avionics;
@@ -32,6 +32,156 @@ import net.sourceforge.xhsi.model.Avionics.InstrumentSide;
 import net.sourceforge.xhsi.model.xplane.XPlaneUDPSender;
 
 public class XPlaneCommand implements SimCommand {
+	
+    public static final Hashtable<String,Integer> commandsHT;
+    static {
+    	commandsHT = new Hashtable<String,Integer>();
+    	commandsHT.put("CMD_EFIS_CAPT_CSTR", SimCommand.CMD_EFIS_CAPT_CSTR);
+    	commandsHT.put("CMD_EFIS_CAPT_TFC", SimCommand.CMD_EFIS_CAPT_TFC);
+    	commandsHT.put("CMD_EFIS_CAPT_WPT", SimCommand.CMD_EFIS_CAPT_WPT);
+    	commandsHT.put("CMD_EFIS_CAPT_VOR", SimCommand.CMD_EFIS_CAPT_VOR);
+    	commandsHT.put("CMD_EFIS_CAPT_NDB", SimCommand.CMD_EFIS_CAPT_NDB);
+    	commandsHT.put("CMD_EFIS_CAPT_APT", SimCommand.CMD_EFIS_CAPT_APT);
+    	commandsHT.put("CMD_EFIS_CAPT_FD", SimCommand.CMD_EFIS_CAPT_FD);
+    	commandsHT.put("CMD_EFIS_CAPT_ILS", SimCommand.CMD_EFIS_CAPT_ILS);
+    	commandsHT.put("CMD_EFIS_CAPT_INHG", SimCommand.CMD_EFIS_CAPT_INHG);
+    	commandsHT.put("CMD_EFIS_CAPT_HPA", SimCommand.CMD_EFIS_CAPT_HPA);
+    	commandsHT.put("CMD_EFIS_CAPT_NAVAID1_ADF", SimCommand.CMD_EFIS_CAPT_NAVAID1_ADF);
+    	commandsHT.put("CMD_EFIS_CAPT_NAVAID1_OFF", SimCommand.CMD_EFIS_CAPT_NAVAID1_OFF);
+    	commandsHT.put("CMD_EFIS_CAPT_NAVAID1_VOR", SimCommand.CMD_EFIS_CAPT_NAVAID1_VOR );
+    	commandsHT.put("CMD_EFIS_CAPT_NAVAID2_ADF", SimCommand.CMD_EFIS_CAPT_NAVAID2_ADF );
+    	commandsHT.put("CMD_EFIS_CAPT_NAVAID2_OFF", SimCommand.CMD_EFIS_CAPT_NAVAID2_OFF );
+    	commandsHT.put("CMD_EFIS_CAPT_NAVAID2_VOR", SimCommand.CMD_EFIS_CAPT_NAVAID2_VOR );
+    	commandsHT.put("CMD_EFIS_CAPT_BARO_STD", SimCommand.CMD_EFIS_CAPT_BARO_STD );
+    	commandsHT.put("CMD_EFIS_CAPT_BARO_INC", SimCommand.CMD_EFIS_CAPT_BARO_INC );
+    	commandsHT.put("CMD_EFIS_CAPT_BARO_DEC", SimCommand.CMD_EFIS_CAPT_BARO_DEC);
+    	commandsHT.put("CMD_EFIS_CAPT_BARO_HPA", SimCommand.CMD_EFIS_CAPT_BARO_HPA );
+    	commandsHT.put("CMD_EFIS_CAPT_BARO_INHG", SimCommand.CMD_EFIS_CAPT_BARO_INHG );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_INC", SimCommand.CMD_EFIS_CAPT_RANGE_INC );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_DEC", SimCommand.CMD_EFIS_CAPT_RANGE_DEC );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_10", SimCommand.CMD_EFIS_CAPT_RANGE_10 );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_20" , SimCommand.CMD_EFIS_CAPT_RANGE_20 );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_40", SimCommand.CMD_EFIS_CAPT_RANGE_40 );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_80", SimCommand.CMD_EFIS_CAPT_RANGE_80 );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_160", SimCommand.CMD_EFIS_CAPT_RANGE_160 );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_320", SimCommand.CMD_EFIS_CAPT_RANGE_320 );
+    	commandsHT.put("CMD_EFIS_CAPT_RANGE_640", SimCommand.CMD_EFIS_CAPT_RANGE_640 );
+    	commandsHT.put("CMD_EFIS_CAPT_MODE_ILS", SimCommand.CMD_EFIS_CAPT_MODE_ILS );
+    	commandsHT.put("CMD_EFIS_CAPT_MODE_VOR" , SimCommand.CMD_EFIS_CAPT_MODE_VOR );
+    	commandsHT.put("CMD_EFIS_CAPT_MODE_NAV" , SimCommand.CMD_EFIS_CAPT_MODE_NAV );
+    	commandsHT.put("CMD_EFIS_CAPT_MODE_ARC" , SimCommand.CMD_EFIS_CAPT_MODE_ARC );
+    	commandsHT.put("CMD_EFIS_CAPT_MODE_PLN", SimCommand.CMD_EFIS_CAPT_MODE_PLN );
+    	commandsHT.put("CMD_EFIS_CAPT_MODE_INC", SimCommand.CMD_EFIS_CAPT_MODE_INC );
+    	commandsHT.put("CMD_EFIS_CAPT_MODE_DEC" , SimCommand.CMD_EFIS_CAPT_MODE_DEC );
+    	commandsHT.put("CMD_EFIS_CAPT_CHRONO", SimCommand.CMD_EFIS_CAPT_CHRONO );
+    	commandsHT.put("CMD_EFIS_CAPT_STICK" , SimCommand.CMD_EFIS_CAPT_STICK );
+    	commandsHT.put("CMD_EFIS_CAPT_TERRAIN_ND" , SimCommand.CMD_EFIS_CAPT_TERRAIN_ND );
+    			    
+    	commandsHT.put("CMD_EFIS_FO_CSTR", SimCommand.CMD_EFIS_FO_CSTR );
+    	commandsHT.put("CMD_EFIS_FO_TFC" , SimCommand.CMD_EFIS_FO_TFC );
+    	commandsHT.put("CMD_EFIS_FO_WPT", SimCommand.CMD_EFIS_FO_WPT );
+    	commandsHT.put("CMD_EFIS_FO_VOR", SimCommand.CMD_EFIS_FO_VOR );
+    	commandsHT.put("CMD_EFIS_FO_NDB", SimCommand.CMD_EFIS_FO_NDB );
+    	commandsHT.put("CMD_EFIS_FO_APT", SimCommand.CMD_EFIS_FO_APT );
+    	commandsHT.put("CMD_EFIS_FO_FD", SimCommand.CMD_EFIS_FO_FD );
+    	commandsHT.put("CMD_EFIS_FO_ILS" , SimCommand.CMD_EFIS_FO_ILS );
+    	commandsHT.put("CMD_EFIS_FO_INHG", SimCommand.CMD_EFIS_FO_INHG );
+    	commandsHT.put("CMD_EFIS_FO_HPA", SimCommand.CMD_EFIS_FO_HPA );
+    	commandsHT.put("CMD_EFIS_FO_NAVAID1_ADF", SimCommand.CMD_EFIS_FO_NAVAID1_ADF );
+    	commandsHT.put("CMD_EFIS_FO_NAVAID1_OFF", SimCommand.CMD_EFIS_FO_NAVAID1_OFF );
+    	commandsHT.put("CMD_EFIS_FO_NAVAID1_VOR", SimCommand.CMD_EFIS_FO_NAVAID1_VOR );
+    	commandsHT.put("CMD_EFIS_FO_NAVAID2_ADF", SimCommand.CMD_EFIS_FO_NAVAID2_ADF );
+    	commandsHT.put("CMD_EFIS_FO_NAVAID2_OFF", SimCommand.CMD_EFIS_FO_NAVAID2_OFF );
+    	commandsHT.put("CMD_EFIS_FO_NAVAID2_VOR", SimCommand.CMD_EFIS_FO_NAVAID2_VOR );
+    	commandsHT.put("CMD_EFIS_FO_BARO_STD", SimCommand.CMD_EFIS_FO_BARO_STD );
+    	commandsHT.put("CMD_EFIS_FO_BARO_INC", SimCommand.CMD_EFIS_FO_BARO_INC );
+    	commandsHT.put("CMD_EFIS_FO_BARO_DEC", SimCommand.CMD_EFIS_FO_BARO_DEC );
+    	commandsHT.put("CMD_EFIS_FO_BARO_HPA", SimCommand.CMD_EFIS_FO_BARO_HPA );
+    	commandsHT.put("CMD_EFIS_FO_BARO_INHG", SimCommand.CMD_EFIS_FO_BARO_INHG );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_INC", SimCommand.CMD_EFIS_FO_RANGE_INC );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_DEC", SimCommand.CMD_EFIS_FO_RANGE_DEC );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_10", SimCommand.CMD_EFIS_FO_RANGE_10 );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_20", SimCommand.CMD_EFIS_FO_RANGE_20 );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_40", SimCommand.CMD_EFIS_FO_RANGE_40 );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_80", SimCommand.CMD_EFIS_FO_RANGE_80 );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_160", SimCommand.CMD_EFIS_FO_RANGE_160 );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_320", SimCommand.CMD_EFIS_FO_RANGE_320 );
+    	commandsHT.put("CMD_EFIS_FO_RANGE_640", SimCommand.CMD_EFIS_FO_RANGE_640 );
+    	commandsHT.put("CMD_EFIS_FO_MODE_ILS", SimCommand.CMD_EFIS_FO_MODE_ILS );
+    	commandsHT.put("CMD_EFIS_FO_MODE_ILS", SimCommand.CMD_EFIS_FO_MODE_ILS );
+    	commandsHT.put("CMD_EFIS_FO_MODE_NAV", SimCommand.CMD_EFIS_FO_MODE_NAV );
+    	commandsHT.put("CMD_EFIS_FO_MODE_ARC", SimCommand.CMD_EFIS_FO_MODE_ARC );
+    	commandsHT.put("CMD_EFIS_FO_MODE_PLN", SimCommand.CMD_EFIS_FO_MODE_PLN );
+    	commandsHT.put("CMD_EFIS_FO_MODE_INC", SimCommand.CMD_EFIS_FO_MODE_INC );
+    	commandsHT.put("CMD_EFIS_FO_MODE_DEC", SimCommand.CMD_EFIS_FO_MODE_DEC );
+    	commandsHT.put("CMD_EFIS_FO_CHRONO", SimCommand.CMD_EFIS_FO_CHRONO );
+    	commandsHT.put("CMD_EFIS_FO_STICK", SimCommand.CMD_EFIS_FO_STICK );
+    	commandsHT.put("CMD_EFIS_FO_TERRAIN_ND", SimCommand.CMD_EFIS_FO_TERRAIN_ND );
+    			    
+    	commandsHT.put("CMD_ECAM_TO_CFG", SimCommand.CMD_ECAM_TO_CFG );
+    	commandsHT.put("CMD_ECAM_EMER_CANC", SimCommand.CMD_ECAM_EMER_CANC );
+    	commandsHT.put("CMD_ECAM_ENG", SimCommand.CMD_ECAM_ENG );
+    	commandsHT.put("CMD_ECAM_BLEED", SimCommand.CMD_ECAM_BLEED );
+    	commandsHT.put("CMD_ECAM_PRESS", SimCommand.CMD_ECAM_PRESS );
+    	commandsHT.put("CMD_ECAM_ELEC", SimCommand.CMD_ECAM_ELEC );
+    	commandsHT.put("CMD_ECAM_HYD", SimCommand.CMD_ECAM_HYD );
+    	commandsHT.put("CMD_ECAM_FUEL", SimCommand.CMD_ECAM_FUEL );
+    	commandsHT.put("CMD_ECAM_APU", SimCommand.CMD_ECAM_APU );
+    	commandsHT.put("CMD_ECAM_COND", SimCommand.CMD_ECAM_COND );
+    	commandsHT.put("CMD_ECAM_DOOR", SimCommand.CMD_ECAM_DOOR );
+    	commandsHT.put("CMD_ECAM_WHEEL", SimCommand.CMD_ECAM_WHEEL );
+    	commandsHT.put("CMD_ECAM_FCTL", SimCommand.CMD_ECAM_FCTL );
+    	commandsHT.put("CMD_ECAM_ALL", SimCommand.CMD_ECAM_ALL );
+    	commandsHT.put("CMD_ECAM_CLR", SimCommand.CMD_ECAM_CLR );
+    	commandsHT.put("CMD_ECAM_STS", SimCommand.CMD_ECAM_STS );
+    	commandsHT.put("CMD_ECAM_RCL", SimCommand.CMD_ECAM_RCL );
+    	commandsHT.put("CMD_ECAM_APT_CHART", SimCommand.CMD_ECAM_APT_CHART );
+    	commandsHT.put("CMD_ECAM_RTU", SimCommand.CMD_ECAM_RTU );
+    	commandsHT.put("CMD_ECAM_FPLN", SimCommand.CMD_ECAM_FPLN );
+    	commandsHT.put("CMD_FCU_AP1", SimCommand.CMD_FCU_AP1 );
+    	commandsHT.put("CMD_FCU_AP2", SimCommand.CMD_FCU_AP2 );
+    	commandsHT.put("CMD_FCU_ATHR", SimCommand.CMD_FCU_ATHR );
+    	commandsHT.put("CMD_FCU_LOC", SimCommand.CMD_FCU_LOC );
+    	commandsHT.put("CMD_FCU_APPR", SimCommand.CMD_FCU_APPR );
+    	commandsHT.put("CMD_FCU_EXP", SimCommand.CMD_FCU_EXP );
+    	commandsHT.put("CMD_FCU_METRIC", SimCommand.CMD_FCU_METRIC );
+    	commandsHT.put("CMD_FCU_TRK_FPA", SimCommand.CMD_FCU_TRK_FPA );
+    	commandsHT.put("CMD_FCU_MACH", SimCommand.CMD_FCU_MACH );
+    	commandsHT.put("CMD_FCU_SPD_UP", SimCommand.CMD_FCU_SPD_UP );
+    	commandsHT.put("CMD_FCU_SPD_DOWN", SimCommand.CMD_FCU_SPD_DOWN );
+    	commandsHT.put("CMD_FCU_SPD_MNG", SimCommand.CMD_FCU_SPD_MNG );;
+    	commandsHT.put("CMD_FCU_SPD_SEL", SimCommand.CMD_FCU_SPD_SEL );
+    	commandsHT.put("CMD_FCU_HDG_UP", SimCommand.CMD_FCU_HDG_UP );
+    	commandsHT.put("CMD_FCU_HDG_DOWN", SimCommand.CMD_FCU_HDG_DOWN );
+    	commandsHT.put("CMD_FCU_WLV", SimCommand.CMD_FCU_WLV ); 
+    	commandsHT.put("CMD_FCU_HDG_MNG", SimCommand.CMD_FCU_HDG_MNG );
+    	commandsHT.put("CMD_FCU_HDG_SEL", SimCommand.CMD_FCU_HDG_SEL );
+    	commandsHT.put("CMD_FCU_ALT_UP", SimCommand.CMD_FCU_ALT_UP );;
+    	commandsHT.put("CMD_FCU_ALT_DOWN", SimCommand.CMD_FCU_ALT_DOWN );
+    	commandsHT.put("CMD_FCU_ALT_MNG", SimCommand.CMD_FCU_ALT_MNG );
+    	commandsHT.put("CMD_FCU_ALT_SEL", SimCommand.CMD_FCU_ALT_SEL );;
+    	commandsHT.put("CMD_FCU_ALT_FINE", SimCommand.CMD_FCU_ALT_FINE );
+    	commandsHT.put("CMD_FCU_ALT_COARSE", SimCommand.CMD_FCU_ALT_COARSE );
+    	commandsHT.put("CMD_FCU_VS_UP", SimCommand.CMD_FCU_VS_UP );
+    	commandsHT.put("CMD_FCU_VS_DOWN", SimCommand.CMD_FCU_VS_DOWN );
+    	commandsHT.put("CMD_FCU_VS_SEL", SimCommand.CMD_FCU_VS_SEL );
+    	commandsHT.put("CMD_FCU_VS_LVLOFF", SimCommand.CMD_FCU_VS_LVLOFF );
+    	commandsHT.put("CMD_MASTER_WRN", SimCommand.CMD_MASTER_WRN ); // Master Warning
+    	commandsHT.put("CMD_MASTER_CTN", SimCommand.CMD_MASTER_CTN ); // Master Caution
+    	commandsHT.put("CMD_MASTER_ACC", SimCommand.CMD_MASTER_ACC ); // Master Accept
+    	commandsHT.put("CMD_A_SKID_OFF", SimCommand.CMD_A_SKID_OFF );
+    	commandsHT.put("CMD_A_SKID_ON", SimCommand.CMD_A_SKID_ON );
+    	commandsHT.put("CMD_ABRK_LOW", SimCommand.CMD_ABRK_LOW );
+    	commandsHT.put("CMD_ABRK_MED", SimCommand.CMD_ABRK_MED );
+    	commandsHT.put("CMD_ABRK_MAX", SimCommand.CMD_ABRK_MAX );;
+    	commandsHT.put("CMD_BRK_FAN", SimCommand.CMD_BRK_FAN );
+    	commandsHT.put("CMD_GEAR_UP", SimCommand.CMD_GEAR_UP );
+    	commandsHT.put("CMD_GEAR_DOWN", SimCommand.CMD_GEAR_DOWN );
+    	commandsHT.put("CMD_CHRONO_START_STOP_RESET", SimCommand.CMD_CHRONO_START_STOP_RESET );
+    	commandsHT.put("CMD_CHRONO_START_STOP", SimCommand.CMD_CHRONO_START_STOP );
+    	commandsHT.put("CMD_CHRONO_RESET", SimCommand.CMD_CHRONO_RESET );
+    }
+	
 	// Codes must be in sync with datarefs_qpac.h
     public static final int QPAC_KEY_TO_CONFIG = 1;
     public static final int QPAC_KEY_PUSH_ALT  = 2;
@@ -139,7 +289,7 @@ public class XPlaneCommand implements SimCommand {
     Avionics avionics;
     XHSIPreferences preferences;
     private XPlaneUDPSender udp_sender;
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    
 
     public XPlaneCommand(Aircraft aircraft, ModelFactory model_factory) {
         this.model_factory = model_factory;
@@ -148,6 +298,10 @@ public class XPlaneCommand implements SimCommand {
         this.preferences = XHSIPreferences.get_instance();
         this.udp_sender = XPlaneUDPSender.get_instance();
     }
+    
+    public int commandFromName(String name) {
+		return commandsHT.getOrDefault(name, -1);
+	}
     
     public void send(int button_id) {
         switch (button_id) {
