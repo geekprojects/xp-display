@@ -65,6 +65,7 @@ struct xp11CduMsgLinesDataPacket xp11Cdu2PreviousMsgPacket;
 
 int xp11_cdu_msg_count = 0;
 int xp11_fms_keypressed = 0;
+int xp11_cdu_total_line_len = 0; // to test if CDU data is totally blank i.e. CDU not ready
 
 char color_codes[]="nbrygmawmmmmmmmm";
 
@@ -272,10 +273,12 @@ int createXP11CduPacket(int cdu_id) {
    xp11CduMsgPacket.side = custom_htoni(cdu_id);
    xp11CduMsgPacket.status = custom_htoni(status);
 
+   xp11_cdu_total_line_len = 0;
    for(i=0; i<XP11_FMS_LINES; i++){
 	   line_len=encodeXP11CduLine(cdu_id, i, xp11CduMsgPacket.lines[i].linestr);
-     xp11CduMsgPacket.lines[i].len = custom_htoni(line_len);
-     xp11CduMsgPacket.lines[i].lineno = custom_htoni(i);
+	   xp11_cdu_total_line_len += line_len;
+       xp11CduMsgPacket.lines[i].len = custom_htoni(line_len);
+       xp11CduMsgPacket.lines[i].lineno = custom_htoni(i);
    }
 
    return 4 + 4 + XP11_FMS_LINES * 88;
@@ -304,6 +307,30 @@ int isXP11CduUpdated(int cdu_pilot, int cdu_copilot) {
 		result |= strncmp(cdu2_title_line,xp11Cdu2PreviousMsgPacket.lines[0].linestr,XP11_CDU_BUF_LEN);
 		result |= strncmp(cdu2_scratch_line,xp11Cdu2PreviousMsgPacket.lines[13].linestr,XP11_CDU_BUF_LEN);
 	}
+	return result;
+}
+
+int isXP11CduReady() {
+	char cdu1_title_line[XP11_CDU_BUF_LEN];
+	char cdu1_scratch_line[XP11_CDU_BUF_LEN];
+	char cdu2_title_line[XP11_CDU_BUF_LEN];
+	char cdu2_scratch_line[XP11_CDU_BUF_LEN];
+	int len_cdu1_title_line;
+	int len_cdu1_scratch_line;
+	int len_cdu2_title_line;
+	int len_cdu2_scratch_line;
+	int result = 0;
+
+	// Get current title and scratch lines from CDU1
+	len_cdu1_title_line = encodeXP11CduLine(0, 0, cdu1_title_line);
+	len_cdu1_scratch_line = encodeXP11CduLine(0, 13, cdu1_scratch_line);
+
+	// Get current title and scratch lines from CDU2
+	len_cdu2_title_line = encodeXP11CduLine(1, 0, cdu2_title_line);
+	len_cdu2_scratch_line = encodeXP11CduLine(1, 13, cdu2_scratch_line);
+
+	// Check line length
+	result = (len_cdu1_title_line > 0) || (len_cdu1_scratch_line > 0) || (len_cdu2_title_line > 0) || (len_cdu2_scratch_line > 0);
 	return result;
 }
 
@@ -337,7 +364,7 @@ float sendXP11CduMsgCallback(
 				for (i=0; i<NUM_DEST; i++) {
 					if (dest_enable[i]) {
 						if (sendto(sockfd, (const char*)&xp11CduMsgPacket, cdu_packet_size, 0, (struct sockaddr *)&dest_sockaddr[i], sizeof(struct sockaddr)) == -1) {
-							XPLMDebugString("XHSI: caught error while sending Zibo737McduMsg left CDU packet! (");
+							XPLMDebugString("XHSI: caught error while sending XP11 built in left CDU packet! (");
 							XPLMDebugString((char * const) strerror(GET_ERRNO));
 							XPLMDebugString(")\n");
 						}
@@ -354,7 +381,7 @@ float sendXP11CduMsgCallback(
 					for (i=0; i<NUM_DEST; i++) {
 						if (dest_enable[i]) {
 							if (sendto(sockfd, (const char*)&xp11CduMsgPacket, cdu_packet_size, 0, (struct sockaddr *)&dest_sockaddr[i], sizeof(struct sockaddr)) == -1) {
-								XPLMDebugString("XHSI: caught error while sending Zibo737McduMsg right CDU packet! (");
+								XPLMDebugString("XHSI: caught error while sending XP11 built in, right CDU packet! (");
 								XPLMDebugString((char * const) strerror(GET_ERRNO));
 								XPLMDebugString(")\n");
 							}
@@ -370,6 +397,7 @@ float sendXP11CduMsgCallback(
 		return cdu_data_delay;
 	} else {
 		// XP11 CDU is not ready or preempted by a custom CDU
+		// xp11_cdu_ready = isXP11CduReady();
 		return 10.0f;
 	}
 
