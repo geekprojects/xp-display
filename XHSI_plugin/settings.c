@@ -262,7 +262,7 @@ void writeSettings() {
 		fprintf(cfg_file, "static_data_rate %ld\n", static_data_rate);
 		fprintf(cfg_file, "cdu_data_rate %ld\n", cdu_data_rate);
 		fprintf(cfg_file, "expert_settings %ld\n", expert_settings);
-		fprintf(cfg_file, "log_level %ld\n", log_level);
+		fprintf(cfg_file, "log_level %d\n", log_level);
 		fprintf(cfg_file, "fms_source %ld\n", fms_source);
 
 		for (i=0; i<NUM_DEST; i++) {
