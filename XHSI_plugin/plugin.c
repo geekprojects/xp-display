@@ -82,7 +82,7 @@
 #include "datarefs_jar_a320neo.h"
 #include "datarefs_ff_a320.h"
 #include "datarefs_pilotedge.h"
-#include "datarefs_xjoymap.h"
+#include "datarefs_xdual.h"
 #include "datarefs_x_raas.h"
 #include "ui.h"
 #include "net.h"
@@ -303,9 +303,9 @@ PLUGIN_API int XPluginEnable(void) {
     		checkFlightFactorA320Callback,
             -1.0f,
             NULL);
-    // xjoymap - Dual commands
+    // XDual - Dual controls commands (stick & rudder)
     XPLMRegisterFlightLoopCallback(
-            checkXjoymapCallback,
+            checkXDualCallback,
             -1.0f,
             NULL);
     // xraas - Runway Awareness and Advisory System
@@ -419,7 +419,7 @@ PLUGIN_API void XPluginDisable(void) {
     XPLMUnregisterFlightLoopCallback(checkPaA320Callback, NULL);
     XPLMUnregisterFlightLoopCallback(checkJarA320NeoCallback, NULL);
     XPLMUnregisterFlightLoopCallback(checkFlightFactorA320Callback, NULL);
-    XPLMUnregisterFlightLoopCallback(checkXjoymapCallback, NULL);
+    XPLMUnregisterFlightLoopCallback(checkXDualCallback, NULL);
     XPLMUnregisterFlightLoopCallback(checkXRaasCallback, NULL);
 
     XPLMUnregisterFlightLoopCallback(sendXfmcCallback, NULL);

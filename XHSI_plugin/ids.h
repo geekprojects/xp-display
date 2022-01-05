@@ -588,8 +588,17 @@
 // Reserved to Lights and Brightness u 910 - 939
 
 
-// Side stick priority - xjoymap dual commands
-#define XJOYMAP_STICK_PRIORITY 940 // mask 0x03 0=dual, 1=Capt, 2=F/O ; mask 0x40 : dual_input boolean
+/**
+ *  Side stick priority - XDual indicators
+ *  bit field :
+ *  0 : Capt Green Priority
+ *  1 : Fo Green Priority
+ *  2 : Capt Red Arrow
+ *  3 : Fo Red Arrow
+ *  4 : Dual Input message
+ *
+ */
+#define XDUAL_INDICATORS 940
 
 // ATA 21 AIR CONDITIONING AND PRESSURIZATION
 // Trims

@@ -55,7 +55,7 @@
 #include "datarefs_pa_a320.h"
 #include "datarefs_jar_a320neo.h"
 #include "datarefs_ff_a320.h"
-#include "datarefs_xjoymap.h"
+#include "datarefs_xdual.h"
 #include "datarefs_x_raas.h"
 #include "endianess.h"
 
@@ -1715,7 +1715,7 @@ int createCustomAvionicsPacket(void) {
     int door_status;
 
     int pa_a320_failures;
-    int xjoymap_stick;
+    int xdual_indicators;
     int xraas_nd_message;
 
     strncpy(sim_packet.packet_id, "AVIO", 4);
@@ -3580,11 +3580,15 @@ int createCustomAvionicsPacket(void) {
 
     }
 
-    if (xjoymap_ready) {
-    	xjoymap_stick = (XPLMGetDatai(xjoymap_side_stick_priority) & 0x03)  |
-        		(XPLMGetDatai(xjoymap_dual_input) & 0x01) << 4 ;
-    	sim_packet.sim_data_points[i].id = custom_htoni(XJOYMAP_STICK_PRIORITY);
-    	sim_packet.sim_data_points[i].value = custom_htonf((float)xjoymap_stick);
+    if (xdual_ready) {
+    	xdual_indicators =
+    	    	(XPLMGetDatai(xplmDrIndicatorCaptPriority) & 0x01) |
+    	    	(XPLMGetDatai(xplmDrIndicatorFoPriority) & 0x01) << 1 |
+    			(XPLMGetDatai(xplmDrIndicatorCaptArrow) & 0x01) << 2 |
+    	    	(XPLMGetDatai(xplmDrIndicatorFoArrow) & 0x01) << 3 |
+    	    	(XPLMGetDatai(xplmDrDualInput) & 0x01) << 4 ;
+    	sim_packet.sim_data_points[i].id = custom_htoni(XDUAL_INDICATORS);
+    	sim_packet.sim_data_points[i].value = custom_htonf((float)xdual_indicators);
     	i++;
     }
 

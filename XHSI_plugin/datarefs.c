@@ -1,3 +1,21 @@
+/*
+ * datarefs.c
+ *
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -29,7 +47,7 @@
 #include "datarefs_x737.h"
 #include "datarefs_qpac.h"
 #include "datarefs_jar_a320neo.h"
-#include "datarefs_xjoymap.h"
+#include "datarefs_xdual.h"
 
 #define MSG_ADD_DATAREF 0x01000000           //  Add dataref to DRE message
 
@@ -77,6 +95,8 @@ XPLMDataRef cdu_pilot_source;
 XPLMDataRef cdu_copilot_source;
 XPLMDataRef cdu_pilot_side;
 XPLMDataRef cdu_copilot_side;
+XPLMDataRef cdu_pilot_line[14];
+XPLMDataRef cdu_copilot_line[14];
 
 // custom datarefs - EGPWS
 XPLMDataRef egpws_flaps_mode;
@@ -863,6 +883,18 @@ void	setCopilotCDUSide(void* inRefcon, int inValue)
 {
 	cdu_copilot_side_value = inValue;
 }
+
+/**
+ * TODO
+
+// xhsi/cdu_pilot/line%i
+char cdu_pilot_line[32];
+int getCopilotCDULine(void* inRefcon)
+{
+     return cdu_copilot_side_value;
+}
+
+*/
 
 // custom datarefs for pilot
 
@@ -2463,6 +2495,7 @@ void registerMFDDataRefs(void) {
 
 
 void registerCDUDataRefs(void) {
+    int i;
 
     XPLMDebugString("XHSI: registering custom CDU DataRefs\n");
 
@@ -2506,7 +2539,21 @@ void registerCDUDataRefs(void) {
                                         1,                                                   // Writable
                                         getCopilotCDUSide, setCopilotCDUSide,      // Integer accessors
                                         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);                                   // Refcons not used
+/*
+    // xhsi/cdu_pilot/line%d
+    for (i=0; i<14; i++) {
+        cdu_pilot_line[i] = XPLMRegisterDataAccessor("xhsi/cdu_copilot/side",
+        								xplmType_Data,                                 // The types we support
+                                        0,                                             // Read only
+                                        NULL, NULL,                                    // Integer accessors
+                                        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+										getPilotCDULine,                               // Read Data
+										NULL,
+										(void*) i,                                     // Read refcon = line
+										NULL);                                         // Refcons not used
 
+    }
+    */
     XPLMDebugString("XHSI: custom CDU DataRefs registered\n");
 
 }
@@ -4496,14 +4543,16 @@ void writeDataRef(int id, float value) {
                 	XPLMCommandOnce(sim_annunciator_clear_master_accept);
                 	break;
                 // Dual commands
+                	/*
                 case AP_KEY_STICK_DUAL :
-                	if (xjoymap_ready) XPLMCommandOnce(xjoymap_stick_dual);
+                	if (xdual_ready) XPLMCommandOnce(xjoymap_stick_dual);
                 	break;
+                	*/
                 case AP_KEY_STICK_CAPT :
-                	if (xjoymap_ready) XPLMCommandOnce(xjoymap_stick_capt);
+                	if (xdual_ready) XPLMCommandOnce(stick_priority_capt);
                 	break;
                 case AP_KEY_STICK_FO :
-                	if (xjoymap_ready) XPLMCommandOnce(xjoymap_stick_fo);
+                	if (xdual_ready) XPLMCommandOnce(stick_priority_fo);
                 	break;
 
 
