@@ -38,10 +38,10 @@
 #define AP_KEY_CLR_MASTER_ACCEPT 52
 // Systems
 #define AP_KEY_PITOT_HEAT_TOGGLE 60
-// Dual commands - needs xjoymap-dual plugin
-#define AP_KEY_STICK_DUAL 70
-#define AP_KEY_STICK_CAPT 71
-#define AP_KEY_STICK_FO 72
+
+// Reserved for X-Plane 12
+#define AP_KEY_PRIORITY_PB_LEFT 70
+#define AP_KEY_PRIORITY_PB_RIGHT 71
 
 /*
  * EFIS commands

@@ -4542,20 +4542,16 @@ void writeDataRef(int id, float value) {
                 case AP_KEY_CLR_MASTER_ACCEPT :
                 	XPLMCommandOnce(sim_annunciator_clear_master_accept);
                 	break;
-                // Dual commands
-                	/*
-                case AP_KEY_STICK_DUAL :
-                	if (xdual_ready) XPLMCommandOnce(xjoymap_stick_dual);
-                	break;
-                	*/
-                case AP_KEY_STICK_CAPT :
+
+                // Dual controls - Prepared for X-Plane 12
+                case AP_KEY_PRIORITY_PB_LEFT :
                 	if (xdual_ready) XPLMCommandOnce(stick_priority_capt);
+                	// sim/autopilot/priority_pb_left
                 	break;
-                case AP_KEY_STICK_FO :
+                case AP_KEY_PRIORITY_PB_RIGHT :
                 	if (xdual_ready) XPLMCommandOnce(stick_priority_fo);
+                	// sim/autopilot/priority_pb_right
                 	break;
-
-
             }
             break;
 

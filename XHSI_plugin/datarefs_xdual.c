@@ -30,16 +30,12 @@
 
 #define XPLM200 1
 
-//#include "XPLMProcessing.h"
 #include "XPLMPlugin.h"
 #include "XPLMDataAccess.h"
 #include "XPLMUtilities.h"
-//#include "XPLMNavigation.h"
-//#include "XPLMDisplay.h"
-//#include "XPLMMenus.h"
-#include "ids.h"
 
-#define XDUAL_PLUGIN_SIGNATURE "xdual.plugin"
+#include "ids.h"
+#include "datarefs_xdual.h"
 
 // Plugin ID
 XPLMPluginID xdual_PluginId = XPLM_NO_PLUGIN_ID;
@@ -136,4 +132,49 @@ float checkXDualCallback(
 
     // come back in 5 sec
     return 5.0;
+}
+
+
+/**
+ * if (xdual_ready)
+ */
+void writeXDualDataRef(int id, float value) {
+    char info_string[80];
+    switch (id) {
+		case XDUAL_INDICATORS :
+			// No operations
+			break;
+		case XDUAL_KEY_PRESS :
+			switch ((int)value) {
+
+				case XDUAL_KEY_STICK_CAPT :
+					XPLMCommandOnce(stick_priority_capt);
+					break;
+				case XDUAL_KEY_STICK_FO :
+					XPLMCommandOnce(stick_priority_capt);
+					break;
+				case XDUAL_PRIORITY_PB_CAPT :
+					XPLMCommandOnce(stick_priority_capt);
+					break;
+				case XDUAL_PRIORITY_PB_FO :
+					XPLMCommandOnce(stick_priority_capt);
+					break;
+				case XDUAL_PRIORITY_PB_CAPT_PRESS :
+					XPLMCommandBegin(stick_priority_capt);
+					break;
+				case XDUAL_PRIORITY_PB_FO_PRESS :
+					XPLMCommandBegin(stick_priority_capt);
+					break;
+				case XDUAL_PRIORITY_PB_CAPT_RELEASE :
+					XPLMCommandEnd(stick_priority_capt);
+					break;
+				case XDUAL_PRIORITY_PB_FO_RELEASE :
+					XPLMCommandEnd(stick_priority_capt);
+					break;
+
+			}
+			break;
+
+
+    }
 }

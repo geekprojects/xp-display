@@ -24,6 +24,23 @@
 #ifndef DATAREFS_XDUAL_H_
 #define DATAREFS_XDUAL_H_
 
+#define XDUAL_PLUGIN_SIGNATURE "xdual.plugin"
+
+// XDual commands
+#define XDUAL_KEY_STICK_CAPT 70
+#define XDUAL_KEY_STICK_FO 71
+// This buttons are on each side stick
+// A first press will disconnect the AP
+// A second press will take priority
+// A third press will restore dual controls
+#define XDUAL_PRIORITY_PB_CAPT 72
+#define XDUAL_PRIORITY_PB_FO 73
+#define XDUAL_PRIORITY_PB_CAPT_PRESS 74
+#define XDUAL_PRIORITY_PB_FO_PRESS 75
+#define XDUAL_PRIORITY_PB_CAPT_RELEASE 76
+#define XDUAL_PRIORITY_PB_FO_RELEASE 77
+
+
 // XDual Datarefs (prefix : xplmDr)
 extern XPLMDataRef xplmDrStickPriority;
 extern XPLMDataRef xplmDrRealStickPriority;
@@ -60,5 +77,6 @@ extern int xdual_ready;
 
 // global functions
 float checkXDualCallback(float, float, int, void *);
+void writeXDualDataRef(int, float);
 
 #endif /* DATAREFS_XDUAL_H_ */

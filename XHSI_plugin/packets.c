@@ -166,6 +166,8 @@ void decodeIncomingPacket(void) {
         	writeFlightFactorA320Data(id, float_value);
         } else 	if ((id >= Z737_STATUS) && (id <= Z737_ID_END)) {
         	writeZibo737DataRef(id, float_value);
+        } else 	if ((id >= XDUAL_INDICATORS) && (id <= XDUAL_KEY_PRESS)) {
+        	writeXDualDataRef(id, float_value);
         } else {
         	writeDataRef(id, float_value);
         }
