@@ -50,6 +50,7 @@
 #include "datarefs_x737.h"
 #include "datarefs_z737.h"
 #include "datarefs_cl30.h"
+#include "datarefs_q400.h"
 #include "datarefs_pilotedge.h"
 #include "datarefs_qpac.h"
 #include "datarefs_pa_a320.h"
@@ -1721,6 +1722,53 @@ int createCustomAvionicsPacket(void) {
     int xraas_nd_message;
 
     strncpy(sim_packet.packet_id, "AVIO", 4);
+
+	if (q400_ready) {
+		//  sim_packet.sim_data_points[i].id = custom_htoni(Q400_STATUS);
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_PDF1_RMI_CIRCLE);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_PDF1_rmi_Circle));
+		// sim_packet.sim_data_points[i].value = custom_htonf((3.0));
+		i++;
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_PDF1_RMI_DIAMOND);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_PDF1_rmi_Diamond));
+		i++;
+
+		sim_packet.sim_data_points[i].id = custom_htoni(SIM_COCKPIT_RADIOS_OBS_MAG);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(sim_cockpit_radios_obs_mag));
+		i++;
+
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_FADEC_RATING);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_FADEC_rating));
+		i++;
+
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_FEATH_AFARM);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_feath_AFarm));
+		i++;
+
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_BLEED_BLEEDANUN);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_bleed_bleedAnun));
+		i++;
+
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_FADEC_POWERPERCENT);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_FADEC_powerPercent));
+		i++;
+		/// neu Anfang
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_PDF1_AIRBUG_V1);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_PDF1_airspeed_airBugV1));
+		i++;
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_PDF1_AIRBUG_V2);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_PDF1_airspeed_airBugV2));
+		i++;
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_PDF1_AIRBUG_VR);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_PDF1_airspeed_airBugVr));
+		i++;
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_PDF1_AIRBUG_VCL);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_PDF1_airspeed_airBugVclimb));
+		i++;
+		sim_packet.sim_data_points[i].id = custom_htoni(FJS_PDF1_AIRBUG_VRF);
+		sim_packet.sim_data_points[i].value = custom_htonf((float)XPLMGetDataf(FJS_PDF1_airspeed_airBugVref));
+		i++;
+	}
 
     if ( x_raas_ready ) {
     	xraas_nd_message = XPLMGetDatai(x_raas_nd_alert);

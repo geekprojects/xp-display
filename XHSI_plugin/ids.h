@@ -906,14 +906,34 @@
 
 // IDs from 1400 - 1499 reserved
 
-// Flight Factor A320  Ultimate (1500 - 1799)
+// Flight Factor A320 Ultimate (1500 - 1599)
 #define FF_A320_STATUS 1500
 #define FF_A320_APU_MASTER 1501
 #define FF_A320_APU_STARTER 1502
 #define FF_A320_APU_BLEED 1503
 #define FF_A320_APU_GEN 1504
 
-#define FF_A320_ID_END 1799
+#define FF_A320_ID_END 1599
+
+// Bombardier Q400 (1600 - 1699)
+#define Q400_STATUS 1600
+#define FJS_PDF1_RMI_CIRCLE 1601
+#define FJS_PDF1_RMI_DIAMOND 1602
+// neu Beginn
+#define SIM_COCKPIT_RADIOS_OBS_MAG 1603
+#define FJS_FADEC_RATING  1604
+#define FJS_FEATH_AFARM  1605
+#define FJS_BLEED_BLEEDANUN  1606
+#define FJS_FADEC_POWERPERCENT  1607
+// neu Beginn1
+#define FJS_PDF1_AIRBUG_V1  1608
+#define FJS_PDF1_AIRBUG_V2  1609
+#define FJS_PDF1_AIRBUG_VR  1610
+#define FJS_PDF1_AIRBUG_VCL  1611
+#define FJS_PDF1_AIRBUG_VRF  1612
+
+#define Q400_ID_END 1413
+
 
 // ID from 1800 - 1899 : Laminar Boeing 737-800 + Zibo Mod
 #define Z737_STATUS 1800

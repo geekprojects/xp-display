@@ -77,6 +77,7 @@
 #include "datarefs_x737.h"
 #include "datarefs_z737.h"
 #include "datarefs_cl30.h"
+#include "datarefs_q400.h"
 #include "datarefs_qpac.h"
 #include "datarefs_pa_a320.h"
 #include "datarefs_jar_a320neo.h"
@@ -277,6 +278,12 @@ PLUGIN_API int XPluginEnable(void) {
             -1.0f,
             NULL);
 
+	//Q400
+	XPLMRegisterFlightLoopCallback(
+		checkQ400Callback,
+		-1.0f,
+		NULL);
+
     // PilotEdge
     XPLMRegisterFlightLoopCallback(
             checkPilotEdgeCallback,
@@ -414,6 +421,7 @@ PLUGIN_API void XPluginDisable(void) {
     XPLMUnregisterFlightLoopCallback(checkX737Callback, NULL);
     XPLMUnregisterFlightLoopCallback(checkZibo737Callback, NULL);
     XPLMUnregisterFlightLoopCallback(checkCL30Callback, NULL);
+    XPLMUnregisterFlightLoopCallback(checkQ400Callback, NULL);
     XPLMUnregisterFlightLoopCallback(checkPilotEdgeCallback, NULL);
     XPLMUnregisterFlightLoopCallback(checkQpacCallback, NULL);
     XPLMUnregisterFlightLoopCallback(checkPaA320Callback, NULL);
