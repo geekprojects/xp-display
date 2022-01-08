@@ -57,6 +57,9 @@ XPLMDataRef xplmDrFoBrakesFailed = NULL;
 XPLMDataRef xplmDrCaptNWTillerFailed = NULL;
 XPLMDataRef xplmDrFoNWTillerFailed = NULL;
 XPLMDataRef xplmDrDualInput = NULL;
+XPLMDataRef xplmDrMsgDualInput = NULL;
+XPLMDataRef xplmDrMsgPriorityLeft = NULL;
+XPLMDataRef xplmDrMsgPriorityRight = NULL;
 XPLMDataRef xplmDrIndicatorCaptPriority = NULL;
 XPLMDataRef xplmDrIndicatorFoPriority = NULL;
 XPLMDataRef xplmDrIndicatorCaptArrow = NULL;
@@ -76,9 +79,8 @@ void findXDualDataRefs(void) {
 	xdual_PluginId = XPLMFindPluginBySignature(XDUAL_PLUGIN_SIGNATURE);
 
 	if ( xdual_PluginId == XPLM_NO_PLUGIN_ID ) {
-
+		if ( xdual_ready == 1 ) XPLMDebugString("XHSI: XDual vanished\n");
 		xdual_ready = 0;
-
     } else {
         if ( xdual_ready == 0 ) {
 
@@ -106,6 +108,10 @@ void findXDualDataRefs(void) {
             xplmDrFoNWTillerFailed = XPLMFindDataRef("xdual/FoNWTillerFailed");
 
             xplmDrDualInput = XPLMFindDataRef("xdual/DualInput");
+
+            xplmDrMsgDualInput = XPLMFindDataRef("xdual/messages/DualInput");
+            xplmDrMsgPriorityLeft = XPLMFindDataRef("xdual/messages/PriorityLeft");
+            xplmDrMsgPriorityRight = XPLMFindDataRef("xdual/messages/PriorityRight");
 
             xplmDrIndicatorCaptPriority = XPLMFindDataRef("xdual/indicators/CaptPriority");
             xplmDrIndicatorFoPriority = XPLMFindDataRef("xdual/indicators/FoPriority");

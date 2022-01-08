@@ -51,6 +51,7 @@ extern XPLMDataRef xplmDrRealNWTillerPriority;
 extern XPLMDataRef xplmDrCaptStickDeactivated;
 extern XPLMDataRef xplmDrFoStickDeactivated;
 
+// Failures status
 extern XPLMDataRef xplmDrCaptStickFailed;
 extern XPLMDataRef xplmDrFoStickFailed;
 extern XPLMDataRef xplmDrCaptRudderFailed;
@@ -60,8 +61,15 @@ extern XPLMDataRef xplmDrFoBrakesFailed;
 extern XPLMDataRef xplmDrCaptNWTillerFailed;
 extern XPLMDataRef xplmDrFoNWTillerFailed;
 
+// Dual input status
 extern XPLMDataRef xplmDrDualInput;
 
+// Messages
+extern XPLMDataRef xplmDrMsgDualInput;
+extern XPLMDataRef xplmDrMsgPriorityLeft;
+extern XPLMDataRef xplmDrMsgPriorityRight;
+
+// Indicators
 extern XPLMDataRef xplmDrIndicatorCaptPriority;
 extern XPLMDataRef xplmDrIndicatorFoPriority;
 extern XPLMDataRef xplmDrIndicatorCaptArrow;

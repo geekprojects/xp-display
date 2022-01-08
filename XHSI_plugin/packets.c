@@ -3588,7 +3588,11 @@ int createCustomAvionicsPacket(void) {
     	    	(XPLMGetDatai(xplmDrIndicatorFoPriority) & 0x01) << 1 |
     			(XPLMGetDatai(xplmDrIndicatorCaptArrow) & 0x01) << 2 |
     	    	(XPLMGetDatai(xplmDrIndicatorFoArrow) & 0x01) << 3 |
-    	    	(XPLMGetDatai(xplmDrDualInput) & 0x01) << 4 ;
+    	    	(XPLMGetDatai(xplmDrDualInput) & 0x01) << 4 |
+				(XPLMGetDatai(xplmDrStickPriority) & 0x03) << 5 |
+				(XPLMGetDatai(xplmDrMsgDualInput) & 0x01) << 7 |
+				(XPLMGetDatai(xplmDrMsgPriorityLeft) & 0x01) << 8 |
+				(XPLMGetDatai(xplmDrMsgPriorityRight) & 0x01) << 9 ;
     	sim_packet.sim_data_points[i].id = custom_htoni(XDUAL_INDICATORS);
     	sim_packet.sim_data_points[i].value = custom_htonf((float)xdual_indicators);
     	i++;

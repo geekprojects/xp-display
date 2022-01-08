@@ -595,8 +595,11 @@
  *  1 : Fo Green Priority
  *  2 : Capt Red Arrow
  *  3 : Fo Red Arrow
- *  4 : Dual Input message
- *
+ *  4 : Dual Input status
+ *  5-6 : Stick priority (0=Normal,1=Left,2=Right)
+ *  7 : Dual Input message
+ *  8 : Priority Left message
+ *  9 : Priority Right message
  */
 #define XDUAL_INDICATORS 940
 #define XDUAL_KEY_PRESS  941
