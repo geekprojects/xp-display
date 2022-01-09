@@ -180,6 +180,8 @@ public class XPlaneCommand implements SimCommand {
     	commandsHT.put("CMD_CHRONO_START_STOP_RESET", SimCommand.CMD_CHRONO_START_STOP_RESET );
     	commandsHT.put("CMD_CHRONO_START_STOP", SimCommand.CMD_CHRONO_START_STOP );
     	commandsHT.put("CMD_CHRONO_RESET", SimCommand.CMD_CHRONO_RESET );
+    	commandsHT.put("CMD_STICK_PRIORITY_LEFT", SimCommand.CMD_STICK_PRIORITY_LEFT );
+    	commandsHT.put("CMD_STICK_PRIORITY_RIGHT", SimCommand.CMD_STICK_PRIORITY_RIGHT );
     }
 	
 	// Codes must be in sync with datarefs_qpac.h
@@ -269,6 +271,9 @@ public class XPlaneCommand implements SimCommand {
     public static final int AP_KEY_CLR_MASTER_ACCEPT = 52;
     // Systems
     public static final int AP_KEY_PITOT_HEAT_TOGGLE = 60;
+    // Reserved for X-Plane 12 - Will trigger XDual in X-Plane 11
+    public static final int  AP_KEY_PRIORITY_PB_LEFT = 70;
+    public static final int  AP_KEY_PRIORITY_PB_RIGHT = 71;
     
     // Values for XHSI_EFIS_CMD
     // Must be in sync with datarefs.h
@@ -283,6 +288,15 @@ public class XPlaneCommand implements SimCommand {
     public static final int  EFIS_CMD_BARO_FO_HPA     = 24;
     public static final int  EFIS_CMD_BARO_FO_INHG    = 25;
 
+    // Values for XDUAL_KEY_PRESS
+    public static final int  XDUAL_KEY_STICK_CAPT           = 70;
+    public static final int  XDUAL_KEY_STICK_FO             = 71;
+    public static final int  XDUAL_PRIORITY_PB_CAPT         = 72;
+    public static final int  XDUAL_PRIORITY_PB_FO           = 73;
+    public static final int  XDUAL_PRIORITY_PB_CAPT_PRESS   = 74;
+    public static final int  XDUAL_PRIORITY_PB_FO_PRESS     = 75;
+    public static final int  XDUAL_PRIORITY_PB_CAPT_RELEASE = 76;
+    public static final int  XDUAL_PRIORITY_PB_FO_RELEASE   = 77;
     
     ModelFactory model_factory;
     Aircraft aircraft;
@@ -847,7 +861,14 @@ public class XPlaneCommand implements SimCommand {
             case CMD_CHRONO_RESET:
             	this.avionics.chr_control(Avionics.CHR_CONTROL_RESET);
             	break;
-
+            	
+            case CMD_STICK_PRIORITY_LEFT: 
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XDUAL_KEY_PRESS, XDUAL_KEY_STICK_CAPT);
+            	break;
+            	
+            case CMD_STICK_PRIORITY_RIGHT: 
+            	this.udp_sender.sendDataPoint(XPlaneSimDataRepository.XDUAL_KEY_PRESS, XDUAL_KEY_STICK_FO);
+            	break;   	
         }
     }
 }

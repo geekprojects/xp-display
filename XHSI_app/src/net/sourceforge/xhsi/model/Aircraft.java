@@ -24,6 +24,10 @@ package net.sourceforge.xhsi.model;
 
 import java.awt.Color;
 
+import net.sourceforge.xhsi.model.Aircraft.StickIndicators;
+import net.sourceforge.xhsi.model.Aircraft.StickPriorityMessage;
+import net.sourceforge.xhsi.model.xplane.XPlaneSimDataRepository;
+
 
 public interface Aircraft {
 	
@@ -36,7 +40,9 @@ public interface Aircraft {
     public enum DoorId { FRONT_LEFT, FRONT_RIGHT, MIDDLE_LEFT, MIDDLE_RIGHT, AFT_LEFT, AFT_RIGHT, FRONT_CARGO, AFT_CARGO, BULK, NONE };
     public enum CabinZone { COCKPIT, FORWARD, AFT, MIDDLE, CARGO_AFT, CARGO_FWD, UPPER_AFT, UPPER_FORWARD, UPPER_MIDDLE };
     public enum IgnitionKeyPosition { OFF, RIGHT, LEFT, BOTH, START };
-    public enum StickPriority { NONE, CAPTAIN, FIRST_OFFICER };
+    public enum StickPriority { NORMAL, PRIORITY_LEFT, PRIORITY_RIGHT, NONE };
+    public enum StickIndicators { CAPT, CAPT_ARROW, FO, FO_ARROW };
+    public enum StickPriorityMessage { NONE, DUAL_INPUT, PRIORITY_LEFT, PRIORITY_RIGHT };
     
     // Bleed valve circuits
     public final static int BLEED_VALVE_CROSS = 0;
@@ -232,13 +238,29 @@ public interface Aircraft {
 
     /**
      * @return boolean - True if dual input (FO + CAPT) is applied on rudder or yoke
+     * Both stick indicators will flash and aural DUAL INPUT message is played
      */
     public boolean dual_input();
 
     /**
-     * @return StickPriority - None, Captain, FirstOfficer
+     * @return StickPriority - Normal, Left, Right, None
+     * None is a failure indication, both sticks failed !
      */
     public StickPriority stick_priority();
+    
+    /**
+     * Stick Glareshield indicators - Left and Right sides
+     * See Airbus A320 FCOM 1.27.40 for disposal
+     * @return boolean - True is indicator is lighted
+     * indicator : one of the four available stick indicators
+     */
+    public boolean stick_priority_indicator(StickIndicators indicator);
+    
+    /**
+     * Stick priority messages - to be optionally displayed on the PFD
+     * @return : active message
+     */
+    public StickPriorityMessage stick_priority_messages();
     
     /**
      * @return float - Left and Right Pedal deflection (0.0f to +1.0f)

@@ -104,7 +104,8 @@ public class DebugInformation extends MFDSubcomponent {
         drawInformationsLine(g2, 7, "avionics.get_fms_type()","(int) "+ avionics.get_fms_type());
         drawInformationsLine(g2, 8, "avionics.is_qpac()","(bool) "+ avionics.is_qpac());
         drawInformationsLine(g2, 9, "avionics.is_jar_a320neo()","(bool) "+ avionics.is_jar_a320neo());
-        drawInformationsLine(g2, 10,"avionics.is_zibo_mod_737()","(bool) "+ avionics.is_zibo_mod_737());
+        int strick_pri = ((int) sim_data.get_sim_float(XPlaneSimDataRepository.XDUAL_INDICATORS));
+        drawInformationsLine(g2, 10,"aircraft.stick_priority","(bin) "+ Integer.toBinaryString(strick_pri));
         drawInformationsLine(g2, 11,"avionics.get_cdu_side()","(int) "+ avionics.get_cdu_side());
         drawInformationsLine(g2, 12,"QpacMcduData.getLine(cdu_side,0)",QpacMcduData.getLine(avionics.get_cdu_side(),0));
         

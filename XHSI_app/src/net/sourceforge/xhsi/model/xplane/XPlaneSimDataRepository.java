@@ -606,8 +606,19 @@ public class XPlaneSimDataRepository implements SimDataRepository {
     public static final int XHSI_DU_BRIGHT_TABLET = 927;
     // Reserved to Lights and Brightness 910 - 929
     
-    // Side stick priority - xjoymap dual commands
-    public static final int XJOYMAP_STICK_PRIORITY = 940; // mask 0x03 0=dual, 1=Capt, 2=F/O ; mask 0x40 : dual_input boolean
+
+    /**
+     *  Side stick priority - XDual indicators
+     *  bit field :
+     *  0 : Capt Green Priority
+     *  1 : Fo Green Priority
+     *  2 : Capt Red Arrow
+     *  3 : Fo Red Arrow
+     *  4 : Dual Input message
+     *
+     */
+    public static final int XDUAL_INDICATORS = 940;
+    public static final int XDUAL_KEY_PRESS = 941;
     
     // ATA 21 AIR CONDITIONING AND PRESSURIZATION
     // Trims

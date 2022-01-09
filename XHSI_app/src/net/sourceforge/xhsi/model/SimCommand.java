@@ -167,7 +167,10 @@ public interface SimCommand {
     public static final int CMD_CHRONO_START_STOP_RESET = 369;
     public static final int CMD_CHRONO_START_STOP = 370;
     public static final int CMD_CHRONO_RESET = 371;
-    // Next is 372
+    public static final int CMD_STICK_PRIORITY_LEFT = 372;
+    public static final int CMD_STICK_PRIORITY_RIGHT = 373;
+
+    // Next is 374
     
     
     public void send(int var1);

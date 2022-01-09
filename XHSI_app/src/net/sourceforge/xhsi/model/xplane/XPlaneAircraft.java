@@ -36,6 +36,7 @@ import net.sourceforge.xhsi.model.SimCommand;
 import net.sourceforge.xhsi.model.SimDataRepository;
 import net.sourceforge.xhsi.model.Aircraft.CabinZone;
 import net.sourceforge.xhsi.model.Aircraft.ElecBus;
+import net.sourceforge.xhsi.model.Aircraft.StickIndicators;
 import net.sourceforge.xhsi.model.Aircraft.StickPriority;
 import net.sourceforge.xhsi.model.Aircraft.ValveStatus;
 
@@ -198,20 +199,55 @@ public class XPlaneAircraft implements Aircraft {
     public float brk_pedal_right() { return sim_data.get_sim_float(XPlaneSimDataRepository.SIM_COCKPIT2_CONTROLS_RIGHT_BRK_RATIO); }
 
     public boolean dual_input() {
-    	int stick_priority = (int) sim_data.get_sim_float(XPlaneSimDataRepository.XJOYMAP_STICK_PRIORITY); 
-    	return (stick_priority & 0x40) != 0; 
+    	int stick_priority = (int) sim_data.get_sim_float(XPlaneSimDataRepository.XDUAL_INDICATORS); 
+    	return (stick_priority & 0x10) != 0; 
     }
-
+    
+    /**
+     *  Side stick priority - XDual indicators
+     *  bit field :
+     *  0 : Capt Green Priority
+     *  1 : Fo Green Priority
+     *  2 : Capt Red Arrow
+     *  3 : Fo Red Arrow
+     *  4 : Dual Input status
+     *  5-6 : Stick priority (0=Normal,1=Left,2=Right)
+     *  7 : Dual Input message
+     *  8 : Priority Left message
+     *  9 : Priority Right message
+     */
     public StickPriority stick_priority() {
-    	int stick_priority = ((int) sim_data.get_sim_float(XPlaneSimDataRepository.XJOYMAP_STICK_PRIORITY)) & 0x03;
+    	int stick_priority = (((int) sim_data.get_sim_float(XPlaneSimDataRepository.XDUAL_INDICATORS)) >> 6 ) & 0x03;
     	switch (stick_priority) {
     		case 0 : return StickPriority.NONE;
-    		case 1 : return StickPriority.CAPTAIN;
-    		case 2 : return StickPriority.FIRST_OFFICER;
-    		default : return StickPriority.FIRST_OFFICER;
+    		case 1 : return StickPriority.PRIORITY_LEFT;
+    		case 2 : return StickPriority.PRIORITY_RIGHT;
+    		default : return StickPriority.NORMAL;
     	}    	
     }
 
+    public boolean stick_priority_indicator(StickIndicators indicator) {
+    	int indicators_bitfield = ((int) sim_data.get_sim_float(XPlaneSimDataRepository.XDUAL_INDICATORS)) & 0x0F;
+    	switch (indicator) {
+    	case CAPT : return (indicators_bitfield & 0x01) != 0;
+    	case FO : return (indicators_bitfield & 0x02) != 0;
+    	case CAPT_ARROW : return (indicators_bitfield & 0x04) != 0;    	
+    	case FO_ARROW : return (indicators_bitfield & 0x08) != 0;
+    	default: return false;
+    	}
+    }
+    
+    public StickPriorityMessage stick_priority_messages() {
+    	int priority_bitfield = ((int) sim_data.get_sim_float(XPlaneSimDataRepository.XDUAL_INDICATORS)) >> 7;
+    	switch (priority_bitfield) {
+    	case 0x00 : return StickPriorityMessage.NONE;
+    	case 0x01 : return StickPriorityMessage.DUAL_INPUT;
+    	case 0x02 : return StickPriorityMessage.PRIORITY_LEFT;
+    	case 0x04 : return StickPriorityMessage.PRIORITY_RIGHT;
+    	default: return StickPriorityMessage.NONE;
+    	}
+    }
+    
     public float track() {
         // degrees magnetic
         if (ground_speed() < 5) {
