@@ -176,6 +176,7 @@ extern int ufmc_ready;
 extern XPLMDataRef ufmc_keys[UFMC_KEY_MAX];
 
 // global functions
+void findUFMCDataRefs(void);
 float checkUFMCCallback(float, float, int, void *);
 void writeUFmcDataRef(int, float);
 

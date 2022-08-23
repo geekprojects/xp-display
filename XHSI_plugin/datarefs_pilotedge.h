@@ -1,4 +1,8 @@
 
+
+#ifndef DATAREFS_PILOTEDGE_H_
+#define DATAREFS_PILOTEDGE_H_
+
 // global vars
 
 extern XPLMDataRef pilotedge_rx_status;
@@ -9,5 +13,7 @@ extern int pilotedge_ready;
 
 
 // global functions
-float	checkPilotEdgeCallback(float, float, int, void *);
+void findPilotEdgeDataRefs(void);
+float checkPilotEdgeCallback(float, float, int, void *);
 
+#endif /* DATAREFS_PILOTEDGE_H_ */

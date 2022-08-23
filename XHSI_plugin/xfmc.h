@@ -16,6 +16,7 @@ extern struct XfmcLinesDataPacket xfmcPacket;
 
 extern int xfmc_keypressed;
 extern int xfmc_msg_count;
+extern int xfmc_ready;
 
 struct XFmcDisplayLine {
 	int lineno;

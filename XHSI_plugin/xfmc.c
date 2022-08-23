@@ -30,6 +30,7 @@ struct XfmcLinesDataPacket xfmcPacket;
 
 int xfmc_keypressed=0;
 int xfmc_msg_count=0;
+int xfmc_ready=0;
 
 void findXfmcDataRefs(void) {
     int         i;
@@ -50,6 +51,7 @@ void findXfmcDataRefs(void) {
         xfmc_panel_lines_ref[13] = XPLMFindDataRef("xfmc/Scratch");
         xfmc_keypath_ref = XPLMFindDataRef("xfmc/Keypath");
         xfmc_status_ref = XPLMFindDataRef("xfmc/Status");
+        xfmc_ready=1;
     }
 }
 
@@ -84,7 +86,7 @@ float sendXfmcCallback(
 
 	xfmc_msg_count++;
 
-	if (xhsi_plugin_enabled && xhsi_send_enabled && xhsi_socket_open && (xfmcPluginId != XPLM_NO_PLUGIN_ID) ) {
+	if (xhsi_plugin_enabled && xhsi_send_enabled && xhsi_socket_open && xfmc_ready ) {
 		if ( (xfmc_keypressed > 0) || (xfmc_msg_count > XFMC_MAX_MSG_COUNT) )  {
 
 			xfmc_msg_count=0;

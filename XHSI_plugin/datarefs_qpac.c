@@ -35,7 +35,7 @@ XPLMDataRef qpac_plugin_status;
 // Autopilot
 XPLMDataRef qpac_ap1;
 XPLMDataRef qpac_ap2;
-XPLMDataRef qpac_ap_phase;
+XPLMDataRef qpac_ap_phase = NULL;
 XPLMDataRef qpac_ap_vertical_mode;
 XPLMDataRef qpac_ap_vertical_armed;
 XPLMDataRef qpac_ap_lateral_mode;
@@ -311,6 +311,8 @@ XPLMDataRef qpac_wpt_minutes_fo;
 XPLMDataRef qpac_wpt_id_capt;
 XPLMDataRef qpac_wpt_id_fo;
 
+// Overhead
+XPLMDataRef qpac_annun_mode; // 0=Dim, 1=Normal, 2=Test
 
 // qpac FCU toggles, push/pull commands, RMP, MCDU
 XPLMCommandRef qpac_command[QPAC_KEY_MAX];
@@ -343,10 +345,14 @@ void findQpacDataRefs(void) {
 	qpac_plugin_status = XPLMFindDataRef("AirbusFBW/APPhase");
 
 	if ( ( qpac_plugin_status == NULL ) || ( XPLMGetDatai(qpac_plugin_status) < 0 ) ) {
-
+	// Safer method
+	// if ( ( qpac_plugin_status == NULL ) || ( qpac_plugin_status != qpac_ap_phase) ) {
+		if ( qpac_ready == 1 ) {
+			XPLMDebugString("XDual: QPAC AirbusFBW vanished\n");
+			qpac_ap_phase = NULL;
+		}
         qpac_ready = 0;
         qpac_version = 0;
-
     } else {
         if ( qpac_ready == 0 ) {
 
@@ -638,6 +644,9 @@ void findQpacDataRefs(void) {
 
             // FWC Flight Warning Computer
             qpac_ecam_flight_phase = XPLMFindDataRef("AirbusFBW/ECAMFlightPhase");
+
+            // OverHead Integrated Lights
+            qpac_annun_mode = XPLMFindDataRef("AirbusFBW/AnnunMode");
 
             //qpac fcu toggles and push/pull commands
             qpac_command[0] = NULL;
@@ -1010,7 +1019,7 @@ float checkQpacCallback(
         int		inCounter,
         void *	inRefcon) {
 
-    findQpacDataRefs();
+    // findQpacDataRefs();
 
     if (qpac_release_command != 0) {
 		XPLMCommandEnd(qpac_command[qpac_release_command]);

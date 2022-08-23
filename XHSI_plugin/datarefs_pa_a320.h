@@ -38,6 +38,7 @@ extern int pa_a320_ready;
 extern int pa_a320_version;
 
 // global functions
-float	checkPaA320Callback(float, float, int, void *);
+void findPaA320DataRefs(void);
+float checkPaA320Callback(float, float, int, void *);
 
 #endif /* DATAREFS_PA_A320_H_ */

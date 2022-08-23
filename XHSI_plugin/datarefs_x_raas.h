@@ -49,6 +49,7 @@ extern XPLMDataRef x_raas_nd_alert_disabled;
 extern XPLMDataRef x_raas_input_faulted;
 
 // global functions
+void findXRaasDataRefs(void);
 float checkXRaasCallback(float, float, int, void *);
 
 #endif /* DATAREFS_X_RAAS_H_ */

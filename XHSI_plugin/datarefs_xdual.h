@@ -84,6 +84,7 @@ extern XPLMCommandRef stick_priority_fo;
 extern int xdual_ready;
 
 // global functions
+void findXDualDataRefs(void);
 float checkXDualCallback(float, float, int, void *);
 void writeXDualDataRef(int, float);
 

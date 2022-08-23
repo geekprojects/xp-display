@@ -541,6 +541,9 @@ extern XPLMDataRef qpac_wpt_minutes_fo;
 extern XPLMDataRef qpac_wpt_id_capt;
 extern XPLMDataRef qpac_wpt_id_fo;
 
+// Overhead
+extern XPLMDataRef qpac_annun_mode; // 0=Dim, 1=Normal, 2=Test
+
 //qpac FCU toggles, push/pull commands, RMP, MCDU
 extern XPLMCommandRef qpac_command[QPAC_KEY_MAX];
 
@@ -559,6 +562,7 @@ extern int qpac_ready;
 extern int qpac_version;
 
 // global functions
+void findQpacDataRefs(void);
 float checkQpacCallback(float, float, int, void *);
 void writeQpacDataRef(int, float);
 

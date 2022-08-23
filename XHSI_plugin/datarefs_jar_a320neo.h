@@ -342,6 +342,7 @@ extern XPLMDataRef jar_a320_disp_sys_mode;
 extern int jar_a320_neo_ready;
 
 // global functions
+void findJarA320NeoDataRefs(void);
 float checkJarA320NeoCallback(float, float, int, void *);
 void writeJarA320neoDataRef(int, float);
 

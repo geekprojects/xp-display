@@ -50,7 +50,7 @@ int q400_ready = 0;
 
 
 void findQ400DataRefs(void) {
-	XPLMDebugString("XHSI: Testing Q400");
+
 	q400_plugin_status = XPLMFindDataRef("FJS/727/Elec/pow");
 
 	// q400_plugin_status = 1;

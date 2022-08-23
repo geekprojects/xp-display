@@ -103,5 +103,6 @@ extern int x737_ready;
 
 
 // global functions
-float	checkX737Callback(float, float, int, void *);
+void findX737DataRefs(void);
+float checkX737Callback(float, float, int, void *);
 

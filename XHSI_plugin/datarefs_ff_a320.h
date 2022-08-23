@@ -15,6 +15,7 @@ extern XPLMDataRef ff_a320_plugin_status;
 extern int ff_a320_ready;
 
 // global functions
+void findFlightFactorA320DataRefs(void);
 float checkFlightFactorA320Callback(float, float, int, void *);
 void findFlightFactorA320DataRefs();
 void writeFlightFactorA320Data(int, float);

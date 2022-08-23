@@ -73,6 +73,7 @@
 #include "settings.h"
 #include "structs.h"
 #include "datarefs.h"
+#include "datarefs_all_plugins.h"
 #include "datarefs_ufmc.h"
 #include "datarefs_x737.h"
 #include "datarefs_z737.h"
@@ -249,14 +250,16 @@ PLUGIN_API int XPluginEnable(void) {
             -1.0f,
             NULL);
 
-    // UFMC
+    // Check all plugins datarefs
     XPLMRegisterFlightLoopCallback(
-            checkUFMCCallback,
+    		checkPluginsDatarefsCallback,
             -1.0f,
             NULL);
 
+/*
+    // UFMC
     XPLMRegisterFlightLoopCallback(
-    		sendUfmcExtendedFmsCallback,
+            checkUFMCCallback,
             -1.0f,
             NULL);
 
@@ -320,7 +323,11 @@ PLUGIN_API int XPluginEnable(void) {
             checkXRaasCallback,
             -1.0f,
             NULL);
+*/
 
+    /*
+     * send loopbacks
+     */
     // X-FMC
     XPLMRegisterFlightLoopCallback(
             sendXfmcCallback,
@@ -330,6 +337,11 @@ PLUGIN_API int XPluginEnable(void) {
     // U-FMC
     XPLMRegisterFlightLoopCallback(
             sendUfmcCallback,
+            -1.0f,
+            NULL);
+
+    XPLMRegisterFlightLoopCallback(
+    		sendUfmcExtendedFmsCallback,
             -1.0f,
             NULL);
 
@@ -414,9 +426,13 @@ PLUGIN_API void XPluginDisable(void) {
     XPLMUnregisterFlightLoopCallback(initMFDCallback, NULL);
     XPLMUnregisterFlightLoopCallback(initCDUCallback, NULL);
 
+    XPLMUnregisterFlightLoopCallback(checkPluginsDatarefsCallback, NULL);
+
     // UFMC
-    XPLMUnregisterFlightLoopCallback(checkUFMCCallback, NULL);
+    // XPLMUnregisterFlightLoopCallback(checkUFMCCallback, NULL);
     XPLMUnregisterFlightLoopCallback(sendUfmcExtendedFmsCallback, NULL);
+
+    /*
 
     XPLMUnregisterFlightLoopCallback(checkX737Callback, NULL);
     XPLMUnregisterFlightLoopCallback(checkZibo737Callback, NULL);
@@ -429,6 +445,7 @@ PLUGIN_API void XPluginDisable(void) {
     XPLMUnregisterFlightLoopCallback(checkFlightFactorA320Callback, NULL);
     XPLMUnregisterFlightLoopCallback(checkXDualCallback, NULL);
     XPLMUnregisterFlightLoopCallback(checkXRaasCallback, NULL);
+    */
 
     XPLMUnregisterFlightLoopCallback(sendXfmcCallback, NULL);
     XPLMUnregisterFlightLoopCallback(sendQpacMsgCallback, NULL);

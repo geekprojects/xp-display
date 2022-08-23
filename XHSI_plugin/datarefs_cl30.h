@@ -22,5 +22,6 @@ extern int cl30_ready;
 
 
 // global functions
-float	checkCL30Callback(float, float, int, void *);
+void findCL30DataRefs(void);
+float checkCL30Callback(float, float, int, void *);
 

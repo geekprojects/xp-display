@@ -32,6 +32,7 @@ extern XPLMDataRef FJS_PDF1_airspeed_airBugVref;
 extern int q400_ready;
 
 // global functions
-float	checkQ400Callback(float, float, int, void *);
+void findQ400DataRefs(void);
+float checkQ400Callback(float, float, int, void *);
 
 #endif /* DATAREFS_Q400_H_ */

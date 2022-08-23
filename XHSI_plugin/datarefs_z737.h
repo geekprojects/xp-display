@@ -349,8 +349,8 @@ extern int z737_fmc_keypressed;
 extern XPLMCommandRef z737_command[Z737_KEY_MAX];
 
 // global functions
+void findZibo737DataRefs(void);
 float checkZibo737Callback(float, float, int, void *);
-
 void writeZibo737DataRef(int, float);
 
 #endif /* DATAREFS_Z_737_H_ */
