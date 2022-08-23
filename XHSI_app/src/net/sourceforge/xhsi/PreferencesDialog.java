@@ -80,8 +80,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     private JTextField group_textfield;
     private JCheckBox multicast_checkbox;
     private Level[] loglevels = { Level.OFF, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST };
-    private JComboBox loglevel_combobox;
-    private JComboBox operator_combobox;
+    private JComboBox<Level> loglevel_combobox;
+    private JComboBox<String> operator_combobox;
     private String operators[] = { XHSIPreferences.PILOT, XHSIPreferences.COPILOT, XHSIPreferences.INSTRUCTOR };
     private JCheckBox allow_shutdown;
 
@@ -118,14 +118,14 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * Graphics tab
      * ------------
      */    
-    private JComboBox border_style_combobox;
+    private JComboBox<String> border_style_combobox;
     private String borderstyles[] = { XHSIPreferences.BORDER_RELIEF, XHSIPreferences.BORDER_LIGHT, XHSIPreferences.BORDER_DARK, XHSIPreferences.BORDER_NONE };
-    private JComboBox border_color_combobox;
+    private JComboBox<String> border_color_combobox;
     private String bordercolors[] = { XHSIPreferences.BORDER_GRAY, XHSIPreferences.BORDER_BROWN, XHSIPreferences.BORDER_BLUE };
     private JCheckBox use_more_color_checkbox;
-    private JComboBox instruments_font_combobox;
+    private JComboBox<String> instruments_font_combobox;
     private String instruments_fonts[] = { "Builtin", "Verdana", "Tahoma", "boeingGlass", "Arial", "Arial Rounded MT Bold", "DejaVu Sans Mono", "FreeSans", "Lucida Sans", "MS Reference Sans Serif", "Ubuntu", "Ubuntu Mono", "Lucida Sans" };
-    private JComboBox cdu_font_combobox;
+    private JComboBox<String> cdu_font_combobox;
     private String cdu_fonts[] = { "Builtin", "Andale Mono", "DejaVu Sans Mono", "Ubuntu Mono" };
 
     // TODO: Get system fonts list
@@ -137,24 +137,24 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * Avionics tab
      * ------------
      */   
-    private JComboBox instrument_style_combobox;
+    private JComboBox<String> instrument_style_combobox;
     private JCheckBox digital_clock_checkbox;
     private String instrument_styles[] = { XHSIPreferences.INSTRUMENT_STYLE_SWITCHABLE, XHSIPreferences.INSTRUMENT_STYLE_BOEING, XHSIPreferences.INSTRUMENT_STYLE_AIRBUS };
     private JTextField min_rwy_textfield;
-    private JComboBox rwy_units_combobox;
+    private JComboBox<String> rwy_units_combobox;
     private String units[] = { "meters", "feet" };
     private JCheckBox use_power_checkbox;
     private JCheckBox auto_frontcourse_checkbox;
-    private JComboBox hsi_source_combobox;
+    private JComboBox<String> hsi_source_combobox;
     private String hsi_sources[] = { XHSIPreferences.USER, XHSIPreferences.NAV1, XHSIPreferences.NAV2 };
     
     /*
      * PFD tab
      * -------
      */
-    private JComboBox horizon_style_combobox;
+    private JComboBox<String> horizon_style_combobox;
     private String horizons[] = { XHSIPreferences.HORIZON_SQUARE, XHSIPreferences.HORIZON_ROUNDED, XHSIPreferences.HORIZON_FULLWIDTH, XHSIPreferences.HORIZON_FULLSCREEN /*, XHSIPreferences.HORIZON_AIRBUS */ };
-    private JComboBox dial_transparency_combobox;
+    private JComboBox<String> dial_transparency_combobox;
     private String transparencies[] = { "0", "25", "50", "75" };
     private JCheckBox draw_single_cue_fd_checkbox;
     private JCheckBox draw_aoa_checkbox;
@@ -165,8 +165,10 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     private JCheckBox draw_twinspeeds_checkbox;
     private JCheckBox draw_turnrate_checkbox;
     private JCheckBox draw_gmeter_checkbox;
-    private JComboBox draw_yoke_input_combobox;
+    private JComboBox<String> draw_yoke_input_combobox;    
     private String draw_yoke_input[] = { XHSIPreferences.YOKE_INPUT_NONE, XHSIPreferences.YOKE_INPUT_AUTO, XHSIPreferences.YOKE_INPUT_RUDDER, XHSIPreferences.YOKE_INPUT_ALWAYS, XHSIPreferences.YOKE_INPUT_ALWAYS_RUDDER };
+    private JComboBox<String> speed_unit_combobox;
+    private String speed_unit_input[] = { XHSIPreferences.PFD_SPEED_KTS, XHSIPreferences.PFD_SPEED_KMH, XHSIPreferences.PFD_SPEED_KTS_KMH };
 
     /*
      * ND tab
@@ -181,7 +183,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     private JCheckBox draw_inside_rose_checkbox;   
     private JCheckBox draw_range_arcs_checkbox;
     private JCheckBox limit_arcs_60deg_checkbox;
-    private JComboBox limit_arcs_deg_combobox;
+    private JComboBox<String> limit_arcs_deg_combobox;
     private String[] arc_limits = { "0","60","70","75","80","85","90" };
     private JCheckBox draw_rwy_checkbox;
     private JCheckBox tcas_always_on_checkbox;
@@ -194,7 +196,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * EGPWS tab
      * ---------
      */
-    private JComboBox terrain_resolution_combobox;
+    private JComboBox<String> terrain_resolution_combobox;
     private String terrain_resolutions[] = { XHSIPreferences.RES_FINE, XHSIPreferences.RES_MEDIUM, XHSIPreferences.RES_COARSE };
     private JCheckBox nd_show_vertical_path;
     private JCheckBox nd_terrain_auto_display;
@@ -207,7 +209,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * Weather Radar tab
      * -----------------
      */
-    private JComboBox wxr_resolution_combobox;
+    private JComboBox<String> wxr_resolution_combobox;
     private String wxr_resolutions[] = { XHSIPreferences.RES_FINE, XHSIPreferences.RES_MEDIUM, XHSIPreferences.RES_COARSE };
     private JCheckBox nd_wxr_sweep;
     private JCheckBox nd_wxr_sweep_bar;
@@ -220,23 +222,23 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * EICAS tab
      * ---------
      */
-    private JComboBox eicas_layout_combobox;
+    private JComboBox<String> eicas_layout_combobox;
     private final String[] eicas_layouts = { XHSIPreferences.EICAS_LAYOUT_PRIMARY, XHSIPreferences.EICAS_LAYOUT_PRIMARY_AND_CONTROLS, XHSIPreferences.EICAS_LAYOUT_FULL };
-    private JComboBox engine_count_combobox;
-    private JComboBox engine_type_combobox;
+    private JComboBox<String> engine_count_combobox;
+    private JComboBox<String> engine_type_combobox;
     private String engine_types[] = { XHSIPreferences.ENGINE_TYPE_SWITCHABLE, XHSIPreferences.ENGINE_TYPE_N1, XHSIPreferences.ENGINE_TYPE_EPR, XHSIPreferences.ENGINE_TYPE_TRQ, XHSIPreferences.ENGINE_TYPE_MAP };
-    private JComboBox trq_scale_combobox;
+    private JComboBox<String> trq_scale_combobox;
     private String trq_scales[] = { XHSIPreferences.TRQ_SCALE_SWITCHABLE, XHSIPreferences.TRQ_SCALE_LBFT, XHSIPreferences.TRQ_SCALE_NM, XHSIPreferences.TRQ_SCALE_PERCENT };;
-    private JComboBox fuel_unit_combobox;
+    private JComboBox<String> fuel_unit_combobox;
     private String fuel_units[] = { XHSIPreferences.FUEL_UNITS_SWITCHABLE, XHSIPreferences.FUEL_UNITS_KG, XHSIPreferences.FUEL_UNITS_LBS, XHSIPreferences.FUEL_UNITS_USG, XHSIPreferences.FUEL_UNITS_LTR };
-    private JComboBox temp_unit_combobox;
+    private JComboBox<String> temp_unit_combobox;
     private String temp_units[] = { XHSIPreferences.TEMP_UNITS_SWITCHABLE, XHSIPreferences.TEMP_UNITS_CELCIUS, XHSIPreferences.TEMP_UNITS_FAHRENHEIT };
 
     /*
      * MFD tab
      * -------
      */
-    private JComboBox mfd_mode_combobox;
+    private JComboBox<String> mfd_mode_combobox;
     private String mfd_modes[] = { 
     		XHSIPreferences.MFD_MODE_SWITCHABLE,
     		XHSIPreferences.MFD_MODE_LINKED,    		
@@ -256,7 +258,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     		XHSIPreferences.MFD_MODE_FCTL,
             XHSIPreferences.MFD_MODE_SYS,
     		XHSIPreferences.MFD_MODE_STATUS };    
-    private JComboBox arpt_chart_color_combobox;
+    private JComboBox<String> arpt_chart_color_combobox;
     private String arpt_chart_colors[] = { XHSIPreferences.ARPT_DIAGRAM_COLOR_AUTO, XHSIPreferences.ARPT_DIAGRAM_COLOR_DAY, XHSIPreferences.ARPT_DIAGRAM_COLOR_NIGHT };
     private JCheckBox arpt_chart_nav_dest;
 
@@ -265,9 +267,9 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * -------
      */
     private JCheckBox cdu_display_only;
-    private JComboBox cdu_source_combobox;
+    private JComboBox<String> cdu_source_combobox;
     private String cdu_sources[] = { XHSIPreferences.CDU_SOURCE_SWITCHABLE, XHSIPreferences.CDU_SOURCE_AIRCRAFT_OR_DUMMY, XHSIPreferences.CDU_SOURCE_XFMC, XHSIPreferences.CDU_SOURCE_UFMC };
-    private JComboBox cdu_side_combobox;
+    private JComboBox<String> cdu_side_combobox;
     private String cdu_sides[] = { XHSIPreferences.CDU_SIDE_SWITCHABLE, XHSIPreferences.CDU_SIDE_LEFT, XHSIPreferences.CDU_SIDE_RIGHT };
 
 
@@ -542,6 +544,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
             }
         }
 
+        // TODO: speed_unit_combobox
 
         // EICAS Options (5)
 
@@ -848,7 +851,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridx = 2;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.loglevel_combobox = new JComboBox();
+        this.loglevel_combobox = new JComboBox<Level>();
         for ( int i=0; i!=loglevels.length; i++) this.loglevel_combobox.addItem( loglevels[i] );
         system_panel.add(this.loglevel_combobox, cons);
         dialog_line++;
@@ -868,7 +871,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridx = 2;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.operator_combobox = new JComboBox();
+        this.operator_combobox = new JComboBox<String>();
         this.operator_combobox.addItem("Pilot (standard X-Plane settings)");
         this.operator_combobox.addItem("Copilot (XHSI's extra settings)");
         this.operator_combobox.addItem("Instructor (independent settings)");
@@ -1077,7 +1080,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
             subcons.gridx = subdialog_column;
             subcons.gridy = subdialog_line;
             subcons.anchor = GridBagConstraints.CENTER;
-            this.panel_orientation_combobox[i] = new JComboBox();
+            this.panel_orientation_combobox[i] = new JComboBox<Object>();
             this.panel_orientation_combobox[i].addItem( XHSIPreferences.Orientation.UP.get_rotation() );
             this.panel_orientation_combobox[i].addItem( XHSIPreferences.Orientation.LEFT.get_rotation() );
             this.panel_orientation_combobox[i].addItem( XHSIPreferences.Orientation.RIGHT.get_rotation() );
@@ -1139,7 +1142,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 3;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.border_style_combobox = new JComboBox();
+        this.border_style_combobox = new JComboBox<String>();
         this.border_style_combobox.addItem(XHSIPreferences.BORDER_RELIEF);
         this.border_style_combobox.addItem(XHSIPreferences.BORDER_LIGHT);
         this.border_style_combobox.addItem(XHSIPreferences.BORDER_DARK);
@@ -1159,7 +1162,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 3;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.border_color_combobox = new JComboBox();
+        this.border_color_combobox = new JComboBox<String>();
         this.border_color_combobox.addItem(XHSIPreferences.BORDER_GRAY);
         this.border_color_combobox.addItem(XHSIPreferences.BORDER_BROWN);
         this.border_color_combobox.addItem(XHSIPreferences.BORDER_BLUE);
@@ -1199,7 +1202,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.instruments_font_combobox = new JComboBox();
+        this.instruments_font_combobox = new JComboBox<String>();
         for (int i=0; i<instruments_fonts.length; i++) {
             this.instruments_font_combobox.addItem(this.instruments_fonts[i]);
         }
@@ -1218,7 +1221,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.cdu_font_combobox = new JComboBox();
+        this.cdu_font_combobox = new JComboBox<String>();
         for (int i=0; i<cdu_fonts.length; i++) {
             this.cdu_font_combobox.addItem(this.cdu_fonts[i]);
         }
@@ -1306,7 +1309,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridx = 2;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.instrument_style_combobox = new JComboBox();
+        this.instrument_style_combobox = new JComboBox<String>();
         this.instrument_style_combobox.addItem("Switchable");
         this.instrument_style_combobox.addItem("Boeing");
         this.instrument_style_combobox.addItem("Airbus");
@@ -1354,7 +1357,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridx = 2;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.rwy_units_combobox = new JComboBox();
+        this.rwy_units_combobox = new JComboBox<String>();
         this.rwy_units_combobox.addItem("meters");
         this.rwy_units_combobox.addItem("feet");
         this.rwy_units_combobox.addActionListener(this);
@@ -1420,7 +1423,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridx = 2;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.hsi_source_combobox = new JComboBox();
+        this.hsi_source_combobox = new JComboBox<String>();
         this.hsi_source_combobox.addItem("Switchable");
         this.hsi_source_combobox.addItem("Always NAV1");
         this.hsi_source_combobox.addItem("Always NAV2");
@@ -1455,7 +1458,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.horizon_style_combobox = new JComboBox();
+        this.horizon_style_combobox = new JComboBox<String>();
         this.horizon_style_combobox.addItem("Square");
         this.horizon_style_combobox.addItem("Rounded square");
         this.horizon_style_combobox.addItem("Full width");
@@ -1475,7 +1478,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.dial_transparency_combobox = new JComboBox();
+        this.dial_transparency_combobox = new JComboBox<String>();
         this.dial_transparency_combobox.addItem(transparencies[0]);
         this.dial_transparency_combobox.addItem(transparencies[1]);
         this.dial_transparency_combobox.addItem(transparencies[2]);
@@ -1606,7 +1609,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.draw_yoke_input_combobox = new JComboBox();
+        this.draw_yoke_input_combobox = new JComboBox<String>();
         this.draw_yoke_input_combobox.addItem("None");
         this.draw_yoke_input_combobox.addItem("Auto - Yoke only");
         this.draw_yoke_input_combobox.addItem("Auto - Yoke, rudder, brakes");
@@ -1616,6 +1619,23 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         pfd_options_panel.add(this.draw_yoke_input_combobox, cons);
         dialog_line++;
         
+        // Speed units
+        cons.gridx = 0;
+        cons.gridwidth = 1;
+        cons.gridy = dialog_line;
+        cons.anchor = GridBagConstraints.EAST;
+        pfd_options_panel.add(new JLabel("IAS Speed Unit", JLabel.TRAILING), cons);
+        cons.gridx = 2;
+        cons.gridwidth = 1;
+        cons.gridy = dialog_line;
+        cons.anchor = GridBagConstraints.WEST;
+        this.speed_unit_combobox = new JComboBox<String>();
+        this.speed_unit_combobox.addItem("Kts");
+        this.speed_unit_combobox.addItem("Km/h");
+        this.speed_unit_combobox.addItem("Both");
+        this.speed_unit_combobox.addActionListener(this);
+        pfd_options_panel.add(this.speed_unit_combobox, cons);
+        dialog_line++;
         
 //        // A reminder
 //        cons.gridx = 2;
@@ -1793,7 +1813,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.limit_arcs_deg_combobox = new JComboBox();
+        this.limit_arcs_deg_combobox = new JComboBox<String>();
         this.limit_arcs_deg_combobox.addItem("None");
         this.limit_arcs_deg_combobox.addItem("60\u00B0");
         this.limit_arcs_deg_combobox.addItem("70\u00B0");
@@ -1967,7 +1987,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;      
-        terrain_resolution_combobox = new JComboBox();
+        terrain_resolution_combobox = new JComboBox<String>();
         this.terrain_resolution_combobox.addItem("Fine");
         this.terrain_resolution_combobox.addItem("Medium");
         this.terrain_resolution_combobox.addItem("Coarse");
@@ -2054,7 +2074,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;      
-        wxr_resolution_combobox = new JComboBox();
+        wxr_resolution_combobox = new JComboBox<String>();
         this.wxr_resolution_combobox.addItem("Fine");
         this.wxr_resolution_combobox.addItem("Medium");
         this.wxr_resolution_combobox.addItem("Coarse");
@@ -2167,7 +2187,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.eicas_layout_combobox = new JComboBox();
+        this.eicas_layout_combobox = new JComboBox<String>();
         this.eicas_layout_combobox.addItem("Primary engine instruments only");
         this.eicas_layout_combobox.addItem("Primary engine instruments and gear, flaps, etc...");
         this.eicas_layout_combobox.addItem("Primary and secondary engine instruments");
@@ -2184,7 +2204,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.engine_count_combobox = new JComboBox();
+        this.engine_count_combobox = new JComboBox<String>();
         this.engine_count_combobox.addItem("Auto");
         this.engine_count_combobox.addItem("1");
         this.engine_count_combobox.addItem("2");
@@ -2207,7 +2227,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.engine_type_combobox = new JComboBox();
+        this.engine_type_combobox = new JComboBox<String>();
         this.engine_type_combobox.addItem("Switchable");
         this.engine_type_combobox.addItem(XHSIPreferences.ENGINE_TYPE_N1);
         this.engine_type_combobox.addItem(XHSIPreferences.ENGINE_TYPE_EPR);
@@ -2227,7 +2247,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.trq_scale_combobox = new JComboBox();
+        this.trq_scale_combobox = new JComboBox<String>();
         this.trq_scale_combobox.addItem("Switchable");
         this.trq_scale_combobox.addItem(XHSIPreferences.TRQ_SCALE_LBFT);
         this.trq_scale_combobox.addItem(XHSIPreferences.TRQ_SCALE_NM);
@@ -2246,7 +2266,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.fuel_unit_combobox = new JComboBox();
+        this.fuel_unit_combobox = new JComboBox<String>();
         this.fuel_unit_combobox.addItem("Switchable");
         this.fuel_unit_combobox.addItem(XHSIPreferences.FUEL_UNITS_KG);
         this.fuel_unit_combobox.addItem(XHSIPreferences.FUEL_UNITS_LBS);
@@ -2266,7 +2286,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.temp_unit_combobox = new JComboBox();
+        this.temp_unit_combobox = new JComboBox<String>();
         this.temp_unit_combobox.addItem("Switchable");
         this.temp_unit_combobox.addItem(XHSIPreferences.TEMP_UNITS_CELCIUS);
         this.temp_unit_combobox.addItem(XHSIPreferences.TEMP_UNITS_FAHRENHEIT);
@@ -2310,7 +2330,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.mfd_mode_combobox = new JComboBox();
+        this.mfd_mode_combobox = new JComboBox<String>();
         this.mfd_mode_combobox.addItem("Switchable");
         this.mfd_mode_combobox.addItem("Linked (QPAC)");
         this.mfd_mode_combobox.addItem("Airport Chart");
@@ -2344,7 +2364,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.arpt_chart_color_combobox = new JComboBox();
+        this.arpt_chart_color_combobox = new JComboBox<String>();
         this.arpt_chart_color_combobox.addItem("Auto");
         this.arpt_chart_color_combobox.addItem("Day");
         this.arpt_chart_color_combobox.addItem("Night");
@@ -2407,7 +2427,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.cdu_source_combobox = new JComboBox();
+        this.cdu_source_combobox = new JComboBox<String>();
         this.cdu_source_combobox.addItem("Switchable");
         this.cdu_source_combobox.addItem("Aircraft's custom FMC (or a dummy)");
         this.cdu_source_combobox.addItem("X-FMC");        
@@ -2427,7 +2447,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         cons.gridwidth = 1;
         cons.gridy = dialog_line;
         cons.anchor = GridBagConstraints.WEST;
-        this.cdu_side_combobox = new JComboBox();
+        this.cdu_side_combobox = new JComboBox<String>();
         this.cdu_side_combobox.addItem("Switchable");
         this.cdu_side_combobox.addItem("Left");
         this.cdu_side_combobox.addItem("Right");        
@@ -2826,6 +2846,10 @@ public class PreferencesDialog extends JDialog implements ActionListener {
             if ( ! draw_yoke_input[this.draw_yoke_input_combobox.getSelectedIndex()].equals(this.preferences.get_preference(XHSIPreferences.PREF_PFD_DRAW_YOKE_INPUT)) )
                 this.preferences.set_preference(XHSIPreferences.PREF_PFD_DRAW_YOKE_INPUT, draw_yoke_input[this.draw_yoke_input_combobox.getSelectedIndex()]);
 
+            if ( ! speed_unit_input[this.speed_unit_combobox.getSelectedIndex()].equals(this.preferences.get_preference(XHSIPreferences.PREF_PFD_SPEED_UNIT)) )
+                this.preferences.set_preference(XHSIPreferences.PREF_PFD_SPEED_UNIT, speed_unit_input[this.speed_unit_combobox.getSelectedIndex()]);
+
+           
             // EICAS options
 
             if ( ! eicas_layouts[this.eicas_layout_combobox.getSelectedIndex()].equals(this.preferences.get_preference(XHSIPreferences.PREF_EICAS_LAYOUT)) )

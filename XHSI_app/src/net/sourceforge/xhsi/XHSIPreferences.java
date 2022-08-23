@@ -6,7 +6,7 @@
 * 
 * Copyright (C) 2007  Georg Gruetter (gruetter@gmail.com)
 * Copyright (C) 2010-2014  Marc Rogiers (marrog.123@gmail.com)
-* Copyright (C) 2015-2019  Nicolas Carel
+* Copyright (C) 2015-2022  Nicolas Carel
 * 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -140,6 +140,7 @@ public class XHSIPreferences {
     public static final String PREF_PFD_DRAW_TURNRATE = "pfd.draw.turnrate";
     public static final String PREF_PFD_DRAW_GMETER = "pfd.draw.gmeter";
     public static final String PREF_PFD_DRAW_YOKE_INPUT = "pfd.draw.yoke_input";
+    public static final String PREF_PFD_SPEED_UNIT = "pfd.speed.unit";
 
     // EICAS options
     public static final String PREF_EICAS_LAYOUT = "eicas.layout";
@@ -189,6 +190,12 @@ public class XHSIPreferences {
     public static final String YOKE_INPUT_ALWAYS = "always";
     public static final String YOKE_INPUT_ALWAYS_RUDDER = "always+rudder";
     public enum DrawYokeInputMode { NONE, AUTO, AUTO_RUDDER, ALWAYS, ALWAYS_RUDDER };
+
+    // for PREF_PFD_SPEED_UNIT
+    public static final String PFD_SPEED_KTS = "kts";
+    public static final String PFD_SPEED_KMH = "km/h";
+    public static final String PFD_SPEED_KTS_KMH = "kts+hm/h";
+    public enum PFDSpeedUnit { KTS, KMH, KTS_KMH };
     
     // for PREF_TERRAIN_RESOLUTION & PREF_WXR_RESOLUTION
     public static final String RES_FINE = "fine";
@@ -982,6 +989,18 @@ public class XHSIPreferences {
         else return DrawYokeInputMode.ALWAYS_RUDDER;
     }
 
+    /**
+     * @return            - PFD Speed Unit
+     * Imperial or metric speed unit
+     *
+     */
+    public PFDSpeedUnit get_pfd_speed_unit() {
+        if ( get_preference(PREF_PFD_SPEED_UNIT).equalsIgnoreCase(PFD_SPEED_KTS) ) { return PFDSpeedUnit.KTS; } 
+        else if ( get_preference(PREF_PFD_SPEED_UNIT).equalsIgnoreCase(PFD_SPEED_KMH) ) { return PFDSpeedUnit.KMH; } 
+        else if ( get_preference(PREF_PFD_SPEED_UNIT).equalsIgnoreCase(PFD_SPEED_KTS_KMH) ) { return PFDSpeedUnit.KTS_KMH; }
+        else return PFDSpeedUnit.KTS;
+    }
+    
     // ND
     
     /**
@@ -1560,6 +1579,11 @@ public class XHSIPreferences {
 
         if ( ! this.preferences.containsKey(PREF_PFD_DRAW_YOKE_INPUT) ) {
             this.preferences.setProperty(PREF_PFD_DRAW_YOKE_INPUT, YOKE_INPUT_AUTO);
+            this.unsaved_changes = true;
+        }
+        
+        if ( ! this.preferences.containsKey(PREF_PFD_SPEED_UNIT) ) {
+            this.preferences.setProperty(PREF_PFD_SPEED_UNIT, PFD_SPEED_KTS);
             this.unsaved_changes = true;
         }
         
