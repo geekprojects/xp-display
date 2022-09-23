@@ -2048,7 +2048,21 @@ public class XPlaneAvionics implements Avionics, Observer {
     		return xhsi_settings.metric_alt;
     	}
     }
-  
+    
+    /**
+     * @return boolean - true if metric speed is shown on PFD
+     */
+    public boolean pfd_shows_metric_speed() {
+    	// TODO: should return xhsi_settings.metric_speed;
+    	if ( xhsi_preferences.get_instrument_operator().equals( XHSIPreferences.PILOT ) ) {
+    		return (sim_data.get_sim_float(XPlaneSimDataRepository.XHSI_EFIS_PILOT_METRIC_ALT) == 1.0f);
+    	} else if ( xhsi_preferences.get_instrument_operator().equals( XHSIPreferences.COPILOT ) ) {
+    		return (sim_data.get_sim_float(XPlaneSimDataRepository.XHSI_EFIS_COPILOT_METRIC_ALT) == 1.0f);
+    	} else {
+    		return xhsi_settings.metric_alt;
+    	}
+    }
+    
     public boolean pfd_shows_ils() {
     	if ( xhsi_preferences.get_instrument_operator().equals( XHSIPreferences.PILOT ) ) {
     		return (sim_data.get_sim_float(XPlaneSimDataRepository.XHSI_EFIS_PILOT_ILS) == 1.0f);

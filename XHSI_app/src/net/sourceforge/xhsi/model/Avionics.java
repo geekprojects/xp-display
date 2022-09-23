@@ -930,6 +930,11 @@ public interface Avionics {
      * @return boolean - true if metric altitude is shown on PFD
      */
     public boolean pfd_shows_metric_alt();
+ 
+    /**
+     * @return boolean - true if metric speed is shown on PFD
+     */
+    public boolean pfd_shows_metric_speed();
     
     /**
      * @return boolean - true if ILS is displayed on PFD (but may not receiving any signal)
