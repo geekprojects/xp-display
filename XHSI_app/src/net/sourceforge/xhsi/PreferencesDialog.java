@@ -26,8 +26,6 @@ package net.sourceforge.xhsi;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -101,7 +99,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     private JTextField panel_height_textfield[] = new JTextField[MAX_WINS];
     private JTextField panel_border_textfield[] = new JTextField[MAX_WINS];
     private JCheckBox panel_square_checkbox[] = new JCheckBox[MAX_WINS];
-    private JComboBox panel_orientation_combobox[] = new JComboBox[MAX_WINS];
+    @SuppressWarnings("unchecked")
+	private JComboBox<String> panel_orientation_combobox[] = new JComboBox[MAX_WINS];
     private String orientations[] = {
             XHSIPreferences.Orientation.UP.get_rotation(),
             XHSIPreferences.Orientation.LEFT.get_rotation(),
@@ -337,9 +336,11 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         // GRAPHICS
         
         // Get system font list
+        /*
         GraphicsEnvironment ge;  
         ge = GraphicsEnvironment.getLocalGraphicsEnvironment();  
         String[] font_families = ge.getAvailableFontFamilyNames();
+        */
 
         String instrumentstyle = preferences.get_preference(XHSIPreferences.PREF_INSTRUMENT_STYLE);
         for (int i=0; i<instrument_styles.length; i++) {
@@ -1080,7 +1081,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
             subcons.gridx = subdialog_column;
             subcons.gridy = subdialog_line;
             subcons.anchor = GridBagConstraints.CENTER;
-            this.panel_orientation_combobox[i] = new JComboBox<Object>();
+            this.panel_orientation_combobox[i] = new JComboBox<String>();
             this.panel_orientation_combobox[i].addItem( XHSIPreferences.Orientation.UP.get_rotation() );
             this.panel_orientation_combobox[i].addItem( XHSIPreferences.Orientation.LEFT.get_rotation() );
             this.panel_orientation_combobox[i].addItem( XHSIPreferences.Orientation.RIGHT.get_rotation() );

@@ -336,7 +336,7 @@ public class XHSIPreferences {
      * keys = preference key
      * values = ArrayList with PreferenceObserver instances
      */
-    private HashMap subscriptions;
+    private HashMap<String,ArrayList<PreferencesObserver>> subscriptions;
 
 
     /**
@@ -1082,12 +1082,12 @@ public class XHSIPreferences {
      * @param key the key that identifies the observed preference
      */
     public void add_subsciption(PreferencesObserver observer, String key) {
-        ArrayList observers;
+        ArrayList<PreferencesObserver> observers;
 
         if (this.subscriptions.containsKey(key)) {
-            observers = (ArrayList) this.subscriptions.get(key);
+            observers = (ArrayList<PreferencesObserver>) this.subscriptions.get(key);
         } else {
-            observers = new ArrayList();
+            observers = new ArrayList<PreferencesObserver>();
         }
 
         observers.add(observer);
@@ -1102,7 +1102,7 @@ public class XHSIPreferences {
      * found, a new preferences file with default values is created.
      */
     private XHSIPreferences() {
-        this.subscriptions = new HashMap();
+        this.subscriptions = new HashMap<String,ArrayList<PreferencesObserver>>();
         this.preferences = new Properties();
         this.unsaved_changes = false;
         load_preferences();
@@ -1745,15 +1745,15 @@ public class XHSIPreferences {
      */
     private void notify_observers(String key) {
         if (this.subscriptions.containsKey(key)) {
-            ArrayList observers = (ArrayList) this.subscriptions.get(key);
+            ArrayList<PreferencesObserver> observers = this.subscriptions.get(key);
             for (int i=0; i<observers.size(); i++) {
-                PreferencesObserver pref_obs = (PreferencesObserver) observers.get(i);
+                PreferencesObserver pref_obs = observers.get(i);
                 pref_obs.preference_changed(key);
             }
         }
     }
 
-
+    @SuppressWarnings("unused")
     private boolean isMac() {
         return (System.getProperty("mrj.version") != null);
     }
