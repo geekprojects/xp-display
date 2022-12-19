@@ -50,7 +50,7 @@ import net.sourceforge.xhsi.model.Observer;
 public class PFDComponent extends Component implements Observer, PreferencesObserver {
 
     private static final long serialVersionUID = 1L;
-    public static boolean COLLECT_PROFILING_INFORMATION = false;
+    public static boolean COLLECT_PROFILING_INFORMATION = true;
     public static long NB_OF_PAINTS_BETWEEN_PROFILING_INFO_OUTPUT = 100;
     private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 

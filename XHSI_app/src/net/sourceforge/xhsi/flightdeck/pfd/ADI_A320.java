@@ -40,12 +40,10 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSIPreferences.DrawYokeInputMode;
-import net.sourceforge.xhsi.XHSIPreferences;
 import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.Aircraft.StickPriorityMessage;
-import net.sourceforge.xhsi.model.Avionics.EPGWSAlertLevel;
 
 
 public class ADI_A320 extends PFDSubcomponent {
@@ -182,16 +180,7 @@ public class ADI_A320 extends PFDSubcomponent {
 		AffineTransform original_at = g2.getTransform();
 		Stroke original_stroke = g2.getStroke();
 		
-		// Compute bottom ADI line for clipping
-		int bottom_adi_y_max = cy + down*37/48 - 2; // this is the max and the min is cy.
-		int bottom_adi_y;
-		if (ra < 570) {
-			int positive_ra = (ra>0) ? ra : 0;
-			bottom_adi_y = pitch_y + ((bottom_adi_y_max - cy) * positive_ra / 180);
-			if (bottom_adi_y > bottom_adi_y_max ) { bottom_adi_y = bottom_adi_y_max; }
-		} else {
-			bottom_adi_y = bottom_adi_y_max;
-		}
+
 		
 		if ( ! colorgradient_horizon ) {
 			g2.clipRect(cx - left, cy - up, left + right, up + down);
@@ -218,10 +207,6 @@ public class ADI_A320 extends PFDSubcomponent {
 		int diagonal = colorgradient_horizon ?
 				(int)Math.hypot( Math.max(cx, pfd_gc.panel_rect.width - cx), Math.max(cy, pfd_gc.panel_rect.height - cy) ) :
 					(int)Math.hypot( Math.max(left, right), Math.max(up, down) );
-
-		Area airbus_horizon_area = new Area ( new Arc2D.Float ( (float) cx - left, (float) cy - up, (float) left + right, (float) up + down, 0.0f,360.0f,Arc2D.CHORD));
-		Area square_horizon_area = new Area ( new Rectangle(cx - left*9/10, cy - up*11/10, left*9/10 + right*9/10, up + down*12/10) );
-		airbus_horizon_area.intersect( square_horizon_area );				
 
 		int pitch_y_min = cy - up*37/48;
 		int pitch_y_max = cy + down * 37/48;
@@ -259,7 +244,7 @@ public class ADI_A320 extends PFDSubcomponent {
 		} else { // if (this.preferences.get_draw_airbus_horizon()) {
 			// g2.clipRect(cx - left, cy - up, left + right, up + down)
 			// With Airbus shape, bank mark area is always blue and RA area is always brown
-			g2.setClip(airbus_horizon_area);
+			g2.setClip(pfd_gc.adi_airbus_horizon_area);
 			g2.rotate(Math.toRadians(-bank), cx, cy);
 			if (pitch_y > pitch_y_max) pitch_y_airbus = pitch_y_max;
 			if (pitch_y < pitch_y_min) pitch_y_airbus = pitch_y_min;
@@ -284,28 +269,32 @@ public class ADI_A320 extends PFDSubcomponent {
 
 		if ( this.preferences.get_draw_roundedsquare_horizon() ) {
 			g2.setColor(pfd_gc.background_color);
-			Area adi_roundrectarea = new Area(new RoundRectangle2D.Float(
-					cx - left, cy - up, left + right, up + down,
-					(int)(60 * pfd_gc.scaling_factor),
-					(int)(60 * pfd_gc.scaling_factor)));
-			Area adi_area = new Area(new Rectangle2D.Float(cx - left, cy - up, left + right, up + down));
-			adi_area.subtract(adi_roundrectarea);
-			g2.fill(adi_area);
+			g2.fill(pfd_gc.adi_area);
 		}
 		
 		g2.rotate(Math.toRadians(-bank), cx, cy);
 			
 		// pitch marks
-		Area pitchmark_area = new Area ( new Rectangle(
-				cx - left + left/16,
-				cy - up*37/48,
-				left - left/16 + right - right/16,
-				up*37/48 + down*37/48 - (bottom_adi_y_max - bottom_adi_y) 
-				) );
+		// Compute bottom ADI line for clipping
+		int bottom_adi_y_max = cy + down*37/48 - 2; // this is the max and the min is cy.
+		int bottom_adi_y;
+		if (ra < 570) {
+			int positive_ra = (ra>0) ? ra : 0;
+			bottom_adi_y = pitch_y + ((bottom_adi_y_max - cy) * positive_ra / 180);
+			if (bottom_adi_y > bottom_adi_y_max ) { bottom_adi_y = bottom_adi_y_max; }
+			Area pitchmark_area = new Area ( new Rectangle(
+					cx - left + left/16,
+					cy - up*37/48,
+					left - left/16 + right - right/16,
+					up*37/48 + down*37/48 - (bottom_adi_y_max - bottom_adi_y) 
+					) );
 
-		// intersect with the previous clip
-		g2.clip( pitchmark_area );
-		
+			// intersect with the previous clip
+			g2.clip( pitchmark_area );
+		} else {
+			bottom_adi_y = bottom_adi_y_max;
+			g2.clip( pfd_gc.adi_pitchmark_area );
+		}
 
 		// Top and bottom lines
 		// The bottom lines moves up between ground and 120ft AGL.
@@ -400,7 +389,7 @@ public class ADI_A320 extends PFDSubcomponent {
 			
 			if ((bug_cx > (cx-(left*9/10))) && (bug_cx < (cx+(right*9/10)))) {
 				g2.setColor(pfd_gc.pfd_selected_color);
-				g2.setStroke(new BasicStroke(4.0f * pfd_gc.grow_scaling_factor));
+				g2.setStroke(pfd_gc.adi_hdg_bug_stroke);
 				g2.drawLine(bug_cx, pitch_y_airbus, bug_cx, pitch_y_airbus - up*3/32);	
 				g2.setStroke(original_stroke);
 			}
@@ -457,7 +446,7 @@ public class ADI_A320 extends PFDSubcomponent {
 				int fpv_y = cy + dy;
 				int fpv_r = down/17;
 				g2.setColor(pfd_gc.pfd_active_color);
-				g2.setStroke(new BasicStroke(2.0f * pfd_gc.grow_scaling_factor));
+				g2.setStroke(pfd_gc.adi_fpv_stroke);
 				g2.drawOval(fpv_x - fpv_r, fpv_y - fpv_r, fpv_r*2, fpv_r*2);
 				g2.drawLine(fpv_x, fpv_y - fpv_r, fpv_x, fpv_y - fpv_r*17/10);
 				g2.drawLine(fpv_x - fpv_r, fpv_y, fpv_x - fpv_r*26/10, fpv_y);
@@ -573,7 +562,6 @@ public class ADI_A320 extends PFDSubcomponent {
 				g2.fillRect(st_right      , cy + up/2 - brk_r_y, st_d*2, brk_r_y);
 			}
 			
-			
 		}
 
 		// Controls flight director flashing (FCOM 1.31.40 p18)
@@ -655,7 +643,7 @@ public class ADI_A320 extends PFDSubcomponent {
 			// FD bars
 			g2.setColor(pfd_gc.pfd_active_color);
 			original_stroke = g2.getStroke();
-			g2.setStroke(new BasicStroke(3.0f * pfd_gc.scaling_factor));
+			g2.setStroke(pfd_gc.adi_fd_bar_stroke);
 			// horizontal
 			if (fd_y < (cy+left*9/10)) g2.drawLine(cx - fd_bar, fd_y, cx + fd_bar, fd_y);
 			// vertical or yaw bar
@@ -677,14 +665,11 @@ public class ADI_A320 extends PFDSubcomponent {
 							cy + down * 9/24,
 							cy + fd_thick *3
 					};
-					// g2.setStroke(new BasicStroke(8.0f * pfd_gc.scaling_factor));
-					//g2.drawLine(fd_yaw, cy, fd_yaw, cy + fd_bar);
 					g2.drawPolygon(fd_yaw_x, fd_yaw_y, 5);
 				}
 			} else {
 				if (fd_x > (cx-left*9/10)) g2.drawLine(fd_x, cy - fd_bar, fd_x, cy + fd_bar);
 			}
-				
 			
 			if (fd_x > (cx-left*9/10)) g2.drawLine(fd_x, cy - fd_bar, fd_x, cy + fd_bar);
 

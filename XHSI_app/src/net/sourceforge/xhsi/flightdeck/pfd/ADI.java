@@ -19,10 +19,9 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
 package net.sourceforge.xhsi.flightdeck.pfd;
 
-import java.awt.BasicStroke;
-//import java.awt.Color;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GradientPaint;
@@ -30,31 +29,17 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-//import java.awt.image.BufferedImage;
-
-import java.util.logging.Logger;
-
-//import net.sourceforge.xhsi.XHSISettings;
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSIPreferences.DrawYokeInputMode;
-//import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.ModelFactory;
-//import net.sourceforge.xhsi.model.NavigationRadio;
-
-//import net.sourceforge.xhsi.panel.GraphicsConfig;
-//import net.sourceforge.xhsi.panel.Subcomponent;
-
 
 
 public class ADI extends PFDSubcomponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
-
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
     public ADI(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
@@ -154,13 +139,7 @@ public class ADI extends PFDSubcomponent {
 
         if ( this.preferences.get_draw_roundedsquare_horizon() ) {
             g2.setColor(pfd_gc.background_color);
-            Area adi_roundrectarea = new Area(new RoundRectangle2D.Float(
-                    cx - left, cy - up, left + right, up + down,
-                    (int)(60 * pfd_gc.scaling_factor),
-                    (int)(60 * pfd_gc.scaling_factor)));
-            Area adi_area = new Area(new Rectangle2D.Float(cx - left, cy - up, left + right, up + down));
-            adi_area.subtract(adi_roundrectarea);
-            g2.fill(adi_area);
+            g2.fill(pfd_gc.adi_area);
         }
 
 
@@ -249,7 +228,7 @@ public class ADI extends PFDSubcomponent {
                 int fpv_y = cy + dy;
                 int fpv_r = down/20;
                 g2.setColor(pfd_gc.fpv_color);
-                g2.setStroke(new BasicStroke(3.0f * pfd_gc.grow_scaling_factor));
+                g2.setStroke(pfd_gc.adi_fpv_stroke);
                 g2.drawOval(fpv_x - fpv_r, fpv_y - fpv_r, fpv_r*2, fpv_r*2);
                 g2.drawLine(fpv_x, fpv_y - fpv_r, fpv_x, fpv_y - fpv_r*25/10);
                 g2.drawLine(fpv_x - fpv_r, fpv_y, fpv_x - fpv_r*4, fpv_y);
@@ -377,7 +356,7 @@ public class ADI extends PFDSubcomponent {
                 // cross-hair
                 int fd_bar = down * 5 /8;
                 original_stroke = g2.getStroke();
-                g2.setStroke(new BasicStroke(3.0f * pfd_gc.scaling_factor));
+                g2.setStroke(pfd_gc.adi_fd_bar_stroke);
                 // hor
                 g2.drawLine(cx - fd_bar, fd_y, cx + fd_bar, fd_y);
                 // vert
@@ -590,6 +569,7 @@ public class ADI extends PFDSubcomponent {
 
             String mstr = "";
             if ( this.avionics.outer_marker() ) {
+            	// TODO: use dimmable color !
                 g2.setColor(Color.BLUE);
                 mstr = "OM";
             } else if ( this.avionics.middle_marker() ) {
@@ -601,7 +581,7 @@ public class ADI extends PFDSubcomponent {
             }
 
             Stroke original_stroke = g2.getStroke();
-            g2.setStroke(new BasicStroke(4.0f * pfd_gc.grow_scaling_factor));
+            g2.setStroke(pfd_gc.adi_ils_marker_stroke);
             g2.drawOval(m_x, m_y, 2*m_r, 2*m_r);
             g2.setStroke(original_stroke);
 

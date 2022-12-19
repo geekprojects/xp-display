@@ -6,7 +6,7 @@
  *
  * Copyright (C) 2007  Georg Gruetter (gruetter@gmail.com)
  * Copyright (C) 2009  Marc Rogiers (marrog.123@gmail.com)
- * Copyright (C) 2016  Nicolas Carel
+ * Copyright (C) 2022  Nicolas Carel
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,24 +33,28 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.flightdeck.GraphicsConfig;
 
 
-
 public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListener {
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
     private Composite orig_cmpst;
     private boolean draw_transparent;
     
     public int instrument_size;
     public int panel_offset_y;
+    
+    // ADI
     public int adi_cx;
     public int adi_cy;
     public int adi_size_left;
@@ -59,10 +63,18 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
     public int adi_size_down;
     public int adi_pitchscale;
     public int adi_pitch90;
+    public Area adi_roundrectarea;
+    public Area adi_area;
+    public BasicStroke adi_fd_bar_stroke;
+    public BasicStroke adi_fpv_stroke;
+    public BasicStroke adi_ils_marker_stroke;
+    
     public int tape_top;
     public int tape_height;
     public int tape_width;
-    public int speedtape_left;    
+    public int speedtape_left;
+    
+    // FMA
     public int fma_left;
     public int fma_width;
     public int fma_top;
@@ -71,6 +83,7 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
     public int fma_col_2;
     public int fma_col_3;
     public int fma_col_4;
+    
     public int dg_radius;
     public int dg_cx;
     public int dg_cy;
@@ -99,6 +112,12 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
     public int radios_height;
     
     // Only for Airbus
+    // ADI
+    public Area adi_airbus_horizon_area;
+    public Area adi_square_horizon_area;
+    public Area adi_pitchmark_area;
+    public BasicStroke adi_hdg_bug_stroke;
+    
     // Heading tape
     public int hdg_top;
     public int hdg_left;
@@ -189,6 +208,14 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
             adi_size_down = instrument_size * 240 / 1000;
             adi_pitchscale = 22; // max scale down
             adi_pitch90 = adi_size_down * 90 / adi_pitchscale;
+			adi_roundrectarea = new Area(new RoundRectangle2D.Float(
+					adi_cx - adi_size_left, adi_cy - adi_size_up, adi_size_left + adi_size_right, adi_size_up + adi_size_down,
+					(int)(60 * scaling_factor),
+					(int)(60 * scaling_factor)));
+			adi_area = new Area(new Rectangle2D.Float(adi_cx - adi_size_left, adi_cy - adi_size_up, adi_size_left + adi_size_right, adi_size_up + adi_size_down));
+			adi_area.subtract(adi_roundrectarea);            
+			adi_fd_bar_stroke=new BasicStroke(3.0f * scaling_factor);
+			
             tape_width = instrument_size * 120 / 1000;
             speedtape_left = adi_cx - adi_size_left - (instrument_size * 50 / 1000) - tape_width;
             altitape_left = adi_cx + adi_size_right + (instrument_size * 73 / 1000);
@@ -205,6 +232,17 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
                 adi_size_down = instrument_size * 260 / 1000;
                 adi_pitchscale = 22; // max scale down
                 adi_pitch90 = adi_size_down * 90 / adi_pitchscale;
+        		adi_airbus_horizon_area = new Area ( new Arc2D.Float ( (float) adi_cx - adi_size_left, (float) adi_cy - adi_size_up, (float) adi_size_left + adi_size_right, (float) adi_size_up + adi_size_down, 0.0f,360.0f,Arc2D.CHORD));
+        		adi_square_horizon_area = new Area ( new Rectangle(adi_cx - adi_size_left*9/10, adi_cy - adi_size_up*11/10, adi_size_left*9/10 + adi_size_right*9/10, adi_size_up + adi_size_down*12/10) );
+        		adi_airbus_horizon_area.intersect( adi_square_horizon_area );
+        		adi_pitchmark_area = new Area ( new Rectangle(
+        				adi_cx - adi_size_left + adi_size_left/16,
+        				adi_cy - adi_size_up*37/48,
+        				adi_size_left - adi_size_left/16 + adi_size_right - adi_size_right/16,
+        				adi_size_up*37/48 + adi_size_down*37/48 ));
+        		adi_hdg_bug_stroke = new BasicStroke(4.0f * grow_scaling_factor);
+        		adi_fpv_stroke = new BasicStroke(2.0f * grow_scaling_factor);
+        		
                 tape_width = instrument_size * 140 / 1000;
                 speedtape_left = adi_cx - adi_size_left - (instrument_size * 30 / 1000) - tape_width;
                 
@@ -272,6 +310,10 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
             } else {
             	airbus_style = false;
             	boeing_style = true;
+            	
+            	adi_fpv_stroke = new BasicStroke(3.0f * grow_scaling_factor);
+            	adi_ils_marker_stroke = new BasicStroke(4.0f * grow_scaling_factor);
+            	
                 tape_height = instrument_size * 750 / 1000;
                 vsi_height = instrument_size * 525 / 1000;
                 fma_width = instrument_size * 560 / 1000; // was 546
