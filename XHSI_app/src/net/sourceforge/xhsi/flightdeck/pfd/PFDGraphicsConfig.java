@@ -146,7 +146,11 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
     public Area alti_ind_area;
     public Area alti_outside_area;
 
-
+    // g2.setStroke(new BasicStroke(3.5f * pfd_gc.scaling_factor));
+    public BasicStroke speedtape_stroke_thick;
+    // g2.setStroke(new BasicStroke(0.6f * pfd_gc.scaling_factor));
+    public BasicStroke speedtape_stroke_thin;
+    
     public PFDGraphicsConfig(Component root_component, int du) {
         super(root_component);
         this.display_unit = du;
