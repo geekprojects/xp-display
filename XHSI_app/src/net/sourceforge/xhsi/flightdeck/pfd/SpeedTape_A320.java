@@ -23,6 +23,9 @@ public class SpeedTape_A320 extends PFDSubcomponent {
     
     private boolean ias_trend_active = false;
     
+    private DecimalFormat mach_format;
+    private DecimalFormatSymbols format_symbols;
+    
     PFDFramedElement failed_flag;
 
     public SpeedTape_A320(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
@@ -31,8 +34,13 @@ public class SpeedTape_A320 extends PFDSubcomponent {
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
         failed_flag.setBigFont(true);
+        
+        // Set decimal format
+        mach_format = new DecimalFormat("#.000");
+        format_symbols = mach_format.getDecimalFormatSymbols();
+        format_symbols.setDecimalSeparator('.');
+        mach_format.setDecimalFormatSymbols(format_symbols);
     }
-
 
     public void paint(Graphics2D g2) {
     	if ( pfd_gc.airbus_style ) {
@@ -75,12 +83,9 @@ public class SpeedTape_A320 extends PFDSubcomponent {
 
     private void drawTape(Graphics2D g2) {
 
-        DecimalFormat mach_format = new DecimalFormat("#.000");
-        DecimalFormatSymbols format_symbols = mach_format.getDecimalFormatSymbols();
-        format_symbols.setDecimalSeparator('.');
-        mach_format.setDecimalFormatSymbols(format_symbols);
-
-
+        boolean display_metric = false;
+        if (this.avionics.pfd_shows_metric_speed() ) { display_metric = true; }
+        
         // speeds
         float ias = this.aircraft.airspeed_ind();
         if (ias < 30.0f) { ias = 30.0f; }
@@ -112,6 +117,7 @@ public class SpeedTape_A320 extends PFDSubcomponent {
         int tape_middle_y=pfd_gc.tape_top + pfd_gc.tape_height/2;
         // thick
         Stroke original_stroke = g2.getStroke();
+        // TODO: move BasicStroke to graphic config
         g2.setStroke(new BasicStroke(3.5f * pfd_gc.scaling_factor));
         g2.drawLine(pfd_gc.speedtape_left - pfd_gc.tape_width/8, tape_middle_y, pfd_gc.speedtape_left, tape_middle_y  );
         g2.drawLine(speedtape_right - pfd_gc.tape_width*4/16, tape_middle_y, speedtape_right + pfd_gc.tape_width*3/16, tape_middle_y  );
