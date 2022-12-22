@@ -31,7 +31,9 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 // import java.util.logging.Logger;
 
+import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.XHSIPreferences.DrawYokeInputMode;
+import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
 
 
@@ -40,23 +42,81 @@ public class ADI extends PFDSubcomponent {
     private static final long serialVersionUID = 1L;
 
     // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    
+    PFDFramedElement failed_att_flag;
+    PFDFramedElement failed_fd_flag;
+    PFDFramedElement failed_fpv_flag;
+    PFDFramedElement failed_ra_flag;
+    PFDFramedElement stick_priority_box;
 
     public ADI(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
+        failed_att_flag = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
+        failed_att_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_att_flag.disableFlashing();
+        
+        failed_fd_flag = new PFDFramedElement(PFDFramedElement.FD_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
+        failed_fd_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_fd_flag.disableFlashing();
+        
+        failed_fpv_flag = new PFDFramedElement(PFDFramedElement.FPV_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
+        failed_fpv_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_fpv_flag.disableFlashing();
+        
+        failed_ra_flag = new PFDFramedElement(PFDFramedElement.RA_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
+        failed_ra_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_ra_flag.disableFlashing();
+        
+        stick_priority_box = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_ALARM);
+        stick_priority_box.enableFlashing();
+        stick_priority_box.disableFraming();
+        stick_priority_box.setBigFont(true);
     }
 
 
     public void paint(Graphics2D g2) {
-        if ( pfd_gc.boeing_style && pfd_gc.powered ) {
-            drawADI(g2);
-            drawMarker(g2);
-            if ( this.preferences.get_draw_pfd_turnrate() ) {
-                drawTurnRate(g2);
-                if ( ! this.aircraft.on_ground() ) drawBankForStdRate(g2);
-            }
-        }
+		if ( pfd_gc.boeing_style ) {
+			if ( ! XHSIStatus.receiving  || ! this.avionics.att_valid() ) {
+				// 737 FCOM 10.11.31 (15) ATT 
+				// if the PFD loses attitude data, its entire sphere is cleared to display the ATT flag (red)
+				if ( pfd_gc.powered ) {
+					drawAirplaneSymbol(g2);
+					drawFailedADI(g2);
+				}
+			} else if ( pfd_gc.powered ) {
+				failed_att_flag.clearText();
+				failed_fd_flag.clearText();
+				failed_fpv_flag.clearText();
+				failed_ra_flag.clearText();
+				drawADI(g2);
+				drawMarker(g2);
+	            if ( this.preferences.get_draw_pfd_turnrate() ) {
+	                drawTurnRate(g2);
+	                if ( ! this.aircraft.on_ground() ) drawBankForStdRate(g2);
+	            }
+				// drawStrickPriorityMessage(g2);
+			} 
+		} 
     }
 
+	private void drawFailedADI(Graphics2D g2) {
+
+		/*
+		 * Code for drawing a grey background ADI 		
+		 *
+		 * g2.setColor(pfd_gc.pfd_instrument_background_color);
+		 * g2.draw(pfd_gc.adi_airbus_horizon_area);
+		 */
+		drawBankMarks(g2);
+    	failed_att_flag.setText("ATT", PFE_Color.PFE_COLOR_CAUTION);
+    	failed_att_flag.paint(g2);
+    	failed_fpv_flag.setText("FPV", PFE_Color.PFE_COLOR_CAUTION);
+    	failed_fpv_flag.paint(g2);
+    	failed_fd_flag.setText("FD", PFE_Color.PFE_COLOR_CAUTION);
+    	failed_fd_flag.paint(g2);
+    	// failed_ra_flag.setText("RA", PFE_Color.PFE_COLOR_CAUTION);
+    	// failed_ra_flag.paint(g2);
+	}
 
     private void drawADI(Graphics2D g2) {
 
@@ -240,46 +300,15 @@ public class ADI extends PFDSubcomponent {
         }
       
 
-        // airplane symbol and FD
+        // airplane symbol
         if ( ! this.preferences.get_single_cue_fd() ) {
-
-            int wing_t = Math.round(4 * pfd_gc.grow_scaling_factor);
-            int wing_i = left / 3;
-            int wing_o = left * 7 / 8;
-            int wing_h = down / 8;
-            int left_wing_x[] = {
-                cx - wing_i + wing_t,
-                cx - wing_i + wing_t,
-                cx - wing_i - wing_t,
-                cx - wing_i - wing_t,
-                cx - wing_o,
-                cx - wing_o
-            };
-            int right_wing_x[] = {
-                cx + wing_i - wing_t,
-                cx + wing_i - wing_t,
-                cx + wing_i + wing_t,
-                cx + wing_i + wing_t,
-                cx + wing_o,
-                cx + wing_o
-            };
-            int wing_y[] = {
-                cy - wing_t,
-                cy + wing_h,
-                cy + wing_h,
-                cy + wing_t,
-                cy + wing_t,
-                cy - wing_t
-            };
-            g2.setColor(pfd_gc.background_color);
-            g2.fillPolygon(left_wing_x, wing_y, 6);
-            g2.fillPolygon(right_wing_x, wing_y, 6);
-            g2.setColor(pfd_gc.markings_color);
-            g2.drawPolygon(left_wing_x, wing_y, 6);
-            g2.drawPolygon(right_wing_x, wing_y, 6);
-
+        	drawAirplaneSymbol(g2);
         }
 
+        // TODO Draw Pitch Limit 10.11.14 (2) Ambert
+        // Indicates pitch limit
+        // Displayed when flaps are not up
+        // Displayed at low speeds with flaps up
 
         // FD
         if ( this.avionics.autopilot_mode() >= 1 ) {
@@ -414,30 +443,7 @@ public class ADI extends PFDSubcomponent {
 
 
         // bank marks
-        int level_triangle_x[] = { cx, cx - left/20 - left/40, cx + right/20 + right/40 };
-        int level_triangle_y[] = { cy - up + up/16, cy - up - up/32, cy - up - up/32 };
-        g2.setColor(pfd_gc.markings_color);
-        g2.fillPolygon(level_triangle_x, level_triangle_y, 3);
-        g2.rotate(Math.toRadians(+10), cx, cy);
-        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(-10-10), cx, cy);
-        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(+10+20), cx, cy);
-        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(-20-20), cx, cy);
-        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(+20+45), cx, cy);
-        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(-45-45), cx, cy);
-        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(+45+30), cx, cy);
-        g2.drawLine(cx, cy - up - up/12, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(-30-30), cx, cy);
-        g2.drawLine(cx, cy - up - up/12, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(+30+60), cx, cy);
-        g2.drawLine(cx, cy - up - up/12, cx, cy - up + up/16);
-        g2.rotate(Math.toRadians(-60-60), cx, cy);
-        g2.drawLine(cx, cy - up - up/12, cx, cy - up + up/16);
+        drawBankMarks(g2);
 
         g2.setTransform(original_at);
 
@@ -445,73 +451,15 @@ public class ADI extends PFDSubcomponent {
 
 //        g2.setColor(pfd_gc.instrument_background_color);
 //        g2.fillRect(pfd_gc.border_left + ( pfd_gc.frame_size.width - pfd_gc.border_left - pfd_gc.border_right ) / 32, pfd_gc.border_top + ( pfd_gc.frame_size.height - pfd_gc.border_top - pfd_gc.border_bottom ) / 8, ( pfd_gc.frame_size.width - pfd_gc.border_left - pfd_gc.border_right ) / 8, ( pfd_gc.frame_size.height - pfd_gc.border_top - pfd_gc.border_bottom ) / 8 * 6);
-        
-		DrawYokeInputMode display_yoke_pref = preferences.get_pfd_draw_yoke_input();
-		// Stick orders : on ground / bellow 30 ft AGL
+       
+		/*
+		 * Stick orders - control commands displayed on the PFD inside the ADI
+		 * Normal mode: displayed only when the aircraft is on ground and engine started
+		 */
+        // TODO: Get real radio altitude indicator
 		int ra = Math.round(this.aircraft.agl_m() * 3.28084f); // Radio altitude
-		boolean display_stick_always = (display_yoke_pref == DrawYokeInputMode.ALWAYS) || (display_yoke_pref == DrawYokeInputMode.ALWAYS_RUDDER);
-		boolean display_stick_orders = ((this.aircraft.on_ground()) || (ra < 30)) && (display_yoke_pref != DrawYokeInputMode.NONE);
-		// public enum DrawYokeInputMode { NONE, AUTO, AUTO_RUDDER, ALWAYS, ALWAYS_RUDDER };
-		boolean display_rudder = (display_yoke_pref == DrawYokeInputMode.AUTO_RUDDER ) || (display_yoke_pref == DrawYokeInputMode.ALWAYS_RUDDER );
-		if  (display_stick_orders || display_stick_always)  {
-
-			g2.setColor(pfd_gc.dim_markings_color);
-			int st_width = left / 8;
-			int st_left = cx - left*14/20;
-			int st_right = cx + right*14/20;
-			int st_up = cy - up/2;
-			int st_down = cy + down/2;
-			int st_x = cx + Math.round(this.aircraft.yoke_roll() * left*14/20);
-			int st_y = cy - Math.round(this.aircraft.yoke_pitch() * up/2);
-			int st_d = left/60;
-			int st_w = left/10;
-			int rd_x = cx + Math.round(this.aircraft.rudder_hdg() * left*14/20);
-			int rd_y = cy + up/2 - st_d/2;
-			int brk_l_y = Math.round(this.aircraft.brk_pedal_left() * up/2);
-			int brk_r_y = Math.round(this.aircraft.brk_pedal_right() * up/2);
-
-			// Stick box
-			// top left
-			g2.drawLine(st_left, st_up, st_left + st_width, st_up);
-			g2.drawLine(st_left, st_up, st_left, st_up + st_width);
-			// top right
-			g2.drawLine(st_right, st_up, st_right - st_width, st_up);
-			g2.drawLine(st_right, st_up, st_right, st_up + st_width);
-			// bottom left
-			g2.drawLine(st_left, st_down, st_left + st_width, st_down);
-			g2.drawLine(st_left, st_down, st_left, st_down - st_width);
-			// bottom right
-			g2.drawLine(st_right, st_down, st_right - st_width, st_down);
-			g2.drawLine(st_right, st_down, st_right, st_down - st_width);
-
-			// Stick marker
-			// top left
-			g2.drawLine(st_x - st_d - st_w , st_y - st_d, st_x - st_d, st_y - st_d);
-			g2.drawLine(st_x - st_d, st_y - st_d, st_x - st_d, st_y - st_d - st_w);
-			// top right
-			g2.drawLine(st_x + st_d + st_w , st_y - st_d, st_x + st_d, st_y - st_d);
-			g2.drawLine(st_x + st_d, st_y - st_d, st_x + st_d, st_y - st_d - st_w);
-			// bottom left
-			g2.drawLine(st_x - st_d - st_w , st_y + st_d, st_x - st_d, st_y + st_d);
-			g2.drawLine(st_x - st_d, st_y + st_d, st_x - st_d, st_y + st_d + st_w);
-			// bottom right
-			g2.drawLine(st_x + st_d + st_w , st_y + st_d, st_x + st_d, st_y + st_d);
-			g2.drawLine(st_x + st_d, st_y + st_d, st_x + st_d, st_y + st_d + st_w);
-			
-			if (display_rudder) {
-				// Rudder marker
-				g2.drawRect(rd_x-st_d*2, rd_y, st_d*4, st_d*2);
-				g2.drawLine(cx, st_down, cx, st_down+st_d);
-
-				// Brake pedals
-				g2.fillRect(st_left-st_d*2, cy + up/2 - brk_l_y, st_d*2, brk_l_y);
-				g2.fillRect(st_right      , cy + up/2 - brk_r_y, st_d*2, brk_r_y);
-			}
-			
-			
-		}
-
-        
+		drawStickOrders(g2, ra, !this.aircraft.on_ground(), engineStarted());	
+       
     }
 
 
@@ -548,6 +496,46 @@ public class ADI extends PFDSubcomponent {
 
     }
 
+	/**
+	 * This method is time expensive - takes 1ms per cycle
+	 * @param g2
+	 * @param protections
+	 */
+	private void drawBankMarks(Graphics2D g2) {
+		AffineTransform original_at = g2.getTransform();
+		
+		int cx = pfd_gc.adi_cx;
+		int cy = pfd_gc.adi_cy;
+		int left = pfd_gc.adi_size_left;
+		int right = pfd_gc.adi_size_right;
+		int up = pfd_gc.adi_size_up;
+		
+        int level_triangle_x[] = { cx, cx - left/20 - left/40, cx + right/20 + right/40 };
+        int level_triangle_y[] = { cy - up + up/16, cy - up - up/32, cy - up - up/32 };
+        g2.setColor(pfd_gc.markings_color);
+        g2.fillPolygon(level_triangle_x, level_triangle_y, 3);
+        g2.rotate(Math.toRadians(+10), cx, cy);
+        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(-10-10), cx, cy);
+        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(+10+20), cx, cy);
+        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(-20-20), cx, cy);
+        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(+20+45), cx, cy);
+        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(-45-45), cx, cy);
+        g2.drawLine(cx, cy - up, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(+45+30), cx, cy);
+        g2.drawLine(cx, cy - up - up/12, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(-30-30), cx, cy);
+        g2.drawLine(cx, cy - up - up/12, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(+30+60), cx, cy);
+        g2.drawLine(cx, cy - up - up/12, cx, cy - up + up/16);
+        g2.rotate(Math.toRadians(-60-60), cx, cy);
+        g2.drawLine(cx, cy - up - up/12, cx, cy - up + up/16);
+        g2.setTransform(original_at);
+	}
 
     private void drawMarker(Graphics2D g2) {
 
@@ -654,5 +642,138 @@ public class ADI extends PFDSubcomponent {
 
     }
 
+    /**
+     * 
+     * @param g2 : Graphic Context
+     * @param ra : radio altitude in feet
+     * @param airborne : boolean true if aircraft is airborne
+     * @param engine_started : boolean true if one engine is started
+     */
+    private void drawStickOrders(Graphics2D g2, int ra, boolean airborne, boolean engine_started) {
 
+    	DrawYokeInputMode display_yoke_pref = preferences.get_pfd_draw_yoke_input();
+    	// Stick orders : on ground / bellow 30 ft AGL
+    	boolean display_stick_always = (display_yoke_pref == DrawYokeInputMode.ALWAYS) || (display_yoke_pref == DrawYokeInputMode.ALWAYS_RUDDER);
+    	boolean display_stick_orders = ((! airborne) || (ra < 30)) && engine_started && (display_yoke_pref != DrawYokeInputMode.NONE);
+    	// public enum DrawYokeInputMode { NONE, AUTO, AUTO_RUDDER, ALWAYS, ALWAYS_RUDDER };
+    	boolean display_rudder = (display_yoke_pref == DrawYokeInputMode.AUTO_RUDDER ) || (display_yoke_pref == DrawYokeInputMode.ALWAYS_RUDDER );
+    	if  (display_stick_orders || display_stick_always)  {
+
+    		g2.setColor(pfd_gc.pfd_markings_color);
+    		int st_width = pfd_gc.adi_size_left / 8;
+    		int st_left = pfd_gc.adi_cx - pfd_gc.adi_size_left*14/20;
+    		int st_right = pfd_gc.adi_cx + pfd_gc.adi_size_right*14/20;
+    		int st_up = pfd_gc.adi_cy - pfd_gc.adi_size_up/2;
+    		int st_down = pfd_gc.adi_cy + pfd_gc.adi_size_down/2;
+    		int st_x = pfd_gc.adi_cx + Math.round(this.aircraft.yoke_roll() * pfd_gc.adi_size_left*14/20);
+    		int st_y = pfd_gc.adi_cy - Math.round(this.aircraft.yoke_pitch() * pfd_gc.adi_size_up/2);
+    		int st_d = pfd_gc.adi_size_left/60;
+    		int st_w = pfd_gc.adi_size_left/10;
+    		int rd_x = pfd_gc.adi_cx + Math.round(this.aircraft.rudder_hdg() * pfd_gc.adi_size_left*14/20);
+    		int rd_y = pfd_gc.adi_cy + pfd_gc.adi_size_up/2 - st_d/2;
+    		int brk_l_y = Math.round(this.aircraft.brk_pedal_left() * pfd_gc.adi_size_up/2);
+    		int brk_r_y = Math.round(this.aircraft.brk_pedal_right() * pfd_gc.adi_size_up/2);
+
+    		// Stick box
+    		// top left
+    		g2.drawLine(st_left, st_up, st_left + st_width, st_up);
+    		g2.drawLine(st_left, st_up, st_left, st_up + st_width);
+    		// top right
+    		g2.drawLine(st_right, st_up, st_right - st_width, st_up);
+    		g2.drawLine(st_right, st_up, st_right, st_up + st_width);
+    		// bottom left
+    		g2.drawLine(st_left, st_down, st_left + st_width, st_down);
+    		g2.drawLine(st_left, st_down, st_left, st_down - st_width);
+    		// bottom right
+    		g2.drawLine(st_right, st_down, st_right - st_width, st_down);
+    		g2.drawLine(st_right, st_down, st_right, st_down - st_width);
+
+    		// Stick marker
+    		// top left
+    		g2.drawLine(st_x - st_d - st_w , st_y - st_d, st_x - st_d, st_y - st_d);
+    		g2.drawLine(st_x - st_d, st_y - st_d, st_x - st_d, st_y - st_d - st_w);
+    		// top right
+    		g2.drawLine(st_x + st_d + st_w , st_y - st_d, st_x + st_d, st_y - st_d);
+    		g2.drawLine(st_x + st_d, st_y - st_d, st_x + st_d, st_y - st_d - st_w);
+    		// bottom left
+    		g2.drawLine(st_x - st_d - st_w , st_y + st_d, st_x - st_d, st_y + st_d);
+    		g2.drawLine(st_x - st_d, st_y + st_d, st_x - st_d, st_y + st_d + st_w);
+    		// bottom right
+    		g2.drawLine(st_x + st_d + st_w , st_y + st_d, st_x + st_d, st_y + st_d);
+    		g2.drawLine(st_x + st_d, st_y + st_d, st_x + st_d, st_y + st_d + st_w);
+
+    		if (display_rudder) {
+    			// Rudder marker
+    			g2.drawRect(rd_x-st_d*2, rd_y, st_d*4, st_d*2);
+    			g2.drawLine(pfd_gc.adi_cx, st_down, pfd_gc.adi_cx, st_down+st_d);
+
+    			// Brake pedals
+    			g2.fillRect(st_left-st_d*2, pfd_gc.adi_cy + pfd_gc.adi_size_up/2 - brk_l_y, st_d*2, brk_l_y);
+    			g2.fillRect(st_right      , pfd_gc.adi_cy + pfd_gc.adi_size_up/2 - brk_r_y, st_d*2, brk_r_y);
+    		}
+
+    	}
+    }
+    
+    private void drawAirplaneSymbol(Graphics2D g2) {
+		int cx = pfd_gc.adi_cx;
+		int cy = pfd_gc.adi_cy;
+		int left = pfd_gc.adi_size_left;
+		int down = pfd_gc.adi_size_down;
+        int wing_t = Math.round(4 * pfd_gc.grow_scaling_factor);
+        int wing_i = left / 3;
+        int wing_o = left * 7 / 8;
+        int wing_h = down / 8;
+        int left_wing_x[] = {
+            cx - wing_i + wing_t,
+            cx - wing_i + wing_t,
+            cx - wing_i - wing_t,
+            cx - wing_i - wing_t,
+            cx - wing_o,
+            cx - wing_o
+        };
+        int right_wing_x[] = {
+            cx + wing_i - wing_t,
+            cx + wing_i - wing_t,
+            cx + wing_i + wing_t,
+            cx + wing_i + wing_t,
+            cx + wing_o,
+            cx + wing_o
+        };
+        int wing_y[] = {
+            cy - wing_t,
+            cy + wing_h,
+            cy + wing_h,
+            cy + wing_t,
+            cy + wing_t,
+            cy - wing_t
+        };
+        g2.setColor(pfd_gc.background_color);
+        g2.fillPolygon(left_wing_x, wing_y, 6);
+        g2.fillPolygon(right_wing_x, wing_y, 6);
+        g2.setColor(pfd_gc.markings_color);
+        g2.drawPolygon(left_wing_x, wing_y, 6);
+        g2.drawPolygon(right_wing_x, wing_y, 6);
+        
+        // small square in the center
+        g2.setColor(pfd_gc.background_color);
+        g2.fillRect(cx - wing_t, cy - wing_t, wing_t * 2, wing_t * 2);
+        g2.setColor(pfd_gc.markings_color);
+        g2.drawRect(cx - wing_t, cy - wing_t, wing_t * 2, wing_t * 2);
+    }
+    
+    private boolean engineStarted() {
+    	boolean engine_started = false;
+    	float max_n1=0.0f;
+    	float min_n1=1000.0f;
+    	float n1;
+    	for (int pos=0; pos<this.aircraft.num_engines(); pos++) {
+    		n1 = this.aircraft.get_N1(pos);
+    		if (n1 > max_n1) max_n1 = n1; 
+    		if (n1 < min_n1) min_n1 = n1;
+    		if (n1 > 5.0f) engine_started = true;
+    	}
+    	return engine_started;
+    }
+    
 }

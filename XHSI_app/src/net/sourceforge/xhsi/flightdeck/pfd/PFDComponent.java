@@ -180,12 +180,12 @@ public class PFDComponent extends Component implements Observer, PreferencesObse
                     logger.info(this.subcomponents.get(i).toString() + ": " +
                             ((1.0f*this.subcomponent_paint_times[i])/(this.nb_of_paints*1.0f)) + "ms " +
                             "(" + ((this.subcomponent_paint_times[i] * 100) / this.total_paint_times) + "%)");
-                //    this.subcomponent_paint_times[i] = 0;
+                    this.subcomponent_paint_times[i] = 0;
                 }
                 logger.info("Total                    " + (this.total_paint_times/this.nb_of_paints) + "ms \n");
                 logger.info("=[ Paint profile info end ]===================================");
-                //this.total_paint_times = 0;
-                //this.nb_of_paints = 0;
+                this.total_paint_times = 0;
+                this.nb_of_paints = 0;
             }
         }
     }

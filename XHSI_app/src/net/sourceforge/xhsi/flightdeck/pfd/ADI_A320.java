@@ -33,11 +33,9 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-import java.util.logging.Logger;
+
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSIPreferences.DrawYokeInputMode;
 import net.sourceforge.xhsi.XHSIStatus;
@@ -50,7 +48,7 @@ public class ADI_A320 extends PFDSubcomponent {
 
 	private static final long serialVersionUID = 1L;
 
-	private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+	// private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 	
 	// Set of enums and private data to manage FD bar flashing
 	enum FDEngagement { NONE, FD, AP, FD_AP };
@@ -59,11 +57,11 @@ public class ADI_A320 extends PFDSubcomponent {
 	enum FDAltCapture { NONE, ALT, ALT_STAR };
 	private boolean fd_flashing = false;
 	private long fd_flashing_start = 0;
-	private int ap_alt = 0; 
+	// private int ap_alt = 0; 
 	private FDEngagement fd_engagement = FDEngagement.NONE;
 	private FDReversion fd_reversion = FDReversion.NORMAL;
-	private FDLand fd_land = FDLand.NONE;
-	private FDAltCapture fd_alt_capture = FDAltCapture.NONE;
+	// private FDLand fd_land = FDLand.NONE;
+	// private FDAltCapture fd_alt_capture = FDAltCapture.NONE;
 
     PFDFramedElement failed_flag;
     PFDFramedElement stick_priority_box;
@@ -101,18 +99,9 @@ public class ADI_A320 extends PFDSubcomponent {
 		/*
 		 * Code for drawing a grey background ADI 		
 		 *
-		int cx = pfd_gc.adi_cx;
-		int cy = pfd_gc.adi_cy;
-		int left = pfd_gc.adi_size_left;
-		int right = pfd_gc.adi_size_right;
-		int up = pfd_gc.adi_size_up;
-		int down = pfd_gc.adi_size_down;	
-		Area airbus_horizon_area = new Area ( new Arc2D.Float ( (float) cx - left, (float) cy - up, (float) left + right, (float) up + down, 0.0f,360.0f,Arc2D.CHORD));
-		Area square_horizon_area = new Area ( new Rectangle(cx - left*9/10, cy - up*11/10, left*9/10 + right*9/10, up + down*12/10) );
-		airbus_horizon_area.intersect( square_horizon_area );
-		g2.setColor(pfd_gc.pfd_instrument_background_color);
-		g2.draw(airbus_horizon_area);
-		*/
+		 * g2.setColor(pfd_gc.pfd_instrument_background_color);
+		 * g2.draw(pfd_gc.adi_airbus_horizon_area);
+		 */
 		
     	failed_flag.setText("ATT", PFE_Color.PFE_COLOR_ALARM);    	
     	failed_flag.paint(g2);
@@ -132,8 +121,8 @@ public class ADI_A320 extends PFDSubcomponent {
         boolean airborne = ! this.aircraft.on_ground();
         boolean protections = this.avionics.is_qpac() || this.avionics.is_jar_a320neo();
         int mark_size = left * 6/10;
-        float alt_f_range = 1100.0f;
-        int gnd_y = pfd_gc.adi_cy + Math.round( (this.aircraft.agl_m() * 3.28084f) * pfd_gc.tape_height / alt_f_range );
+        // float alt_f_range = 1100.0f;
+        // int gnd_y = pfd_gc.adi_cy + Math.round( (this.aircraft.agl_m() * 3.28084f) * pfd_gc.tape_height / alt_f_range );
         
         // Get engines status : Slideslip Blue target and ground stick orders
 		boolean engine_started = false;
@@ -168,9 +157,10 @@ public class ADI_A320 extends PFDSubcomponent {
 		if ( this.avionics.is_jar_a320neo() ) {			
 			if (this.avionics.jar_a320neo_fcu_hdg_trk() && !this.aircraft.on_ground()) { fd_on = false; path_director_on = true; }		
 		}
+		
+		// FCOM 1.27.20p3 FD bars are removed when pitch > 25°up or pitch < 13° down restored when pitch between 10° down and 22°up
+		// FCOM 1.31.40p3 FD bars are removed when bank > 45° restored when bank < 40°
 		if (pitch > 25.0f || pitch < -13.0f || Math.abs(bank) > 45.0f) { fd_on=false; path_director_on=false; }		
-		// TODO: FCOM 1.27.20p3 FD bars are removed when pitch > 25°up or pitch < 13° down restored when pitch between 10° down and 22°up
-		// TODO : FCOM 1.31.40p3 FD bars are removed when bank > 45° restored when bank < 40°
 		
 		// full-scale pitch down = adi_pitchscale (eg: 22°)
 		int pitch_y = cy + (int)(down * pitch / scale);
@@ -326,6 +316,7 @@ public class ADI_A320 extends PFDSubcomponent {
 		drawPitchmark(g2, pitch, -150, pitch_y, p_90, cx, cy, mark_size, protections);
 		drawPitchmark(g2, pitch, -175, pitch_y, p_90, cx, cy, mark_size, protections);
 		drawPitchmark(g2, pitch, -200, pitch_y, p_90, cx, cy, mark_size, protections);
+		
 
 		// no more clipping ...
 		g2.setClip(original_clipshape);
@@ -396,36 +387,7 @@ public class ADI_A320 extends PFDSubcomponent {
 		}
 	
 		// Display Radar Altitude
-		if  ( ra < 2500 )  {
-			int caution_ra = 400; // default value when no DH set
-			int d_ra_txt; // delta font width to align with the middle
-			
-			// above 50ft, round to 10
-			// bellow 50 ft, round to 5
-			// bellow 10 fr, don't round
-			if ( ra > 50 ) {
-				ra = ( ra + 5 ) / 10 * 10;
-		
-			} else if ( ra > 10 ) {
-				ra = ( ra + 2 ) / 5 * 5;
-			}
-
-			// amber and bigger when ra < dh + 100 otherwise green
-			String ra_str = "" + ra;
-			if ( ra < caution_ra ) {
-				g2.setColor(pfd_gc.pfd_caution_color);
-				g2.setFont(pfd_gc.font_xxl);
-				d_ra_txt = pfd_gc.get_text_width(g2, pfd_gc.font_xxl, ra_str) / 2;
-			} else {
-				g2.setColor(pfd_gc.pfd_active_color);
-				g2.setFont(pfd_gc.font_xl);
-				d_ra_txt = pfd_gc.get_text_width(g2, pfd_gc.font_xl, ra_str) / 2 ;
-			}
-
-			// digital readout of the current RA
-			g2.drawString(ra_str, cx - d_ra_txt, pfd_gc.adi_cy + pfd_gc.adi_size_down - pfd_gc.line_height_xl/2);
-		}
-
+		drawRadarAltitude(g2, ra, cx);
 
 		g2.setTransform(original_at);
 
@@ -456,113 +418,19 @@ public class ADI_A320 extends PFDSubcomponent {
 		}
 
 
-		// aircraft symbol
-		boolean aircraft_dimmed = fpv_on && !fd_on;
-		int wing_t = Math.round(3 * pfd_gc.grow_scaling_factor);
-		int wing_i = left * 13 / 24;
-		int wing_o = left * 21 / 24;
-		int wing_h = down * 3 / 24;
-		int left_wing_x[] = {
-				cx - wing_i + wing_t,
-				cx - wing_i + wing_t,
-				cx - wing_i - wing_t,
-				cx - wing_i - wing_t,
-				cx - wing_o,
-				cx - wing_o
-		};
-		int right_wing_x[] = {
-				cx + wing_i - wing_t,
-				cx + wing_i - wing_t,
-				cx + wing_i + wing_t,
-				cx + wing_i + wing_t,
-				cx + wing_o,
-				cx + wing_o
-		};
-		int wing_y[] = {
-				cy - wing_t,
-				cy + wing_h,
-				cy + wing_h,
-				cy + wing_t,
-				cy + wing_t,
-				cy - wing_t
-		};
-		g2.setColor(pfd_gc.background_color);
-		g2.fillPolygon(left_wing_x, wing_y, 6);
-		g2.fillPolygon(right_wing_x, wing_y, 6);
-		// small square in the center (that's the rule on Airbus A320)
-		g2.fillRect(cx - wing_t, cy - wing_t, wing_t * 2, wing_t * 2);
-		if (aircraft_dimmed) {
-			g2.setColor(pfd_gc.pfd_reference_color.darker());
-		} else {
-			g2.setColor(pfd_gc.pfd_reference_color);
-		}		
-		g2.drawPolygon(left_wing_x, wing_y, 6);
-		g2.drawPolygon(right_wing_x, wing_y, 6);
-		g2.drawRect(cx - wing_t, cy - wing_t, wing_t * 2, wing_t * 2);
+		/*
+		 *  Aircraft symbol
+		 *  TODO: Compute image in graphics context
+		 *  aircraft_dimmed = fpv_on && !fd_on;
+		 */
+		drawAircraftSymbol(g2, fpv_on && !fd_on);
 		
-	
-		DrawYokeInputMode display_yoke_pref = preferences.get_pfd_draw_yoke_input();
-		// Stick orders : on ground / bellow 30 ft AGL
-		boolean display_stick_always = (display_yoke_pref == DrawYokeInputMode.ALWAYS) || (display_yoke_pref == DrawYokeInputMode.ALWAYS_RUDDER);
-		boolean display_stick_orders = ((! airborne) || (ra < 30)) && engine_started && (display_yoke_pref != DrawYokeInputMode.NONE);
-		// public enum DrawYokeInputMode { NONE, AUTO, AUTO_RUDDER, ALWAYS, ALWAYS_RUDDER };
-		boolean display_rudder = (display_yoke_pref == DrawYokeInputMode.AUTO_RUDDER ) || (display_yoke_pref == DrawYokeInputMode.ALWAYS_RUDDER );
-		if  (display_stick_orders || display_stick_always)  {
-
-			g2.setColor(pfd_gc.pfd_markings_color);
-			int st_width = left / 8;
-			int st_left = cx - left*14/20;
-			int st_right = cx + right*14/20;
-			int st_up = cy - up/2;
-			int st_down = cy + down/2;
-			int st_x = cx + Math.round(this.aircraft.yoke_roll() * left*14/20);
-			int st_y = cy - Math.round(this.aircraft.yoke_pitch() * up/2);
-			int st_d = left/60;
-			int st_w = left/10;
-			int rd_x = cx + Math.round(this.aircraft.rudder_hdg() * left*14/20);
-			int rd_y = cy + up/2 - st_d/2;
-			int brk_l_y = Math.round(this.aircraft.brk_pedal_left() * up/2);
-			int brk_r_y = Math.round(this.aircraft.brk_pedal_right() * up/2);
-
-			// Stick box
-			// top left
-			g2.drawLine(st_left, st_up, st_left + st_width, st_up);
-			g2.drawLine(st_left, st_up, st_left, st_up + st_width);
-			// top right
-			g2.drawLine(st_right, st_up, st_right - st_width, st_up);
-			g2.drawLine(st_right, st_up, st_right, st_up + st_width);
-			// bottom left
-			g2.drawLine(st_left, st_down, st_left + st_width, st_down);
-			g2.drawLine(st_left, st_down, st_left, st_down - st_width);
-			// bottom right
-			g2.drawLine(st_right, st_down, st_right - st_width, st_down);
-			g2.drawLine(st_right, st_down, st_right, st_down - st_width);
-
-			// Stick marker
-			// top left
-			g2.drawLine(st_x - st_d - st_w , st_y - st_d, st_x - st_d, st_y - st_d);
-			g2.drawLine(st_x - st_d, st_y - st_d, st_x - st_d, st_y - st_d - st_w);
-			// top right
-			g2.drawLine(st_x + st_d + st_w , st_y - st_d, st_x + st_d, st_y - st_d);
-			g2.drawLine(st_x + st_d, st_y - st_d, st_x + st_d, st_y - st_d - st_w);
-			// bottom left
-			g2.drawLine(st_x - st_d - st_w , st_y + st_d, st_x - st_d, st_y + st_d);
-			g2.drawLine(st_x - st_d, st_y + st_d, st_x - st_d, st_y + st_d + st_w);
-			// bottom right
-			g2.drawLine(st_x + st_d + st_w , st_y + st_d, st_x + st_d, st_y + st_d);
-			g2.drawLine(st_x + st_d, st_y + st_d, st_x + st_d, st_y + st_d + st_w);
-			
-			if (display_rudder) {
-				// Rudder marker
-				g2.drawRect(rd_x-st_d*2, rd_y, st_d*4, st_d*2);
-				g2.drawLine(cx, st_down, cx, st_down+st_d);
-
-				// Brake pedals
-				g2.fillRect(st_left-st_d*2, cy + up/2 - brk_l_y, st_d*2, brk_l_y);
-				g2.fillRect(st_right      , cy + up/2 - brk_r_y, st_d*2, brk_r_y);
-			}
-			
-		}
+		/*
+		 * Stick orders - control commands displayed on the PFD inside the ADI
+		 * Normal mode: displayed only when the aircraft is on ground and engine started
+		 */
+		drawStickOrders(g2, ra, airborne, engine_started);
+		
 
 		// Controls flight director flashing (FCOM 1.31.40 p18)
 		// - reversion to the HDG V/S (manual or automatic)
@@ -650,7 +518,7 @@ public class ADI_A320 extends PFDSubcomponent {
 			if ((! airborne) || (ra < 30)) {
 				// conditions to display yaw bar instead of vertical FD bar is below 30 ft radar or on ground (FCOM 1.31.40p2 n3)
 				if (fd_yaw > (cx-left*9/10)) {
-					int fd_thick = wing_t;
+					int fd_thick = Math.round(3 * pfd_gc.grow_scaling_factor);
 					int fd_yaw_x [] = {
 							fd_yaw,
 							fd_yaw-fd_thick,
@@ -703,62 +571,9 @@ public class ADI_A320 extends PFDSubcomponent {
 
 		// bank marks
 		// on AirBus, marks are outside
-		g2.setClip(original_clipshape);		
-		int level_triangle_x[] = { cx, cx - left/14, cx + right/14 };
-		int level_triangle_y[] = { cy - up, cy - up*35/32, cy - up*35/32 };
-		int bank_mark_thick = up/25;
-		int bank_mark_heigth = up/20;
-		int bank_mark_2heigth = up/13;
-		int bank_mark_x = cx - bank_mark_thick / 2;
-		int bank_mark_y = cy - up - bank_mark_heigth;
-		int bank_mark_2y = cy - up - bank_mark_2heigth;
-		
-		g2.setColor(pfd_gc.pfd_reference_color);
-		g2.drawPolygon(level_triangle_x, level_triangle_y, 3);
-		
-		g2.setColor(pfd_gc.pfd_markings_color);
-		original_stroke = g2.getStroke();
-		g2.setStroke(new BasicStroke(1.5f * pfd_gc.scaling_factor));
-		g2.drawArc(  cx - left,  cy - up, left + right, up + down, 59, 62);
-		
-		g2.rotate(Math.toRadians(+10), cx, cy);	
-		g2.drawRect(bank_mark_x, bank_mark_y, bank_mark_thick, bank_mark_heigth);
-		g2.rotate(Math.toRadians(-10-10), cx, cy);
-		g2.drawRect(bank_mark_x, bank_mark_y, bank_mark_thick, bank_mark_heigth);
-		g2.rotate(Math.toRadians(+10+20), cx, cy);
-		g2.drawRect(bank_mark_x, bank_mark_y, bank_mark_thick, bank_mark_heigth);
-		g2.rotate(Math.toRadians(-20-20), cx, cy);
-		g2.drawRect(bank_mark_x, bank_mark_y, bank_mark_thick, bank_mark_heigth);
-		g2.rotate(Math.toRadians(+20+45), cx, cy);
-		g2.drawLine(cx, cy - up, cx, cy - up - bank_mark_2heigth);
-		g2.rotate(Math.toRadians(-45-45), cx, cy);
-		g2.drawLine(cx, cy - up, cx, cy - up - bank_mark_2heigth);
-		g2.rotate(Math.toRadians(+45+30), cx, cy);		
-		g2.drawRect(bank_mark_x, bank_mark_2y, bank_mark_thick, bank_mark_2heigth);
-		g2.rotate(Math.toRadians(-30-30), cx, cy);
-		g2.drawRect(bank_mark_x, bank_mark_2y, bank_mark_thick, bank_mark_2heigth);
+		g2.setClip(original_clipshape);
+        drawBankMarks(g2, protections);
 
-		
-		// Airbus max bank protection mark is at 67 deg. (normal law)
-		// double strikes become amber crosses with alternate & direct laws
-		if (protections) {
-			g2.setColor(pfd_gc.pfd_active_color);
-			g2.rotate(Math.toRadians(+30+67), cx, cy);
-			g2.drawLine(cx-2, cy - up - up/40, cx-2, cy - up + up/20);
-			g2.drawLine(cx+2, cy - up - up/50, cx+2, cy - up + up/17);
-			g2.rotate(Math.toRadians(-67-67), cx, cy);
-			g2.drawLine(cx-2, cy - up - up/50, cx-2, cy - up + up/17);
-			g2.drawLine(cx+2, cy - up - up/40, cx+2, cy - up + up/20);		
-		} else {
-			g2.setColor(pfd_gc.pfd_caution_color);
-			g2.rotate(Math.toRadians(+30+67), cx, cy);
-			g2.drawLine(cx-up/30, cy - up - up/30, cx+up/30, cy - up + up/30);
-			g2.drawLine(cx+up/30, cy - up - up/30, cx-up/30, cy - up + up/30);
-			g2.rotate(Math.toRadians(-67-67), cx, cy);
-			g2.drawLine(cx-up/30, cy - up - up/30, cx+up/30, cy - up + up/30);
-			g2.drawLine(cx+up/30, cy - up - up/30, cx-up/30, cy - up + up/30);		
-		}
-		g2.setStroke(original_stroke);
 		g2.setTransform(original_at);
 	}
 
@@ -821,6 +636,7 @@ public class ADI_A320 extends PFDSubcomponent {
 			int pa_d = p_m > 0 ? 1 : -1;
 			// BIG ARROW (pitch > 80°)
 			// TODO : draw Big Arrow in pitch upset more than 80°
+			/*
 			int pa_x[] = { 
 					cx - p_w,
 					cx,
@@ -846,6 +662,7 @@ public class ADI_A320 extends PFDSubcomponent {
 					m_y - pa_d * p_w / 3,
 					m_y - pa_d * p_w / 2			
 			};
+			*/
 			// NORMAL ARROW
 			int sa_x[] = {
 					cx,
@@ -874,6 +691,168 @@ public class ADI_A320 extends PFDSubcomponent {
 		}
 	}
 
+	/**
+	 * This method is time expensive - takes 1ms per cycle
+	 * @param g2
+	 * @param protections
+	 */
+	private void drawBankMarks(Graphics2D g2, boolean protections) {
+		
+		int cx = pfd_gc.adi_cx;
+		int cy = pfd_gc.adi_cy;
+		int left = pfd_gc.adi_size_left;
+		int right = pfd_gc.adi_size_right;
+		int up = pfd_gc.adi_size_up;
+		int down = pfd_gc.adi_size_down;
+		// on AirBus, marks are outside
+	
+		int level_triangle_x[] = { cx, cx - left/14, cx + right/14 };
+		int level_triangle_y[] = { cy - up, cy - up*35/32, cy - up*35/32 };
+		int bank_mark_thick = up/25;
+		int bank_mark_heigth = up/20;
+		int bank_mark_2heigth = up/13;
+		int bank_mark_x = cx - bank_mark_thick / 2;
+		int bank_mark_y = cy - up - bank_mark_heigth;
+		int bank_mark_2y = cy - up - bank_mark_2heigth;
+		
+		g2.setColor(pfd_gc.pfd_reference_color);
+		g2.drawPolygon(level_triangle_x, level_triangle_y, 3);
+		
+		g2.setColor(pfd_gc.pfd_markings_color);
+		Stroke original_stroke = g2.getStroke();
+		g2.setStroke(new BasicStroke(1.5f * pfd_gc.scaling_factor));
+		g2.drawArc(  cx - left,  cy - up, left + right, up + down, 59, 62);
+		
+		g2.rotate(Math.toRadians(+10), cx, cy);	
+		g2.drawRect(bank_mark_x, bank_mark_y, bank_mark_thick, bank_mark_heigth);
+		g2.rotate(Math.toRadians(-10-10), cx, cy);
+		g2.drawRect(bank_mark_x, bank_mark_y, bank_mark_thick, bank_mark_heigth);
+		g2.rotate(Math.toRadians(+10+20), cx, cy);
+		g2.drawRect(bank_mark_x, bank_mark_y, bank_mark_thick, bank_mark_heigth);
+		g2.rotate(Math.toRadians(-20-20), cx, cy);
+		g2.drawRect(bank_mark_x, bank_mark_y, bank_mark_thick, bank_mark_heigth);
+		g2.rotate(Math.toRadians(+20+45), cx, cy);
+		g2.drawLine(cx, cy - up, cx, cy - up - bank_mark_2heigth);
+		g2.rotate(Math.toRadians(-45-45), cx, cy);
+		g2.drawLine(cx, cy - up, cx, cy - up - bank_mark_2heigth);
+		g2.rotate(Math.toRadians(+45+30), cx, cy);		
+		g2.drawRect(bank_mark_x, bank_mark_2y, bank_mark_thick, bank_mark_2heigth);
+		g2.rotate(Math.toRadians(-30-30), cx, cy);
+		g2.drawRect(bank_mark_x, bank_mark_2y, bank_mark_thick, bank_mark_2heigth);
+
+		
+		// Airbus max bank protection mark is at 67 deg. (normal law)
+		// double strikes become amber crosses with alternate & direct laws
+		if (protections) {
+			g2.setColor(pfd_gc.pfd_active_color);
+			g2.rotate(Math.toRadians(+30+67), cx, cy);
+			g2.drawLine(cx-2, cy - up - up/40, cx-2, cy - up + up/20);
+			g2.drawLine(cx+2, cy - up - up/50, cx+2, cy - up + up/17);
+			g2.rotate(Math.toRadians(-67-67), cx, cy);
+			g2.drawLine(cx-2, cy - up - up/50, cx-2, cy - up + up/17);
+			g2.drawLine(cx+2, cy - up - up/40, cx+2, cy - up + up/20);		
+		} else {
+			g2.setColor(pfd_gc.pfd_caution_color);
+			g2.rotate(Math.toRadians(+30+67), cx, cy);
+			g2.drawLine(cx-up/30, cy - up - up/30, cx+up/30, cy - up + up/30);
+			g2.drawLine(cx+up/30, cy - up - up/30, cx-up/30, cy - up + up/30);
+			g2.rotate(Math.toRadians(-67-67), cx, cy);
+			g2.drawLine(cx-up/30, cy - up - up/30, cx+up/30, cy - up + up/30);
+			g2.drawLine(cx+up/30, cy - up - up/30, cx-up/30, cy - up + up/30);		
+		}
+		g2.setStroke(original_stroke);
+	}
+	
+	private void drawAircraftSymbol(Graphics2D g2, boolean acf_symbol_dimmed) {
+		int cx = pfd_gc.adi_cx;
+		int cy = pfd_gc.adi_cy;
+		int left = pfd_gc.adi_size_left;
+		int down = pfd_gc.adi_size_down;
+		
+		// aircraft symbol
+		// boolean aircraft_dimmed = fpv_on && !fd_on;
+		int wing_t = Math.round(3 * pfd_gc.grow_scaling_factor);
+		int wing_i = left * 13 / 24;
+		int wing_o = left * 21 / 24;
+		int wing_h = down * 3 / 24;
+		int left_wing_x[] = {
+				cx - wing_i + wing_t,
+				cx - wing_i + wing_t,
+				cx - wing_i - wing_t,
+				cx - wing_i - wing_t,
+				cx - wing_o,
+				cx - wing_o
+		};
+		int right_wing_x[] = {
+				cx + wing_i - wing_t,
+				cx + wing_i - wing_t,
+				cx + wing_i + wing_t,
+				cx + wing_i + wing_t,
+				cx + wing_o,
+				cx + wing_o
+		};
+		int wing_y[] = {
+				cy - wing_t,
+				cy + wing_h,
+				cy + wing_h,
+				cy + wing_t,
+				cy + wing_t,
+				cy - wing_t
+		};
+		g2.setColor(pfd_gc.background_color);
+		g2.fillPolygon(left_wing_x, wing_y, 6);
+		g2.fillPolygon(right_wing_x, wing_y, 6);
+		// small square in the center (that's the rule on Airbus A320)
+		g2.fillRect(cx - wing_t, cy - wing_t, wing_t * 2, wing_t * 2);
+		if (acf_symbol_dimmed) {
+			g2.setColor(pfd_gc.pfd_reference_color.darker());
+		} else {
+			g2.setColor(pfd_gc.pfd_reference_color);
+		}		
+		g2.drawPolygon(left_wing_x, wing_y, 6);
+		g2.drawPolygon(right_wing_x, wing_y, 6);
+		g2.drawRect(cx - wing_t, cy - wing_t, wing_t * 2, wing_t * 2);
+		
+	}
+	
+    /**
+     * 
+     * @param g2 : Graphic context
+     * @param ra : int radio altitude in feet
+     * @param cx : int ADI center X position in pixels
+     */
+	private void drawRadarAltitude(Graphics2D g2, int ra, int cx) {
+		// Display Radar Altitude
+		if  ( ra < 2500 )  {
+			int caution_ra = 400; // default value when no DH set
+			int d_ra_txt; // delta font width to align with the middle
+
+			// above 50ft, round to 10
+			// bellow 50 ft, round to 5
+			// bellow 10 fr, don't round
+			if ( ra > 50 ) {
+				ra = ( ra + 5 ) / 10 * 10;
+
+			} else if ( ra > 10 ) {
+				ra = ( ra + 2 ) / 5 * 5;
+			}
+
+			// amber and bigger when ra < dh + 100 otherwise green
+			String ra_str = "" + ra;
+			if ( ra < caution_ra ) {
+				g2.setColor(pfd_gc.pfd_caution_color);
+				g2.setFont(pfd_gc.font_xxl);
+				d_ra_txt = pfd_gc.get_text_width(g2, pfd_gc.font_xxl, ra_str) / 2;
+			} else {
+				g2.setColor(pfd_gc.pfd_active_color);
+				g2.setFont(pfd_gc.font_xl);
+				d_ra_txt = pfd_gc.get_text_width(g2, pfd_gc.font_xl, ra_str) / 2 ;
+			}
+
+			// digital readout of the current RA
+			g2.drawString(ra_str, cx - d_ra_txt, pfd_gc.adi_cy + pfd_gc.adi_size_down - pfd_gc.line_height_xl/2);
+		}
+	}
 
 	// This function should be in the ILS_A320 class
 	private void drawMarker(Graphics2D g2) {
@@ -928,4 +907,76 @@ public class ADI_A320 extends PFDSubcomponent {
     	}
     }
 
+    /**
+     * 
+     * @param g2 : Graphic Context
+     * @param ra : radio altitude in feet
+     * @param airborne : boolean true if aircraft is airborne
+     * @param engine_started : boolean true if one engine is started
+     */
+    private void drawStickOrders(Graphics2D g2, int ra, boolean airborne, boolean engine_started) {
+
+    	DrawYokeInputMode display_yoke_pref = preferences.get_pfd_draw_yoke_input();
+    	// Stick orders : on ground / bellow 30 ft AGL
+    	boolean display_stick_always = (display_yoke_pref == DrawYokeInputMode.ALWAYS) || (display_yoke_pref == DrawYokeInputMode.ALWAYS_RUDDER);
+    	boolean display_stick_orders = ((! airborne) || (ra < 30)) && engine_started && (display_yoke_pref != DrawYokeInputMode.NONE);
+    	// public enum DrawYokeInputMode { NONE, AUTO, AUTO_RUDDER, ALWAYS, ALWAYS_RUDDER };
+    	boolean display_rudder = (display_yoke_pref == DrawYokeInputMode.AUTO_RUDDER ) || (display_yoke_pref == DrawYokeInputMode.ALWAYS_RUDDER );
+    	if  (display_stick_orders || display_stick_always)  {
+
+    		g2.setColor(pfd_gc.pfd_markings_color);
+    		int st_width = pfd_gc.adi_size_left / 8;
+    		int st_left = pfd_gc.adi_cx - pfd_gc.adi_size_left*14/20;
+    		int st_right = pfd_gc.adi_cx + pfd_gc.adi_size_right*14/20;
+    		int st_up = pfd_gc.adi_cy - pfd_gc.adi_size_up/2;
+    		int st_down = pfd_gc.adi_cy + pfd_gc.adi_size_down/2;
+    		int st_x = pfd_gc.adi_cx + Math.round(this.aircraft.yoke_roll() * pfd_gc.adi_size_left*14/20);
+    		int st_y = pfd_gc.adi_cy - Math.round(this.aircraft.yoke_pitch() * pfd_gc.adi_size_up/2);
+    		int st_d = pfd_gc.adi_size_left/60;
+    		int st_w = pfd_gc.adi_size_left/10;
+    		int rd_x = pfd_gc.adi_cx + Math.round(this.aircraft.rudder_hdg() * pfd_gc.adi_size_left*14/20);
+    		int rd_y = pfd_gc.adi_cy + pfd_gc.adi_size_up/2 - st_d/2;
+    		int brk_l_y = Math.round(this.aircraft.brk_pedal_left() * pfd_gc.adi_size_up/2);
+    		int brk_r_y = Math.round(this.aircraft.brk_pedal_right() * pfd_gc.adi_size_up/2);
+
+    		// Stick box
+    		// top left
+    		g2.drawLine(st_left, st_up, st_left + st_width, st_up);
+    		g2.drawLine(st_left, st_up, st_left, st_up + st_width);
+    		// top right
+    		g2.drawLine(st_right, st_up, st_right - st_width, st_up);
+    		g2.drawLine(st_right, st_up, st_right, st_up + st_width);
+    		// bottom left
+    		g2.drawLine(st_left, st_down, st_left + st_width, st_down);
+    		g2.drawLine(st_left, st_down, st_left, st_down - st_width);
+    		// bottom right
+    		g2.drawLine(st_right, st_down, st_right - st_width, st_down);
+    		g2.drawLine(st_right, st_down, st_right, st_down - st_width);
+
+    		// Stick marker
+    		// top left
+    		g2.drawLine(st_x - st_d - st_w , st_y - st_d, st_x - st_d, st_y - st_d);
+    		g2.drawLine(st_x - st_d, st_y - st_d, st_x - st_d, st_y - st_d - st_w);
+    		// top right
+    		g2.drawLine(st_x + st_d + st_w , st_y - st_d, st_x + st_d, st_y - st_d);
+    		g2.drawLine(st_x + st_d, st_y - st_d, st_x + st_d, st_y - st_d - st_w);
+    		// bottom left
+    		g2.drawLine(st_x - st_d - st_w , st_y + st_d, st_x - st_d, st_y + st_d);
+    		g2.drawLine(st_x - st_d, st_y + st_d, st_x - st_d, st_y + st_d + st_w);
+    		// bottom right
+    		g2.drawLine(st_x + st_d + st_w , st_y + st_d, st_x + st_d, st_y + st_d);
+    		g2.drawLine(st_x + st_d, st_y + st_d, st_x + st_d, st_y + st_d + st_w);
+
+    		if (display_rudder) {
+    			// Rudder marker
+    			g2.drawRect(rd_x-st_d*2, rd_y, st_d*4, st_d*2);
+    			g2.drawLine(pfd_gc.adi_cx, st_down, pfd_gc.adi_cx, st_down+st_d);
+
+    			// Brake pedals
+    			g2.fillRect(st_left-st_d*2, pfd_gc.adi_cy + pfd_gc.adi_size_up/2 - brk_l_y, st_d*2, brk_l_y);
+    			g2.fillRect(st_right      , pfd_gc.adi_cy + pfd_gc.adi_size_up/2 - brk_r_y, st_d*2, brk_r_y);
+    		}
+
+    	}
+    }
 }

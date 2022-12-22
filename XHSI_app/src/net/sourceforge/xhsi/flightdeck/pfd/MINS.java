@@ -22,72 +22,72 @@
 package net.sourceforge.xhsi.flightdeck.pfd;
 
 import java.awt.BasicStroke;
-//import java.awt.Color;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-//import java.awt.image.BufferedImage;
 
-import java.util.logging.Logger;
+import net.sourceforge.xhsi.XHSIStatus;
 
-//import net.sourceforge.xhsi.XHSISettings;
+// import java.util.logging.Logger;
 
-//import net.sourceforge.xhsi.model.Avionics;
+import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
-//import net.sourceforge.xhsi.model.NavigationRadio;
-
-//import net.sourceforge.xhsi.panel.GraphicsConfig;
-//import net.sourceforge.xhsi.panel.Subcomponent;
-
 
 
 public class MINS extends PFDSubcomponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
+    PFDFramedElement failed_ra_flag;
+    PFDFramedElement failed_aoa_flag;
 
     public MINS(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
+        failed_ra_flag = new PFDFramedElement(PFDFramedElement.RA_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
+        failed_ra_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_ra_flag.disableFlashing();
+        failed_aoa_flag = new PFDFramedElement(PFDFramedElement.AOA_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
+        failed_aoa_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_aoa_flag.disableFlashing();
     }
 
 
     public void paint(Graphics2D g2) {
-        if ( pfd_gc.boeing_style && pfd_gc.powered ) {
-            if ( this.aircraft.mins_is_baro() )
-                drawBaro(g2);
-            else
-                drawRadio(g2);
-        }
+    	if ( pfd_gc.boeing_style ) {
+    		// TODO: create Avionics.ra_valid() - wait for X-Plane 12
+    		if ( ! XHSIStatus.receiving ) {
+    			if ( pfd_gc.powered ) {
+    		    	failed_ra_flag.setText("RA", PFE_Color.PFE_COLOR_CAUTION);
+    		    	failed_ra_flag.paint(g2);    		    	
+    			}
+    		} else if ( pfd_gc.powered ) {
+    			failed_ra_flag.clearText();
+                if ( this.aircraft.mins_is_baro() )
+                    drawBaro(g2);
+                else
+                    drawRadio(g2);
+    		}
+    	}
     }
 
 
     private void drawRadio(Graphics2D g2) {
 
         int ra = Math.round(this.aircraft.agl_m() * 3.28084f);
-//ra = 1234;
+
         int ra_r = pfd_gc.ra_r;
         int ra_x = pfd_gc.ra_x;
         int ra_y = this.preferences.get_draw_aoa() ? pfd_gc.ra_low_y : pfd_gc.ra_high_y;
 
         int ra_bug = this.aircraft.ra_bug();
-//ra_bug = 1234;
 
         // minimums reached on descent?
         boolean minimums = ( ra < ra_bug ) && ( this.aircraft.vvi() < 0.0f ) && ( ! this.aircraft.on_ground() );
         boolean airborne = ! this.aircraft.on_ground();
         boolean ra_at_top = ! this.preferences.get_draw_aoa();
-//minimums = true;
-//airborne = true;
-//ra_at_top = true;
 
         // Decision Height readout
         if ( ( ra_bug > 0 ) && ( ( ra > 1000 ) || ! airborne || ! ra_at_top ) ) {
@@ -100,11 +100,14 @@ public class MINS extends PFDSubcomponent {
         }
 
         // Display Radar Altitude
+        // Display on ground when airspeed > 55 kts
         if ( ( ra < 2500 ) && airborne ) {
-
-            // above 1000ft, round to 10
+        	// bellow 100 ft round to 2
+            // above 100ft, round to 10
             if ( ra > 1000 ) {
                 ra = ( ra + 5 ) / 10 * 10;
+            } else {
+            	ra = ( ra + 1 ) / 2 * 2;
             }
 
             // the round dial should flash when descending below DH, but that will be for later
@@ -164,22 +167,36 @@ public class MINS extends PFDSubcomponent {
 
     }
 
+    
+    private void drawRoundDial(Graphics2D g2) {
 
+        int ra_y = this.preferences.get_draw_aoa() ? pfd_gc.ra_low_y : pfd_gc.ra_high_y;
+        
+        // round dial below 1000ft, but only when AOA is not drawn
+        // markings
+        AffineTransform original_at = g2.getTransform();
+        for ( int i=0; i<10; i++) {
+            g2.drawLine(pfd_gc.ra_x, ra_y-pfd_gc.ra_r+1, pfd_gc.ra_x, ra_y-pfd_gc.ra_r*17/20);
+            g2.rotate(Math.toRadians(36), pfd_gc.ra_x, ra_y);
+        }
+        g2.setTransform(original_at);
+    }
+
+    
     private void drawBaro(Graphics2D g2) {
 
-        int ra_r = pfd_gc.ra_r;
+        //int ra_r = pfd_gc.ra_r;
         int baro_x = pfd_gc.ra_x;
         int baro_y = pfd_gc.ra_low_y;
 
         int da_bug = this.aircraft.da_bug();
-//da_bug = 1234;
 
         // Decision Altitude readout
         if ( ( da_bug > 0 ) ) {
             // not shown when zero
             // below minimums?
             boolean minimums = ( this.aircraft.altitude_ind() < da_bug ) && ( ! this.aircraft.on_ground() );
-//minimums = true;
+
             if ( minimums )
                 g2.setColor(pfd_gc.caution_color);
             else
@@ -189,8 +206,6 @@ public class MINS extends PFDSubcomponent {
             g2.setFont(pfd_gc.font_m);
             g2.drawString(Integer.toString(da_bug), baro_x, baro_y + pfd_gc.line_height_m);
         }
-
-
     }
 
 

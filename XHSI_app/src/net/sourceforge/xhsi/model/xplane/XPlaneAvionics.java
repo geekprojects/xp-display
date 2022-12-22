@@ -3441,7 +3441,8 @@ public class XPlaneAvionics implements Avionics, Observer {
     		case PFD_HEADING :failure_index = (gauges_failure_data & 0x01C0) >> 6; break;
     		case PFD_AIR_SPEED :failure_index = (gauges_failure_data & 0x000E00) >> 9; break;
     		case PFD_ALTITUDE :failure_index = (gauges_failure_data & 0x007000) >> 12; break;
-    		case PFD_ATTITUDE :failure_index = (gauges_failure_data & 0x038000) >> 15; break;    		
+    		case PFD_ATTITUDE :failure_index = (gauges_failure_data & 0x038000) >> 15; break;
+    		case PFD_AOA :failure_index = (gauges_failure_data & 0x038000) >> 18; break;
     	}
    	 	
     	return FailureMode.values()[failure_index];  	

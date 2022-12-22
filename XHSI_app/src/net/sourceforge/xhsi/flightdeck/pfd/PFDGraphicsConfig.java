@@ -63,6 +63,12 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
     public int adi_size_down;
     public int adi_pitchscale;
     public int adi_pitch90;
+    public int adi_att_flag_y;
+    public int adi_ra_flag_x;
+    public int adi_ra_flag_y;
+    public int adi_fd_flag_y;
+    public int adi_fd_flag_x;
+    public int adi_fpv_flag_x;
     public Area adi_roundrectarea;
     public Area adi_area;
     public BasicStroke adi_fd_bar_stroke;
@@ -83,6 +89,10 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
     public int fma_col_2;
     public int fma_col_3;
     public int fma_col_4;
+    
+    // AOA
+    public int adi_aoa_flag_x;
+    public int adi_aoa_flag_y;
     
     public int dg_radius;
     public int dg_cx;
@@ -110,6 +120,8 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
     public int navradios_left;
     public int comradios_left;
     public int radios_height;
+    
+    public int comm_lost_y;
     
     // Only for Airbus
     // ADI
@@ -227,7 +239,8 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
             if ( instrument_style == Avionics.STYLE_AIRBUS ) {
             	// TODO : airbus_style is set in super class !!
             	airbus_style = true;
-            	boeing_style = false;
+            	boeing_style = false;           	
+           	
             	adi_cy = panel_offset_y + this.panel_rect.y + instrument_size * 515 / 1000;
             	// On Airbus, tape height is align with horizon
                 adi_size_left = instrument_size * 250 / 1000;
@@ -246,11 +259,18 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
         				adi_size_up*37/48 + adi_size_down*37/48 ));
         		adi_hdg_bug_stroke = new BasicStroke(4.0f * grow_scaling_factor);
         		adi_fpv_stroke = new BasicStroke(2.0f * grow_scaling_factor);
+        	    adi_att_flag_y = adi_cy;
+        	    adi_ra_flag_y = adi_cy;
+        	    adi_ra_flag_x = adi_cx;
+        	    adi_fd_flag_y = adi_cy;
+        	    adi_fd_flag_x  = adi_cx;
+        	    adi_fpv_flag_x = adi_cx;
         		
                 tape_width = instrument_size * 140 / 1000;
                 speedtape_left = adi_cx - adi_size_left - (instrument_size * 30 / 1000) - tape_width;
                 
             	tape_height = instrument_size * 530 / 1000;
+            	tape_top = adi_cy - tape_height/2;
                 vsi_height = instrument_size * 640 / 1000;
                 fma_width =  instrument_size * 980 / 1000; // full width on A320 
                 fma_left = speedtape_left;
@@ -311,14 +331,27 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
                 alti_outside_area = new Area(new Rectangle(altitape_left - tape_width*3/24, tape_top, tape_width + tape_width*3/24, tape_height));
                 alti_outside_area.subtract(new Area(alti_ind_area));
                 
+            	comm_lost_y = tape_top - line_height_xxl;
+                
             } else {
             	airbus_style = false;
             	boeing_style = true;
             	
             	adi_fpv_stroke = new BasicStroke(3.0f * grow_scaling_factor);
             	adi_ils_marker_stroke = new BasicStroke(4.0f * grow_scaling_factor);
-            	
+        	    adi_att_flag_y = adi_cy - instrument_size * 60 / 1000;
+        	    // RA may be displayed inside the ADI or just in a circle up right
+        	    // ADI bottom
+        	    
+        	    adi_ra_flag_y = adi_cy + instrument_size * 240 / 1000;
+        	    adi_ra_flag_x = adi_cx; 
+        	    
+        	    adi_fd_flag_y = adi_cy - instrument_size *  100 / 1000;
+        	    adi_fd_flag_x  = adi_cx + instrument_size *  170 / 1000;
+        	    adi_fpv_flag_x = adi_cx - instrument_size *  165 / 1000;
+        	    
                 tape_height = instrument_size * 750 / 1000;
+                tape_top = adi_cy - tape_height/2;
                 vsi_height = instrument_size * 525 / 1000;
                 fma_width = instrument_size * 560 / 1000; // was 546
                 fma_left = adi_cx - fma_width/2;
@@ -347,9 +380,11 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
                     adi_cy - line_height_xxl,
                     adi_cy - tape_width*3/20
                 };
+                
+                comm_lost_y = adi_cy + instrument_size * 100 / 1000;
             }
             
-            tape_top = adi_cy - tape_height/2;
+            
 
             fma_top = panel_offset_y + this.panel_rect.y + instrument_size * 15 / 1000;
             dg_radius =  instrument_size * 350 / 1000;
@@ -372,14 +407,24 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
             gs_height = 2 * adi_size_down;
             cdi_width = 2 * adi_size_left;
             cdi_height = adi_size_down * 5 / 32;
+            
+            // RA Radio altitude indicator
             ra_r = adi_size_right / 4;
             ra_x = adi_cx + adi_size_right - ra_r;
             ra_high_y = ( ( adi_cy - adi_size_up ) + ( fma_top + fma_height ) ) / 2;
             ra_low_y = adi_cy + adi_size_down + cdi_height + ra_r/2;
+    	    // RA Flag in Mins circle            
+    	    adi_ra_flag_y = this.preferences.get_draw_aoa() ? ra_low_y : ra_high_y ;    	    
+    	    adi_ra_flag_x = ra_x;
+    	    
+    	    // AOA Angle of Attack indicator
             aoa_r = ra_r;
             aoa_x = ra_x;
             aoa_y = ra_high_y;
             radios_top = fma_top;
+            adi_aoa_flag_x = aoa_x;
+            adi_aoa_flag_y = aoa_y + aoa_r/3;
+            
             radios_width = instrument_size * 125 / 1000;
             // navradios_left = this.panel_rect.x + this.panel_rect.width/2 - instrument_size/2 - (instrument_size * 30 / 1000) - radios_width;
             navradios_left = speedtape_left - (instrument_size * 30 / 1000) - radios_width;
@@ -401,6 +446,8 @@ public class PFDGraphicsConfig extends GraphicsConfig implements ComponentListen
             ils_line2 = ils_line3 + line_height_l;
             ils_line1 = ils_line2 + line_height_l;
             ils_x = speedtape_left;
+            
+        	
 
         }
         

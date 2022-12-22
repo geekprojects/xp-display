@@ -1309,7 +1309,7 @@ public interface Avionics {
     public void set_cdu_side(int new_side);
 
     // Failures
-    public enum FailedElement { PFD_ATTITUDE, PFD_ALTITUDE, PFD_AIR_SPEED, PFD_HEADING, PFD_TURN, PFD_VSI };
+    public enum FailedElement { PFD_ATTITUDE, PFD_ALTITUDE, PFD_AOA, PFD_AIR_SPEED, PFD_HEADING, PFD_TURN, PFD_VSI };
     public enum FailureMode { WORKING, FAIL_MEAN_TIME, FAIL_TIME, FAIL_SPD, FAIL_ALT, FAIL_KEY, INOPERATIVE  };
   
     public FailureMode failure_mode(FailedElement element);

@@ -43,7 +43,8 @@ public class PFDFail extends PFDSubcomponent {
 
     public void paint(Graphics2D g2) {
         if ( pfd_gc.boeing_style && ! XHSIStatus.receiving ) {
-            drawFailCross(g2);
+            // drawFailCross(g2);
+            drawCommLost(g2);
         }
     }
 
@@ -55,5 +56,12 @@ public class PFDFail extends PFDSubcomponent {
         g2.drawLine(pfd_gc.frame_size.width - pfd_gc.border_right, pfd_gc.border_top, pfd_gc.border_left, pfd_gc.frame_size.height - pfd_gc.border_bottom);
         g2.setStroke(original_stroke);
     }
-
+    
+    private void drawCommLost(Graphics2D g2) {
+        g2.setColor(pfd_gc.xhsi_comm_lost_color);
+    	String failed_str = "XHSI COMM LOST";
+        g2.setFont(pfd_gc.font_xxl);
+    	g2.drawString( failed_str, pfd_gc.adi_cx - pfd_gc.get_text_width(g2, pfd_gc.font_xxl, failed_str)/2,  pfd_gc.comm_lost_y );
+    }
+    
 }
