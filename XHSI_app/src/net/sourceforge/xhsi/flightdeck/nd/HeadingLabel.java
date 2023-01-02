@@ -5,7 +5,7 @@
 *
 * Copyright (C) 2007  Georg Gruetter (gruetter@gmail.com)
 * Copyright (C) 2009  Marc Rogiers (marrog.123@gmail.com)
-* Copyright (C) 2019  Nicolas Carel
+* Copyright (C) 2019,2023  Nicolas Carel
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -33,9 +33,8 @@ import java.text.DecimalFormat;
 import net.sourceforge.xhsi.XHSIPreferences;
 import net.sourceforge.xhsi.XHSIStatus;
 
-
-import net.sourceforge.xhsi.flightdeck.nd.NDFramedElement.FE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 public class HeadingLabel extends NDSubcomponent {
 
@@ -51,7 +50,7 @@ public class HeadingLabel extends NDSubcomponent {
         super(model_factory, hsi_gc, parent_component);
         this.hdg_label_decoration_buf_img = null;
         this.failed_hdg=false;
-        failed_flag = new NDFramedElement(NDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.FE_COLOR_ALARM);
+        failed_flag = new NDFramedElement(NDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.ALARM);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
         failed_flag.setBigFont(true);
@@ -67,7 +66,7 @@ public class HeadingLabel extends NDSubcomponent {
             	// if the heading information fails, the HDG flag replaces the heading scale (red)           	
             	failed_hdg=!this.avionics.hdg_valid() || (! XHSIStatus.receiving && nd_gc.airbus_style );
             	if (failed_hdg) {
-            		failed_flag.setText("HDG", nd_gc.airbus_style ? FE_Color.FE_COLOR_ALARM : FE_Color.FE_COLOR_CAUTION);
+            		failed_flag.setText("HDG", nd_gc.airbus_style ? FE_Color.ALARM : FE_Color.CAUTION);
             		if (nd_gc.boeing_style)
             			failed_flag.enableFraming();
             		else

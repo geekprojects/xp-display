@@ -22,51 +22,57 @@
 package net.sourceforge.xhsi.flightdeck.pfd;
 
 import java.awt.BasicStroke;
-//import java.awt.Color;
-import java.awt.Color;
+
 import java.awt.Component;
-import java.awt.GradientPaint;
+
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-//import java.awt.image.BufferedImage;
 
-import java.util.logging.Logger;
+import net.sourceforge.xhsi.XHSIStatus;
 
-//import net.sourceforge.xhsi.XHSISettings;
+// import java.util.logging.Logger;
 
-//import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.ModelFactory;
-//import net.sourceforge.xhsi.model.NavigationRadio;
-
-//import net.sourceforge.xhsi.panel.GraphicsConfig;
-//import net.sourceforge.xhsi.panel.Subcomponent;
-
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_Orientation;
 
 
 public class VSI extends PFDSubcomponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
+    PFDFramedElement failed_flag;
 
     public VSI(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
+        failed_flag = new PFDFramedElement(PFDFramedElement.SPD_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
+        failed_flag.disableFlashing();
+        failed_flag.setTextOrientation(FE_Orientation.VERTICAL);
     }
 
 
     public void paint(Graphics2D g2) {
-        if ( pfd_gc.boeing_style && pfd_gc.powered ) {
-            drawDial(g2);
-        }
+		if ( pfd_gc.boeing_style ) {
+			if ( ! XHSIStatus.receiving  || ! this.avionics.alt_valid() ) {
+				if ( pfd_gc.powered ) {
+					drawFailedDial(g2);
+				}
+			} else if ( pfd_gc.powered ) {
+				failed_flag.clearText();
+				drawDial(g2);
+			} 
+		} 
     }
 
-
+	private void drawFailedDial(Graphics2D g2) {
+    	failed_flag.setText("VERT", FE_Color.CAUTION);
+    	// failed_flag.paint(g2);
+	}
+	
     private void drawDial(Graphics2D g2) {
 
         int up_down;

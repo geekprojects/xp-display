@@ -31,8 +31,8 @@ import net.sourceforge.xhsi.XHSIStatus;
 
 // import java.util.logging.Logger;
 
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 
 public class MINS extends PFDSubcomponent {
@@ -46,11 +46,11 @@ public class MINS extends PFDSubcomponent {
 
     public MINS(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
-        failed_ra_flag = new PFDFramedElement(PFDFramedElement.RA_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
-        failed_ra_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_ra_flag = new PFDFramedElement(PFDFramedElement.RA_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_ra_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_ra_flag.disableFlashing();
-        failed_aoa_flag = new PFDFramedElement(PFDFramedElement.AOA_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
-        failed_aoa_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_aoa_flag = new PFDFramedElement(PFDFramedElement.AOA_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_aoa_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_aoa_flag.disableFlashing();
     }
 
@@ -60,7 +60,7 @@ public class MINS extends PFDSubcomponent {
     		// TODO: create Avionics.ra_valid() - wait for X-Plane 12
     		if ( ! XHSIStatus.receiving ) {
     			if ( pfd_gc.powered ) {
-    		    	failed_ra_flag.setText("RA", PFE_Color.PFE_COLOR_CAUTION);
+    		    	failed_ra_flag.setText("RA", FE_Color.CAUTION);
     		    	failed_ra_flag.paint(g2);    		    	
     			}
     		} else if ( pfd_gc.powered ) {

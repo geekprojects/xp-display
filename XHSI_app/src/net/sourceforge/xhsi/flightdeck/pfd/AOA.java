@@ -4,6 +4,7 @@
 * Angle of Attack indicator
 * 
 * Copyright (C) 2010  Marc Rogiers (marrog.123@gmail.com)
+* Copyright (C) 2014,2022  Nicolas Carel
 * 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -32,8 +33,8 @@ import net.sourceforge.xhsi.XHSIStatus;
 
 // import java.util.logging.Logger;
 
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 
 
@@ -49,8 +50,8 @@ public class AOA extends PFDSubcomponent {
     
     public AOA(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
-        failed_aoa_flag = new PFDFramedElement(PFDFramedElement.AOA_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
-        failed_aoa_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_aoa_flag = new PFDFramedElement(PFDFramedElement.AOA_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_aoa_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_aoa_flag.disableFlashing();
         deg_formatter = new DecimalFormat("0.0");
         format_symbols = deg_formatter.getDecimalFormatSymbols();
@@ -60,12 +61,12 @@ public class AOA extends PFDSubcomponent {
 
 
     public void paint(Graphics2D g2) {
-    	if ( ( pfd_gc.powered ) && this.preferences.get_draw_aoa() ) {
+    	if ( pfd_gc.powered && pfd_gc.boeing_style && this.preferences.get_draw_aoa() ) {
     		drawAOAMarks(g2);
     		if ( XHSIStatus.receiving ) {
     			drawAOA(g2);
     		} else {
-    			failed_aoa_flag.setText("AOA", PFE_Color.PFE_COLOR_CAUTION);
+    			failed_aoa_flag.setText("AOA", FE_Color.CAUTION);
     			failed_aoa_flag.paint(g2);
     		}
     	}

@@ -4,7 +4,7 @@
 * This is the Airbus A320 family version of VSI.java
 * 
 * Copyright (C) 2010  Marc Rogiers (marrog.123@gmail.com)
-* Copyright (C) 2014  Nicolas Carel
+* Copyright (C) 2014,2023  Nicolas Carel
 * Adapted for Airbus by Nicolas Carel
 * Reference : A320 FCOM 1.31.40 page 5-10 REV 36
 * 
@@ -30,25 +30,26 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.text.DecimalFormat;
-import java.util.logging.Logger;
+
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSIStatus;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Align;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.util.FramedElement.FE_Align;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 public class VSI_A320 extends PFDSubcomponent {
 
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
     PFDFramedElement failed_flag;
 
     public VSI_A320(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
-        failed_flag = new PFDFramedElement(PFDFramedElement.VS_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_ALARM, PFE_Align.LEFT);
+        failed_flag = new PFDFramedElement(PFDFramedElement.VS_FLAG, 0, hsi_gc, FE_Color.ALARM, FE_Align.LEFT);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
         failed_flag.setBigFont(true);
@@ -71,11 +72,11 @@ public class VSI_A320 extends PFDSubcomponent {
     private void drawFailedDial(Graphics2D g2) {  	
     	int l_x = pfd_gc.vsi_left;
     	//      int lm_x = pfd_gc.vsi_left + pfd_gc.vsi_width/3;
-    	int lm_x = pfd_gc.vsi_left + pfd_gc.digit_width_s + pfd_gc.vsi_width/10;
+    	// int lm_x = pfd_gc.vsi_left + pfd_gc.digit_width_s + pfd_gc.vsi_width/10;
 
     	//      int m_x = pfd_gc.vsi_left + pfd_gc.vsi_width/2;
     	int m_x = pfd_gc.vsi_left +  pfd_gc.digit_width_s + pfd_gc.vsi_width/10+ pfd_gc.vsi_width/6;
-    	int r_x = pfd_gc.vsi_left + pfd_gc.vsi_width;
+    	// int r_x = pfd_gc.vsi_left + pfd_gc.vsi_width;
     	int rm_x = pfd_gc.vsi_left + pfd_gc.vsi_width*4/5 ;
 
     	int t_y = pfd_gc.vsi_top;
@@ -117,7 +118,7 @@ public class VSI_A320 extends PFDSubcomponent {
     	g2.fillPolygon(vsi_scale_x, vsi_scale_y, 10);
     	pfd_gc.setOpaque(g2);
      
-    	failed_flag.setText("V","/", "S", PFE_Color.PFE_COLOR_ALARM);    	
+    	failed_flag.setText("V","/", "S", FE_Color.ALARM);    	
     	failed_flag.paint(g2);
     }
 
@@ -133,7 +134,7 @@ public class VSI_A320 extends PFDSubcomponent {
         
 //        int m_x = pfd_gc.vsi_left + pfd_gc.vsi_width/2;
         int m_x = pfd_gc.vsi_left +  pfd_gc.digit_width_s + pfd_gc.vsi_width/10+ pfd_gc.vsi_width/6;
-        int r_x = pfd_gc.vsi_left + pfd_gc.vsi_width;
+        // int r_x = pfd_gc.vsi_left + pfd_gc.vsi_width;
         int rm_x = pfd_gc.vsi_left + pfd_gc.vsi_width*4/5 ;
 
         int t_y = pfd_gc.vsi_top;

@@ -4,7 +4,7 @@
 * This is the Airbus A320 family version of HSI.java
 * 
 * Copyright (C) 2010  Marc Rogiers (marrog.123@gmail.com)
-* Copyright (C) 2014  Nicolas Carel
+* Copyright (C) 2014,2023  Nicolas Carel
 * Adapted for Airbus by Nicolas Carel
 * Reference : A320 FCOM 1.31.40 page 16 REV 36
 * 
@@ -34,11 +34,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.logging.Logger;
+
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSIStatus;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Align;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.FMS;
 import net.sourceforge.xhsi.model.Localizer;
@@ -47,13 +46,15 @@ import net.sourceforge.xhsi.model.NavigationObject;
 import net.sourceforge.xhsi.model.NavigationRadio;
 import net.sourceforge.xhsi.model.RadioNavBeacon;
 import net.sourceforge.xhsi.model.RadioNavigationObject;
+import net.sourceforge.xhsi.util.FramedElement.FE_Align;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 
 public class HSI_A320 extends PFDSubcomponent {
 
 	private static final long serialVersionUID = 1L;
 
-	private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+	// private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
 	private DecimalFormat degrees_formatter;
 	private DecimalFormat integer_formatter;
@@ -88,7 +89,7 @@ public class HSI_A320 extends PFDSubcomponent {
 		format_symbols.setDecimalSeparator('.');
 		one_decimal_formatter.setDecimalFormatSymbols(format_symbols);
 		
-        failed_flag = new PFDFramedElement(PFDFramedElement.HDG_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_ALARM, PFE_Align.CENTER);
+        failed_flag = new PFDFramedElement(PFDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.ALARM, FE_Align.CENTER);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
         failed_flag.setBigFont(true);
@@ -130,7 +131,7 @@ public class HSI_A320 extends PFDSubcomponent {
 		g2.drawLine(pfd_gc.hdg_left, pfd_gc.hdg_top, hdg_right, pfd_gc.hdg_top);
 		g2.drawLine(pfd_gc.hdg_left, pfd_gc.hdg_top, pfd_gc.hdg_left, hdg_bottom);
 		g2.drawLine(hdg_right, pfd_gc.hdg_top, hdg_right, hdg_bottom);	
-    	failed_flag.setText("HDG", PFE_Color.PFE_COLOR_ALARM);    	
+    	failed_flag.setText("HDG", FE_Color.ALARM);    	
     	failed_flag.paint(g2);
 	}
 

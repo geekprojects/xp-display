@@ -4,7 +4,7 @@
 * This is the Airbus A320 family version of AltiTape.java
 * 
 * Copyright (C) 2010  Marc Rogiers (marrog.123@gmail.com)
-* Copyright (C) 2014  Nicolas Carel
+* Copyright (C) 2014,2023  Nicolas Carel
 * Adapted for Airbus by Nicolas Carel
 * Reference : A320 FCOM 1.31.40 page 11-14 REV 36
 * 
@@ -32,23 +32,23 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.logging.Logger;
+
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSIStatus;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Style;
 import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.Localizer;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.NavigationRadio;
 import net.sourceforge.xhsi.model.RadioNavigationObject;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 public class AltiTape_A320 extends PFDSubcomponent {
 
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
     
     DecimalFormat decaform;
     DecimalFormat feet_format;
@@ -75,7 +75,7 @@ public class AltiTape_A320 extends PFDSubcomponent {
         altitude_alert_status = AltitudeAlert.NORMAL;
         altitude_captured = true;
         altitude_captured_ap = Math.round(this.avionics.autopilot_altitude());
-        failed_flag = new PFDFramedElement(PFDFramedElement.ALT_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_ALARM);
+        failed_flag = new PFDFramedElement(PFDFramedElement.ALT_FLAG, 0, hsi_gc, FE_Color.ALARM);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
         failed_flag.setBigFont(true);
@@ -109,7 +109,7 @@ public class AltiTape_A320 extends PFDSubcomponent {
     	g2.fillRect(pfd_gc.altitape_left - pfd_gc.tape_width*3/50, pfd_gc.adi_cy - pfd_gc.line_height_xxl*6/9,
     			pfd_gc.tape_width, pfd_gc.line_height_xxl*12/9);
 
-    	failed_flag.setText("ALT", PFE_Color.PFE_COLOR_ALARM);    	
+    	failed_flag.setText("ALT", FE_Color.ALARM);    	
     	failed_flag.paint(g2);
     }
    

@@ -4,7 +4,7 @@
 * This is the Airbus A320 family version of ADI.java Attitude & Director Indicator
 * 
 * Copyright (C) 2010  Marc Rogiers (marrog.123@gmail.com)
-* Copyright (C) 2014  Nicolas Carel
+* Copyright (C) 2014,2022  Nicolas Carel
 * Adapted for Airbus by Nicolas Carel
 * Reference : A320 FCOM 1.31.40 page 1 REV 36
 * 
@@ -39,8 +39,8 @@ import java.awt.geom.Area;
 
 import net.sourceforge.xhsi.XHSIPreferences.DrawYokeInputMode;
 import net.sourceforge.xhsi.XHSIStatus;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 import net.sourceforge.xhsi.model.Aircraft.StickPriorityMessage;
 
 
@@ -68,11 +68,11 @@ public class ADI_A320 extends PFDSubcomponent {
 
 	public ADI_A320(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
 		super(model_factory, hsi_gc, parent_component);
-        failed_flag = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_ALARM);
+        failed_flag = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, FE_Color.ALARM);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
         failed_flag.setBigFont(true);
-        stick_priority_box = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_ALARM);
+        stick_priority_box = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, FE_Color.ALARM);
         stick_priority_box.enableFlashing();
         stick_priority_box.disableFraming();
         stick_priority_box.setBigFont(true);
@@ -103,7 +103,7 @@ public class ADI_A320 extends PFDSubcomponent {
 		 * g2.draw(pfd_gc.adi_airbus_horizon_area);
 		 */
 		
-    	failed_flag.setText("ATT", PFE_Color.PFE_COLOR_ALARM);    	
+    	failed_flag.setText("ATT", FE_Color.ALARM);    	
     	failed_flag.paint(g2);
 	}
 
@@ -893,15 +893,15 @@ public class ADI_A320 extends PFDSubcomponent {
     			stick_priority_box.clearText();
     			break;
     		case DUAL_INPUT :
-    			stick_priority_box.setText("DUAL INPUT", PFE_Color.PFE_COLOR_ALARM);    	
+    			stick_priority_box.setText("DUAL INPUT", FE_Color.ALARM);    	
     			stick_priority_box.paint(g2);
     			break;
     		case PRIORITY_LEFT :
-    			stick_priority_box.setText("PRIORITY LEFT", PFE_Color.PFE_COLOR_ALARM);    	
+    			stick_priority_box.setText("PRIORITY LEFT", FE_Color.ALARM);    	
     			stick_priority_box.paint(g2);
     			break;
     		case PRIORITY_RIGHT :
-    			stick_priority_box.setText("PRIORITY RIGHT", PFE_Color.PFE_COLOR_ALARM);    	
+    			stick_priority_box.setText("PRIORITY RIGHT", FE_Color.ALARM);    	
     			stick_priority_box.paint(g2);
     			break;
     	}

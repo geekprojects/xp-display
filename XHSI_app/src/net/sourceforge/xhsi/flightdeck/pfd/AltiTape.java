@@ -27,25 +27,29 @@ import java.awt.Shape;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import java.util.logging.Logger;
+// import java.util.logging.Logger;
 
+import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.Localizer;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.NavigationRadio;
 import net.sourceforge.xhsi.model.RadioNavigationObject;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_Orientation;
 
 
 public class AltiTape extends PFDSubcomponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
     DecimalFormat decaform;
     DecimalFormat feet_format;
     DecimalFormat inhg_format;
     DecimalFormatSymbols format_symbols;
+    PFDFramedElement failed_alt_flag;
     
     public AltiTape(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
@@ -55,16 +59,32 @@ public class AltiTape extends PFDSubcomponent {
         format_symbols = inhg_format.getDecimalFormatSymbols();
         format_symbols.setDecimalSeparator('.');
         inhg_format.setDecimalFormatSymbols(format_symbols);
+        failed_alt_flag = new PFDFramedElement(PFDFramedElement.ALT_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_alt_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
+        failed_alt_flag.disableFlashing();
+        failed_alt_flag.setTextOrientation(FE_Orientation.VERTICAL);
     }
 
 
     public void paint(Graphics2D g2) {
-        if ( pfd_gc.boeing_style && pfd_gc.powered ) {
-            drawTape(g2);
-        }
+    	if ( pfd_gc.boeing_style ) {
+			if ( ! XHSIStatus.receiving  || ! this.avionics.alt_valid() ) {
+				if ( pfd_gc.powered ) {				
+					drawFailedTape(g2);
+				}
+			} else if ( pfd_gc.powered ) {
+				failed_alt_flag.clearText();
+				drawTape(g2);
+
+			} 
+		} 
     }
 
-
+	private void drawFailedTape(Graphics2D g2) {
+    	failed_alt_flag.setText("ALT", FE_Color.CAUTION);
+    	// failed_alt_flag.paint(g2);
+	}
+	
     private void drawTape(Graphics2D g2) {
 
         pfd_gc.setTransparent(g2, this.preferences.get_draw_colorgradient_horizon());
@@ -81,10 +101,6 @@ public class AltiTape extends PFDSubcomponent {
 
         // Altitude scale
         float alt = this.aircraft.altitude_ind();
-//  alt = 39660;
-// float utc_time = this.aircraft.sim_time_zulu();
-// alt = (utc_time) % 10000 -5300;
-
 
         // Landing altitude
         boolean loc_receive = false;
@@ -263,7 +279,7 @@ public class AltiTape extends PFDSubcomponent {
         //ap_alt = Math.round(this.avionics.autopilot_altitude()) / 1000;
         int ap1000 = ap_alt / 1000;
         if ( ap1000 > 0 ) {
-            int i = ap1000 >= 10 ? 2 : 1;
+            // int i = ap1000 >= 10 ? 2 : 1;
             g2.setFont(pfd_gc.font_xl);
             alt_str = "" + ap1000;
             alt_str_w = pfd_gc.get_text_width(g2, pfd_gc.font_xl, alt_str);

@@ -27,14 +27,14 @@ package net.sourceforge.xhsi.flightdeck.nd;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.geom.Arc2D;
-import java.util.logging.Logger;
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.model.ModelFactory;
 
 
 public class AltitudeRangeArc extends NDSubcomponent {
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
     private static final long serialVersionUID = 1L;
 

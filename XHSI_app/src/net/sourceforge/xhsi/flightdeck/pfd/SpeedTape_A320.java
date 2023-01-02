@@ -1,3 +1,28 @@
+/**
+* SpeedTape_A320.java
+* 
+* This is the Airbus A320 family version of HSI.java
+* 
+* Copyright (C) 2010  Marc Rogiers (marrog.123@gmail.com)
+* Copyright (C) 2014,2023  Nicolas Carel
+* Adapted for Airbus by Nicolas Carel
+* Reference : A320 FCOM 1.31.xx
+* 
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2 
+* of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 package net.sourceforge.xhsi.flightdeck.pfd;
 
 import java.awt.BasicStroke;
@@ -8,18 +33,19 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.logging.Logger;
+
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSIStatus;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Align;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.util.FramedElement.FE_Align;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 public class SpeedTape_A320 extends PFDSubcomponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
     
     private boolean ias_trend_active = false;
     
@@ -30,7 +56,8 @@ public class SpeedTape_A320 extends PFDSubcomponent {
 
     public SpeedTape_A320(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
-        failed_flag = new PFDFramedElement(PFDFramedElement.SPD_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_ALARM, PFE_Align.LEFT);
+        failed_flag = new PFDFramedElement(PFDFramedElement.SPD_FLAG, 0, hsi_gc, FE_Color.ALARM, FE_Align.LEFT);
+        
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
         failed_flag.setBigFont(true);
@@ -69,7 +96,7 @@ public class SpeedTape_A320 extends PFDSubcomponent {
         g2.setFont(pfd_gc.font_xxl);
     	// g2.drawString( failed_str, pfd_gc.speedtape_left,  pfd_gc.adi_cy + pfd_gc.line_height_l/2 );
     	
-    	failed_flag.setText("SPD", PFE_Color.PFE_COLOR_ALARM);    	
+    	failed_flag.setText("SPD", FE_Color.ALARM);    	
     	failed_flag.paint(g2);
     	
     	failed_str = "SPD SEL";   	

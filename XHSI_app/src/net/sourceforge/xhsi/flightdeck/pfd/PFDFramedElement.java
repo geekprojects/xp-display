@@ -3,7 +3,7 @@
 * 
 * Manage framing and flashing elements for PFD 
 * 
-* Copyright (C) 2014  Nicolas Carel
+* Copyright (C) 2014,2023  Nicolas Carel
 * 
 * 
 * This program is free software; you can redistribute it and/or
@@ -22,25 +22,14 @@
 */
 package net.sourceforge.xhsi.flightdeck.pfd;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 
-public class PFDFramedElement {	
-    private PFDGraphicsConfig pfd_gc;
-	private boolean framed ;  // True if framed
-	private boolean framing;  // True if framing active
-	private boolean cleared;  // True if there is nothing to be display
-	private boolean flashing; // True text should flash when displayed
-	private boolean flash;    // True text is flashing
-	private boolean frame_flashing; // True if frame should flash when displayed
-	private boolean frame_flash;    // True if frame is flashing
-	private boolean frame_delayed;  // True if frame is disabled after framed_milli delay (default 10s)
-	private boolean big_font;
+import net.sourceforge.xhsi.util.FramedElement;
+
+public class PFDFramedElement extends FramedElement {	
 	
-	public enum PFE_Align {LEFT, CENTER, RIGHT};
-	public enum PFE_Orientation {HORIZONTAL, VERTICAL, MIXED};
-	public enum PFE_Style {ONE_LINE, ONE_LINE_LR, TWO_LINES, THREE_LINES, TWO_LINES_LR, TWO_COLUMNS};
+    private PFDGraphicsConfig pfd_gc;
+
 	public final static int FMA_COL1  = 1;
 	public final static int FMA_COL2  = 2;
 	public final static int FMA_COL3  = 3;
@@ -63,93 +52,23 @@ public class PFDFramedElement {
 	public final static int PITCH_FLAG = 20;
 	public final static int ROLL_FLAG  = 21;
 	public final static int AOA_FLAG  = 22;
-	private int raw; // FMA Raw
-	private int col; // FMA Column
-	private String str_line1_left;
-	private String str_line1_right;
-	private String str_line2_left;
-	private String str_line2_right;
-	private String str_line3_left;
-	// private String str_line3_right;
-	private long paint_start;	
-	private long framed_milli;		
-	private long flashed_milli;
-	private long frame_flashed_milli;
-	
-	long reconfigured_timestamp=0;
-	int frame_x;
-	int frame_y;
-	int frame_w;
-	int frame_h;
-	int text_x;
-	int text_y[] = new int[4];
-	int text_c;
-	Font text_font;
-	
-    public enum PFE_Color { PFE_COLOR_MARK, PFE_COLOR_ACTIVE, PFE_COLOR_ARMED, PFE_COLOR_MANAGED, PFE_COLOR_CAUTION, PFE_COLOR_ALARM };
-    PFE_Color text_color;
-    PFE_Color value_color;
-    PFE_Color frame_color;
-    PFE_Style text_style;
-    PFE_Align text_align;
-    PFE_Orientation text_orientation;
     
-	public PFDFramedElement(int col, int raw, PFDGraphicsConfig pfd_gc, PFE_Color default_pfe_color, PFE_Align default_text_align ) {
-		framed = false;
-		framing = true;
-		cleared = true;
-		flashing = false;
-		flash = false;
-		frame_flashing = false;
-		frame_flash = false;
-		frame_delayed = true;
-		str_line1_left = "";
-		str_line1_right = "";
-		str_line2_left = "";
-		str_line2_right = "";	
+    
+	public PFDFramedElement(int col, int raw, PFDGraphicsConfig pfd_gc, FE_Color default_pfe_color, FE_Align default_text_align ) {
+		super(pfd_gc);
 		this.col = col;
 		this.raw = raw;		
 		this.pfd_gc = pfd_gc;
-		paint_start = 0;
-		framed_milli = 10000;
-		flashed_milli = 10000;
-		frame_flashed_milli = 10000;
 		text_color = default_pfe_color;
-		value_color = PFE_Color.PFE_COLOR_ARMED;
-		frame_color = PFE_Color.PFE_COLOR_MARK;
-		text_style = PFE_Style.ONE_LINE;
 		text_align = default_text_align;
-		big_font = false;
-		text_orientation = PFE_Orientation.HORIZONTAL;
 	}
     
-	public PFDFramedElement(int col, int raw, PFDGraphicsConfig pfd_gc, PFE_Color default_pfe_color) {
-		framed = false;
-		framing = true;
-		cleared = true;
-		flashing = false;
-		flash = false;
-		frame_flashing = false;
-		frame_flash = false;
-		frame_delayed = true;
-		str_line1_left = "";
-		str_line1_right = "";
-		str_line2_left = "";
-		str_line2_right = "";	
+	public PFDFramedElement(int col, int raw, PFDGraphicsConfig pfd_gc, FE_Color default_pfe_color) {
+		super(pfd_gc);
 		this.col = col;
 		this.raw = raw;		
 		this.pfd_gc = pfd_gc;
-		paint_start = 0;
-		framed_milli = 10000;
-		flashed_milli = 10000;
-		frame_flashed_milli = 10000;
 		text_color = default_pfe_color;
-		value_color = PFE_Color.PFE_COLOR_ARMED;
-		frame_color = PFE_Color.PFE_COLOR_MARK;
-		text_style = PFE_Style.ONE_LINE;
-		text_align = PFE_Align.CENTER;
-		big_font = false;
-		text_orientation = PFE_Orientation.HORIZONTAL;
 	}
 
 	public void paint(Graphics2D g2) {    	 
@@ -183,18 +102,27 @@ public class PFDFramedElement {
     	 }
     }
     
-    public void setText ( String text, PFE_Color color ) {    	
+	private void drawVerticalString(Graphics2D g2, String text, int x, int y, int vertical_step) {
+		int v_pos=y;
+		for (int i = 0; i < text.length(); i++)	{
+			g2.drawString(text.substring(i,i+1),x,v_pos);			
+			v_pos+=vertical_step;
+		}
+	}
+	
+	
+    public void setText ( String text, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text)) || (color != text_color) ) {
     		if (text.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
     		paint_start = pfd_gc.current_time_millis;    		
     		str_line1_left = text;
     		text_color = color;
     		cleared = false;
-    		text_style = PFE_Style.ONE_LINE;
+    		text_style = FE_Style.ONE_LINE;
     	}    	
     }
     
-    public void setText ( String text1, String text2, PFE_Color color ) {    	
+    public void setText ( String text1, String text2, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text1)) || (! str_line2_left.equals(text2)) || (color != text_color) ) {
     		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
     		paint_start = pfd_gc.current_time_millis; 
@@ -202,11 +130,11 @@ public class PFDFramedElement {
     		str_line2_left = text2;
     		text_color = color;
     		cleared = false;
-    		text_style = PFE_Style.TWO_LINES;
+    		text_style = FE_Style.TWO_LINES;
     	}    	
     }
    
-    public void setText ( String text1, String text2, String text3, PFE_Color color ) {    	
+    public void setText ( String text1, String text2, String text3, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text1)) || (! str_line2_left.equals(text2)) || (color != text_color) ) {
     		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
     		paint_start = pfd_gc.current_time_millis; 
@@ -215,11 +143,11 @@ public class PFDFramedElement {
     		str_line3_left = text3;
     		text_color = color;
     		cleared = false;
-    		text_style = PFE_Style.THREE_LINES;
+    		text_style = FE_Style.THREE_LINES;
     	}    	
     }
     
-    public void setTextValue ( String text, String value, PFE_Color color ) {    	
+    public void setTextValue ( String text, String value, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text)) || (color != text_color) || (! str_line1_right.equals(value))) {
     		if (text.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
     		paint_start = pfd_gc.current_time_millis; 
@@ -227,11 +155,11 @@ public class PFDFramedElement {
     		str_line1_right = value;
     		text_color = color;
     		cleared = false;
-    		text_style = PFE_Style.ONE_LINE_LR;
+    		text_style = FE_Style.ONE_LINE_LR;
     	}    	
     }
     
-    public void setTextValue ( String text1, String text2, String value, PFE_Color color ) {    	
+    public void setTextValue ( String text1, String text2, String value, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text1)) || (color != text_color) || (! str_line2_right.equals(value)) || (! str_line2_left.equals(text2))) {
     		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
     		paint_start = pfd_gc.current_time_millis; 
@@ -240,134 +168,10 @@ public class PFDFramedElement {
     		str_line2_right = value;
     		text_color = color;
     		cleared = false;
-    		text_style = PFE_Style.TWO_LINES_LR;
+    		text_style = FE_Style.TWO_LINES_LR;
     	}    	
     }
     
-    public void setTwoColumns ( ) {
-    	text_style = PFE_Style.TWO_COLUMNS;
-    }
-    
-    public void setFrameColor(PFE_Color color) {
-    	frame_color = color;
-    }
-    
-    public void setFrame() {
-    	framed = true;
-		paint_start = pfd_gc.current_time_millis; 
-    }
-    
-    public void setFrameFlash() {
-    	frame_flash = true;
-		paint_start = pfd_gc.current_time_millis; 
-    }
-    
-    public void setFlash() {
-    	flash = true;
-		paint_start = pfd_gc.current_time_millis; 
-    }
-    
-    public void clearFrame() {
-    	framed = false;
-    }  
-    
-    public void clearFrameFlash() {
-    	frame_flash = false;
-    }
-      
-    public void clearFlash() {
-    	flash = false;
-    } 
-    
-    public void enableFraming() {
-    	framing = true;
-    }
-    
-    public void disableFraming() {
-    	framing = false;
-    }
-    
-    public void enableFlashing() {
-    	flashing = true;
-    }
-
-    public void disableFlashing() {
-    	flashing = false;
-    }
-
-    public void enableFrameFlashing() {
-    	frame_flashing = true;
-    }
-
-    public void disableFrameFlashing() {
-    	frame_flashing = false;
-    }
-    
-    public void enableFrameDelayed() {
-    	frame_delayed = true;
-    }
-    
-    public void disableFrameDelayed() {
-    	frame_delayed = false;
-    }
-    
-    public void setBigFont(boolean new_font_status) {
-    	big_font = new_font_status;
-    	this.update_config();
-    }
-    
-    public void setFontSize(boolean new_font_status) {
-    	big_font = new_font_status;
-    	this.update_config();
-    }
-    
-    
-    public void setTextOrientation(PFE_Orientation orientation) {
-    	text_orientation = orientation;
-    }
-    
-    public void setFrameOptions(boolean frame_enabled, boolean delayed, boolean flashing, PFE_Color color) {
-    	framing = frame_enabled;
-    	frame_delayed = delayed;
-    	frame_flashing = flashing;
-    	frame_color = color;
-    }
-    
-    public void clearText ( ) {    	
-    	framed = false;
-    	cleared = true;
-    	flash = false;
-		str_line1_left = "";
-		str_line1_right = "";
-		str_line2_left = "";
-		str_line2_right = "";   	   	
-    }
-    
-    private Color getColor(PFE_Color pfe_color) {
-    	Color color = pfd_gc.pfd_alarm_color;
-        switch (pfe_color) {
-    		case PFE_COLOR_MARK: 	color = pfd_gc.pfd_markings_color; 	break;
-    		case PFE_COLOR_ACTIVE: 	color = pfd_gc.pfd_active_color; 	break;
-    		case PFE_COLOR_ARMED: 	color = pfd_gc.pfd_armed_color; 	break;
-    		case PFE_COLOR_CAUTION: color = pfd_gc.pfd_caution_color; 	break;
-    		case PFE_COLOR_MANAGED: color = pfd_gc.pfd_managed_color; 	break;
-    		case PFE_COLOR_ALARM: 	color = pfd_gc.pfd_alarm_color; 	break;    		    		
-        }	
-        return color;
-    }
-    
-    private void setTextColor(Graphics2D g2) {
-   		g2.setColor(getColor(text_color));        	
-    }
-
-    private void setValueColor(Graphics2D g2) {
-   		g2.setColor(getColor(value_color)); 
-    }
-
-    private void drawFrame(Graphics2D g2) {
-    	g2.setColor(getColor(frame_color));        	        
-        g2.drawRect(frame_x, frame_y, frame_w, frame_h);     	
-    }
     
     /*
     private void drawFlag(Graphics2D g2,  String mode) {
@@ -381,24 +185,28 @@ public class PFDFramedElement {
     private void draw1Mode(Graphics2D g2, int raw, String mode) {
         int mode_w = pfd_gc.get_text_width(g2, text_font, mode);
         int mode_x = pfd_gc.fma_left + pfd_gc.digit_width_xl/2;;  
-        
-        if ( text_align == PFE_Align.CENTER ) {
-        	mode_x = text_c  - mode_w/2;
-        } else {
-        	
-            switch (col) {
-        		case 2: mode_x += pfd_gc.fma_col_2;
-        			mode_x += pfd_gc.fma_col_2 + (pfd_gc.fma_col_3 - pfd_gc.fma_col_2)/2 - mode_w/2;
-        			break;
-        		default: 
-        			mode_x = text_x;
-        			break;
-        }
-        }
-        	
         setTextColor(g2);      
         g2.setFont(text_font);
-        g2.drawString(mode, mode_x, text_y[raw]);
+        
+        if (text_orientation==FE_Orientation.HORIZONTAL) {
+            if ( text_align == FE_Align.CENTER ) {
+            	mode_x = text_c  - mode_w/2;
+            } else {           	
+                switch (col) {
+            		case 2: mode_x += pfd_gc.fma_col_2;
+            			mode_x += pfd_gc.fma_col_2 + (pfd_gc.fma_col_3 - pfd_gc.fma_col_2)/2 - mode_w/2;
+            			break;
+            		default: 
+            			mode_x = text_x;
+            			break;
+                }
+            }
+            g2.drawString(mode, mode_x, text_y[raw]);
+        } else {
+        	// Vertical orientation
+        	drawVerticalString(g2, mode, mode_x, text_y[raw], this.line_height);
+        }
+
     }
     
     private void draw2Mode(Graphics2D g2, int raw, String mode, String value) {
@@ -425,8 +233,19 @@ public class PFDFramedElement {
         g2.drawString(mode, mode_x, text_y[raw]);
     }
     
-    private void update_config () {
-    	reconfigured_timestamp = pfd_gc.current_time_millis;
+    private int textWidth(Graphics2D g2) {
+    	int w = pfd_gc.get_text_width(g2, text_font, str_line1_left);
+    	return w;
+    }
+    
+    private int textHeigth(Graphics2D g2) {
+    	int h = pfd_gc.get_text_width(g2, text_font, str_line1_left);
+    	return h;
+    }
+    
+    protected void update_config () {
+    	super.update_config();
+        
     	frame_x = pfd_gc.fma_left + pfd_gc.digit_width_xl / 4;
     	frame_y = pfd_gc.fma_top + pfd_gc.fma_height*raw/3 + pfd_gc.line_height_xl - 2 - pfd_gc.line_height_xl*15/16; 
     	frame_w = 0;
@@ -436,6 +255,7 @@ public class PFDFramedElement {
         text_y[0] = pfd_gc.fma_top + pfd_gc.fma_height*raw/3 + pfd_gc.line_height_xl - 2;
         text_y[1] = pfd_gc.fma_top + pfd_gc.fma_height*(raw+1)/3 + pfd_gc.line_height_xl - 2;
         text_y[2] = pfd_gc.fma_top + pfd_gc.fma_height*(raw+2)/3 + pfd_gc.line_height_xl - 2;
+        line_height = pfd_gc.line_height_xl;
         
         switch (col) {
     		case FMA_COL1:  
@@ -477,6 +297,7 @@ public class PFDFramedElement {
     			text_y[0] = pfd_gc.hdg_top + pfd_gc.line_height_xxl;			
     			break; 		
     		case ATT_FLAG:
+    			text_w = (big_font ? pfd_gc.digit_width_xxl : pfd_gc.digit_width_xl) * 3;
     			frame_x = pfd_gc.adi_cx - pfd_gc.digit_width_xxl * 2;
     	    	frame_y = pfd_gc.adi_att_flag_y - pfd_gc.line_height_xxl*15/16; 
     	    	frame_w = pfd_gc.digit_width_xxl * 4;   // 3 characters big font
@@ -542,6 +363,7 @@ public class PFDFramedElement {
     		case DME_FLAG:
     		case LDG_ALT_FLAG:
     		case NO_VSPEED_FLAG:
+    			// Containts horizonal and vertical text
     		case SPEED_LIM_FLAG:
     		case SEL_SPEED_FLAG:
 
@@ -551,11 +373,10 @@ public class PFDFramedElement {
     			break;
         }    
 
-
         // TODO : WARNING : text_style is not part of Graphic Context
-        if (text_style == PFE_Style.TWO_COLUMNS) { frame_w += (pfd_gc.fma_col_3 - pfd_gc.fma_col_2); }
-        if (text_style == PFE_Style.TWO_LINES || text_style == PFE_Style.TWO_LINES_LR ) frame_h += pfd_gc.line_height_xl*18/16; 
-        
-        text_font=big_font ? pfd_gc.font_xxl : pfd_gc.font_xl;
+        if (text_style == FE_Style.TWO_COLUMNS) { frame_w += (pfd_gc.fma_col_3 - pfd_gc.fma_col_2); }
+        if (text_style == FE_Style.TWO_LINES || text_style == FE_Style.TWO_LINES_LR ) frame_h += pfd_gc.line_height_xl*18/16; 
+
     }
+    
 }

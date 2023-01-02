@@ -4,7 +4,7 @@
 * This is the Airbus A320 family version of FMA.java
 * 
 * Copyright (C) 2010  Marc Rogiers (marrog.123@gmail.com)
-* Copyright (C) 2014  Nicolas Carel
+* Copyright (C) 2014,2023  Nicolas Carel
 * Adapted for Airbus by Nicolas Carel
 * Reference : A320 FCOM 1.31.40 page 23 REV 36
 * 
@@ -27,22 +27,22 @@ package net.sourceforge.xhsi.flightdeck.pfd;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
-import java.util.logging.Logger;
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSIStatus;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Align;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.SimDataRepository;
 import net.sourceforge.xhsi.model.xplane.XPlaneSimDataRepository;
+import net.sourceforge.xhsi.util.FramedElement.FE_Align;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 
 public class FMA_A320 extends PFDSubcomponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
         
     PFDFramedElement pfe_thrust;
     PFDFramedElement pfe_thrust_message;
@@ -59,18 +59,18 @@ public class FMA_A320 extends PFDSubcomponent {
           
     public FMA_A320(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
-        pfe_thrust = new PFDFramedElement(0,0, hsi_gc, PFE_Color.PFE_COLOR_ACTIVE);
-        pfe_thrust_message = new PFDFramedElement(0,2, hsi_gc, PFE_Color.PFE_COLOR_MARK, PFE_Align.LEFT);
-        pfe_ap = new PFDFramedElement(4,0, hsi_gc, PFE_Color.PFE_COLOR_MARK);
-        pfe_fd = new PFDFramedElement(4,1, hsi_gc, PFE_Color.PFE_COLOR_MARK);
-        pfe_athr = new PFDFramedElement(4,2, hsi_gc, PFE_Color.PFE_COLOR_MARK);
-        pfe_vert_mode = new PFDFramedElement(1,0, hsi_gc, PFE_Color.PFE_COLOR_MARK);
-        pfe_vert_armed = new PFDFramedElement(1,1, hsi_gc, PFE_Color.PFE_COLOR_MARK, PFE_Align.LEFT);
-        pfe_lat_mode = new PFDFramedElement(2,0, hsi_gc, PFE_Color.PFE_COLOR_MARK);
-        pfe_lat_armed = new PFDFramedElement(2,1, hsi_gc, PFE_Color.PFE_COLOR_MARK);
-        pfe_land_cat = new PFDFramedElement(3,0, hsi_gc, PFE_Color.PFE_COLOR_MARK);
-        pfe_land_mode = new PFDFramedElement(3,1, hsi_gc, PFE_Color.PFE_COLOR_MARK);
-        pfe_land_minimums = new PFDFramedElement(3,2, hsi_gc, PFE_Color.PFE_COLOR_MARK);
+        pfe_thrust = new PFDFramedElement(0,0, hsi_gc, FE_Color.ACTIVE);
+        pfe_thrust_message = new PFDFramedElement(0,2, hsi_gc, FE_Color.MARK, FE_Align.LEFT);
+        pfe_ap = new PFDFramedElement(4,0, hsi_gc, FE_Color.MARK);
+        pfe_fd = new PFDFramedElement(4,1, hsi_gc, FE_Color.MARK);
+        pfe_athr = new PFDFramedElement(4,2, hsi_gc, FE_Color.MARK);
+        pfe_vert_mode = new PFDFramedElement(1,0, hsi_gc, FE_Color.MARK);
+        pfe_vert_armed = new PFDFramedElement(1,1, hsi_gc, FE_Color.MARK, FE_Align.LEFT);
+        pfe_lat_mode = new PFDFramedElement(2,0, hsi_gc, FE_Color.MARK);
+        pfe_lat_armed = new PFDFramedElement(2,1, hsi_gc, FE_Color.MARK);
+        pfe_land_cat = new PFDFramedElement(3,0, hsi_gc, FE_Color.MARK);
+        pfe_land_mode = new PFDFramedElement(3,1, hsi_gc, FE_Color.MARK);
+        pfe_land_minimums = new PFDFramedElement(3,2, hsi_gc, FE_Color.MARK);
         pfe_thrust_message.disableFraming();
         pfe_land_minimums.disableFraming();
     }
@@ -117,13 +117,13 @@ public class FMA_A320 extends PFDSubcomponent {
         
         // AP Engaged
         if (ap_mode == 2) {
-        	pfe_ap.setText("AP 1", PFE_Color.PFE_COLOR_MARK);
+        	pfe_ap.setText("AP 1", FE_Color.MARK);
         }  else pfe_ap.clearText();  
         pfe_ap.paint(g2);
               
         // FD Engaged
         if ( ap_mode > 0 ) {
-        	pfe_fd.setText("1 FD 1", PFE_Color.PFE_COLOR_MARK);
+        	pfe_fd.setText("1 FD 1", FE_Color.MARK);
         } else pfe_fd.clearText();
         pfe_fd.paint(g2);
     }
@@ -163,24 +163,24 @@ public class FMA_A320 extends PFDSubcomponent {
         // A/T
         if ( this.avionics.x737_mcp_spd() > 0 ) {
         	// speed selected
-        	pfe_thrust.setText("MCP SPD", PFE_Color.PFE_COLOR_ACTIVE);
-        	pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust.setText("MCP SPD", FE_Color.ACTIVE);
+        	pfe_athr.setText("A/THR", FE_Color.MARK);
         } else if ( this.avionics.x737_fmc_spd() > 0 ) {
         	// speed managed
-        	pfe_thrust.setText("FMC SPD", PFE_Color.PFE_COLOR_ACTIVE);
-        	pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust.setText("FMC SPD", FE_Color.ACTIVE);
+        	pfe_athr.setText("A/THR", FE_Color.MARK);
         } else if ( this.avionics.x737_retard() > 0 ) {
-        	pfe_thrust.setText("RETARD", PFE_Color.PFE_COLOR_ACTIVE);
-        	pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust.setText("RETARD", FE_Color.ACTIVE);
+        	pfe_athr.setText("A/THR", FE_Color.MARK);
         } else if ( this.avionics.x737_thr_hld() > 0 ) {
-        	pfe_thrust.setText("THR HOLD", PFE_Color.PFE_COLOR_ACTIVE);
-        	pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust.setText("THR HOLD", FE_Color.ACTIVE);
+        	pfe_athr.setText("A/THR", FE_Color.MARK);
         } else if ( this.avionics.x737_n1() > 0 ) {
-        	pfe_thrust.setText("N1", PFE_Color.PFE_COLOR_ACTIVE);
-        	pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust.setText("N1", FE_Color.ACTIVE);
+        	pfe_athr.setText("A/THR", FE_Color.MARK);
         } else if ( this.avionics.x737_athr_armed() ) {
         	pfe_thrust.clearText();
-        	pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_ARMED);
+        	pfe_athr.setText("A/THR", FE_Color.ARMED);
         } else {
         	pfe_thrust.clearText();
         	pfe_athr.clearText();
@@ -190,50 +190,50 @@ public class FMA_A320 extends PFDSubcomponent {
 
         // Lateral
         if ( this.avionics.x737_vorloc() > 0 ) {
-        	pfe_lat_mode.setText("VOR/LOC", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_lat_mode.setText("VOR/LOC", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_hdg() > 0 ) {
-        	pfe_lat_mode.setText("HDG", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_lat_mode.setText("HDG", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_lnav() > 0 ) {
-        	pfe_lat_mode.setText("NAV", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_lat_mode.setText("NAV", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_toga() > 0 ) {
-        	pfe_lat_mode.setText("TO/GA", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_lat_mode.setText("TO/GA", FE_Color.ACTIVE);
         } else pfe_lat_mode.clearText();
         // Lateral Armed
         if ( this.avionics.x737_lnav_armed() > 0 ) {
-        	pfe_lat_armed.setText("NAV", PFE_Color.PFE_COLOR_ARMED);
+        	pfe_lat_armed.setText("NAV", FE_Color.ARMED);
         } else if ( this.avionics.x737_vorloc_armed() > 0 ) {
-        	pfe_lat_armed.setText("VOR/LOC", PFE_Color.PFE_COLOR_ARMED);
+        	pfe_lat_armed.setText("VOR/LOC", FE_Color.ARMED);
         } else pfe_lat_armed.clearText();
         pfe_lat_mode.paint(g2);
         pfe_lat_armed.paint(g2);
 
         // Vertical
         if ( this.avionics.x737_pitch_spd() > 0 ) {
-        	pfe_vert_mode.setText("PTCH SPD", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setText("PTCH SPD", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_alt_hld() > 0 ) {
-        	pfe_vert_mode.setText("ALT", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setText("ALT", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_vs() > 0 ) {
-        	pfe_vert_mode.setTextValue("V/S"," "+ap_vv, PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setTextValue("V/S"," "+ap_vv, FE_Color.ACTIVE);
         } else if ( this.avionics.x737_vnav_alt() > 0 ) {
-        	pfe_vert_mode.setText("VNAV ALT", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setText("VNAV ALT", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_vnav_path() > 0 ) {
-        	pfe_vert_mode.setText("VNAV PTH", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setText("VNAV PTH", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_vnav_spd() > 0 ) {
-        	pfe_vert_mode.setText("VNAV SPD", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setText("VNAV SPD", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_gs() > 0 ) {
-        	pfe_vert_mode.setText("G/S", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setText("G/S", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_flare() > 0 ) {
-        	pfe_vert_mode.setText("FLARE", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setText("FLARE", FE_Color.ACTIVE);
         } else if ( this.avionics.x737_toga() > 0 ) {
-        	pfe_vert_mode.setText("TO/GA", PFE_Color.PFE_COLOR_ACTIVE);
+        	pfe_vert_mode.setText("TO/GA", FE_Color.ACTIVE);
         } else pfe_vert_mode.clearText();
         // Vertical Armed
         if ( this.avionics.x737_vs_armed() > 0 ) {
-        	pfe_vert_armed.setText("V/S", PFE_Color.PFE_COLOR_ARMED);
+        	pfe_vert_armed.setText("V/S", FE_Color.ARMED);
         } else if ( this.avionics.x737_gs_armed() > 0 ) {
-        	pfe_vert_armed.setText("G/S", PFE_Color.PFE_COLOR_ARMED);
+        	pfe_vert_armed.setText("G/S", FE_Color.ARMED);
         } else if ( this.avionics.x737_flare_armed() > 0 ) {
-        	pfe_vert_armed.setText("FLARE", PFE_Color.PFE_COLOR_ARMED);
+        	pfe_vert_armed.setText("FLARE", FE_Color.ARMED);
         } else pfe_vert_armed.clearText();
         pfe_vert_mode.paint(g2);
         pfe_vert_armed.paint(g2); 
@@ -249,11 +249,11 @@ public class FMA_A320 extends PFDSubcomponent {
               
         // Autothrottle
         if ( this.avionics.autothrottle_on() ) {        
-            pfe_thrust.setText("SPEED", PFE_Color.PFE_COLOR_ACTIVE);
-            pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_MARK);
+            pfe_thrust.setText("SPEED", FE_Color.ACTIVE);
+            pfe_athr.setText("A/THR", FE_Color.MARK);
         } else if ( this.avionics.autothrottle_enabled() ) {           
             pfe_thrust.clearText();
-            pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_ARMED);
+            pfe_athr.setText("A/THR", FE_Color.ARMED);
         } else { 
         	pfe_athr.clearText();
         	pfe_thrust.clearText();
@@ -286,7 +286,7 @@ public class FMA_A320 extends PFDSubcomponent {
                 } else /* if ( roll_on ) */ {
                     fma_str = "WLV";
                 }
-                pfe_lat_mode.setText(fma_str, PFE_Color.PFE_COLOR_ACTIVE);                
+                pfe_lat_mode.setText(fma_str, FE_Color.ACTIVE);                
             } else pfe_lat_mode.clearText();
             
             pfe_lat_mode.paint(g2);
@@ -306,7 +306,7 @@ public class FMA_A320 extends PFDSubcomponent {
                 } else /* if ( ltoga_arm ) */ {
                     fma_str = "TO/GA";
                 }
-                pfe_lat_armed.setText(fma_str, PFE_Color.PFE_COLOR_ARMED);                
+                pfe_lat_armed.setText(fma_str, FE_Color.ARMED);                
                 // draw1Mode(g2, 2, 1, fma_str, false, pfd_gc.pfd_armed_color);
             } else pfe_lat_armed.clearText();
             pfe_lat_armed.paint(g2);
@@ -324,22 +324,22 @@ public class FMA_A320 extends PFDSubcomponent {
 
             if ( alt_hold_on || vs_on || gs_on || vnav_on || vtoga_on || flch_on || pitch_on ) {
                 if ( vnav_on )  {                   
-                    pfe_vert_mode.setText("VNAV PTH", PFE_Color.PFE_COLOR_ACTIVE);
+                    pfe_vert_mode.setText("VNAV PTH", FE_Color.ACTIVE);
                 } else if ( alt_hold_on ) {                   
-                    pfe_vert_mode.setText("ALT", PFE_Color.PFE_COLOR_ACTIVE);
+                    pfe_vert_mode.setText("ALT", FE_Color.ACTIVE);
                 } else if ( vs_on ) {
                     fma_str = " "+ap_vv;
-                    pfe_vert_mode.setTextValue("V/S", fma_str, PFE_Color.PFE_COLOR_ACTIVE);
+                    pfe_vert_mode.setTextValue("V/S", fma_str, FE_Color.ACTIVE);
                 } else if ( gs_on ) {                    
-                    pfe_vert_mode.setText("G/S", PFE_Color.PFE_COLOR_ACTIVE);
+                    pfe_vert_mode.setText("G/S", FE_Color.ACTIVE);
                 } else if ( vtoga_on ) {                    
-                    pfe_vert_mode.setText("TO/GA", PFE_Color.PFE_COLOR_ACTIVE);
+                    pfe_vert_mode.setText("TO/GA", FE_Color.ACTIVE);
                 } else if ( flch_on ) {
                     // Flight level change
                 	// TODO : OP CLB or OP DES depending on current altitude and targer altitude
-                    pfe_vert_mode.setText("CLB/DES", PFE_Color.PFE_COLOR_ACTIVE);
+                    pfe_vert_mode.setText("CLB/DES", FE_Color.ACTIVE);
                 } else /* if ( pitch_on ) */ {                    
-                    pfe_vert_mode.setText("PITCH", PFE_Color.PFE_COLOR_ACTIVE);
+                    pfe_vert_mode.setText("PITCH", FE_Color.ACTIVE);
                 }                
             } else pfe_vert_mode.clearText();
             pfe_vert_mode.paint(g2);
@@ -354,19 +354,19 @@ public class FMA_A320 extends PFDSubcomponent {
             if ( alt_hold_arm || vs_arm || gs_arm || vnav_arm || vtoga_arm ) {
                 if ( vnav_arm ) {
                     fma_str = "VNAV PTH";
-                    pfe_vert_armed.setText("VNAV PTH", PFE_Color.PFE_COLOR_ARMED);
+                    pfe_vert_armed.setText("VNAV PTH", FE_Color.ARMED);
                 } else if ( alt_hold_arm ) {
                     fma_str = "ALT HOLD";
-                    pfe_vert_armed.setText("ALT", PFE_Color.PFE_COLOR_ARMED);
+                    pfe_vert_armed.setText("ALT", FE_Color.ARMED);
                 } else if ( vs_arm ) {
                     fma_str = "V/S "+ap_vv;
-                    pfe_vert_armed.setText(fma_str, PFE_Color.PFE_COLOR_ARMED);
+                    pfe_vert_armed.setText(fma_str, FE_Color.ARMED);
                 } else if ( gs_arm ) {
                     fma_str = "G/S";
-                    pfe_vert_armed.setText("G/S", PFE_Color.PFE_COLOR_ARMED);
+                    pfe_vert_armed.setText("G/S", FE_Color.ARMED);
                 } else /* if ( vtoga_arm ) */ {
                     fma_str = "TO/GA";
-                    pfe_vert_armed.setText("TO/GA", PFE_Color.PFE_COLOR_ARMED);
+                    pfe_vert_armed.setText("TO/GA", FE_Color.ARMED);
                 }               
             } else pfe_vert_armed.clearText();
             pfe_vert_armed.paint(g2);
@@ -376,9 +376,9 @@ public class FMA_A320 extends PFDSubcomponent {
         String str_dh_mda_value ="";             
         if (this.aircraft.ra_bug() != -10.0f) { 
         	str_dh_mda_value = "" + this.aircraft.ra_bug();
-        	pfe_land_minimums.setTextValue("DH ", str_dh_mda_value, PFE_Color.PFE_COLOR_MARK);
+        	pfe_land_minimums.setTextValue("DH ", str_dh_mda_value, FE_Color.MARK);
         } else {
-        	pfe_land_minimums.setText("NO DH", PFE_Color.PFE_COLOR_MARK);
+        	pfe_land_minimums.setText("NO DH", FE_Color.MARK);
         }
         		
     }
@@ -461,7 +461,7 @@ public class FMA_A320 extends PFDSubcomponent {
         } else if (this.avionics.qpac_ap2()) {
         	ap_str="AP 2";
         }
-        pfe_ap.setText(ap_str, PFE_Color.PFE_COLOR_MARK);
+        pfe_ap.setText(ap_str, FE_Color.MARK);
         pfe_ap.paint(g2);
  
         
@@ -470,7 +470,7 @@ public class FMA_A320 extends PFDSubcomponent {
         if (this.avionics.qpac_fd1()) {fd_str="1";} else {fd_str="-";}
         fd_str+=" FD ";
         if (this.avionics.qpac_fd2()) {fd_str+="2";} else {fd_str+="-";}
-        pfe_fd.setText(fd_str, PFE_Color.PFE_COLOR_MARK);
+        pfe_fd.setText(fd_str, FE_Color.MARK);
         pfe_fd.paint(g2);        
 
         
@@ -520,10 +520,10 @@ public class FMA_A320 extends PFDSubcomponent {
         		// TODO : fix the FPA value display 
         		String str_vv = "" + ap_vv;
         		if ( ap_vv >0 ) { str_vv = "+" + ap_vv; }
-        		pfe_vert_mode.setTextValue(ap_vertical_mode, str_vv, PFE_Color.PFE_COLOR_ACTIVE);
+        		pfe_vert_mode.setTextValue(ap_vertical_mode, str_vv, FE_Color.ACTIVE);
         		pfe_vert_mode.paint(g2);
         	} else {
-        		pfe_vert_mode.setText(ap_vertical_mode, PFE_Color.PFE_COLOR_ACTIVE);
+        		pfe_vert_mode.setText(ap_vertical_mode, FE_Color.ACTIVE);
         		pfe_vert_mode.paint(g2);
         	}
         }
@@ -532,30 +532,30 @@ public class FMA_A320 extends PFDSubcomponent {
         switch (this.avionics.qpac_ap_vertical_armed()) {
     		case 0 : pfe_vert_armed.clearText(); break;
     		case 1 : if (this.avionics.qpac_npa_valid() == 0) 
-    					pfe_vert_armed.setText("G/S", PFE_Color.PFE_COLOR_ARMED); 
+    					pfe_vert_armed.setText("G/S", FE_Color.ARMED); 
     				 else 
-    					pfe_vert_armed.setText("FINAL", PFE_Color.PFE_COLOR_ARMED);
+    					pfe_vert_armed.setText("FINAL", FE_Color.ARMED);
     				 break;
-    		case 2 : pfe_vert_armed.setText("CLB", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 4 : pfe_vert_armed.setText("DES", PFE_Color.PFE_COLOR_ARMED); break;
+    		case 2 : pfe_vert_armed.setText("CLB", FE_Color.ARMED); break;
+    		case 4 : pfe_vert_armed.setText("DES", FE_Color.ARMED); break;
     		case 5 : if (this.avionics.qpac_npa_valid() == 0) 
-    					pfe_vert_armed.setText("DES G/S", PFE_Color.PFE_COLOR_ARMED); 
+    					pfe_vert_armed.setText("DES G/S", FE_Color.ARMED); 
 			 		 else 
-			 			pfe_vert_armed.setText("DES FNL", PFE_Color.PFE_COLOR_ARMED);
+			 			pfe_vert_armed.setText("DES FNL", FE_Color.ARMED);
 			 		 break;    			    			    		
-        	case 6 : pfe_vert_armed.setText("ALT", PFE_Color.PFE_COLOR_ARMED); break;
+        	case 6 : pfe_vert_armed.setText("ALT", FE_Color.ARMED); break;
         	case 7 : if (this.avionics.qpac_npa_valid() == 0) 
-        				pfe_vert_armed.setText("ALT G/S", PFE_Color.PFE_COLOR_ARMED); 
+        				pfe_vert_armed.setText("ALT G/S", FE_Color.ARMED); 
 			 		 else 
-			 			pfe_vert_armed.setText("ALT FNL", PFE_Color.PFE_COLOR_ARMED);
+			 			pfe_vert_armed.setText("ALT FNL", FE_Color.ARMED);
 			 		 break;         		 
-        	case 8 : pfe_vert_armed.setText("ALT", PFE_Color.PFE_COLOR_MANAGED); break;
+        	case 8 : pfe_vert_armed.setText("ALT", FE_Color.MANAGED); break;
         	case 9 : if (this.avionics.qpac_npa_valid() == 0) 
-        			 	pfe_vert_armed.setTextValue("ALT", " G/S", PFE_Color.PFE_COLOR_MANAGED); 
+        			 	pfe_vert_armed.setTextValue("ALT", " G/S", FE_Color.MANAGED); 
 	 		 		 else 
-	 		 			pfe_vert_armed.setTextValue("ALT", " FNL", PFE_Color.PFE_COLOR_MANAGED);
+	 		 			pfe_vert_armed.setTextValue("ALT", " FNL", FE_Color.MANAGED);
 	 		 		 break; 			 		 		 
-        	case 10 : pfe_vert_armed.setText("OP CLB", PFE_Color.PFE_COLOR_ARMED); break;        	
+        	case 10 : pfe_vert_armed.setText("OP CLB", FE_Color.ARMED); break;        	
         }       
         pfe_vert_armed.paint(g2);
         
@@ -567,22 +567,22 @@ public class FMA_A320 extends PFDSubcomponent {
         String ap_lateral_mode="Lat " + this.avionics.qpac_ap_lateral_mode();
         switch (this.avionics.qpac_ap_lateral_mode()) {
 			case -1 : pfe_lat_mode.clearText(); break; 
-			case 0 : pfe_lat_mode.setText("RWY", PFE_Color.PFE_COLOR_ACTIVE); break; 
-       		case 1 : pfe_lat_mode.setText("RWY TRK", PFE_Color.PFE_COLOR_ACTIVE);break; 
-    		case 2 : pfe_lat_mode.setText("NAV", PFE_Color.PFE_COLOR_ACTIVE); break; 
-    		case 6 : pfe_lat_mode.setText("LOC*", PFE_Color.PFE_COLOR_ACTIVE); break; 
-    		case 7 : pfe_lat_mode.setText("LOC", PFE_Color.PFE_COLOR_ACTIVE); break; 
-    		case 9 : pfe_lat_mode.setText("APP NAV", PFE_Color.PFE_COLOR_ACTIVE); break;
+			case 0 : pfe_lat_mode.setText("RWY", FE_Color.ACTIVE); break; 
+       		case 1 : pfe_lat_mode.setText("RWY TRK", FE_Color.ACTIVE);break; 
+    		case 2 : pfe_lat_mode.setText("NAV", FE_Color.ACTIVE); break; 
+    		case 6 : pfe_lat_mode.setText("LOC*", FE_Color.ACTIVE); break; 
+    		case 7 : pfe_lat_mode.setText("LOC", FE_Color.ACTIVE); break; 
+    		case 9 : pfe_lat_mode.setText("APP NAV", FE_Color.ACTIVE); break;
     		case 10 : final_mode="ROLL OUT"; col_2_3 = true; pfe_lat_mode.clearText(); break; 
     		case 11 : col_2_3 = true; pfe_lat_mode.clearText(); break; // or FLARE
-    		case 12 : pfe_lat_mode.setText("GA TRK", PFE_Color.PFE_COLOR_ACTIVE); break;  
+    		case 12 : pfe_lat_mode.setText("GA TRK", FE_Color.ACTIVE); break;  
     		case 101 : if (this.avionics.qpac_fcu_hdg_trk()) {    						
-    						pfe_lat_mode.setText("TRACK", PFE_Color.PFE_COLOR_ACTIVE);}
+    						pfe_lat_mode.setText("TRACK", FE_Color.ACTIVE);}
     					else {    						
-    						pfe_lat_mode.setText("HDG", PFE_Color.PFE_COLOR_ACTIVE);
+    						pfe_lat_mode.setText("HDG", FE_Color.ACTIVE);
     					}
     					break;
-    		default : pfe_lat_mode.setText(ap_lateral_mode, PFE_Color.PFE_COLOR_ACTIVE); 
+    		default : pfe_lat_mode.setText(ap_lateral_mode, FE_Color.ACTIVE); 
     		}
         
         if (col_2_3) { 
@@ -594,43 +594,43 @@ public class FMA_A320 extends PFDSubcomponent {
         // Autopilote lateral armed mode
         switch (this.avionics.qpac_ap_lateral_armed()) {
     		case 0 : pfe_lat_armed.clearText(); break;
-    		case 1 : pfe_lat_armed.setText("LOC", PFE_Color.PFE_COLOR_ARMED); break;   		
-    		case 2 : pfe_lat_armed.setText("NAV", PFE_Color.PFE_COLOR_ARMED); break;
-    		default : pfe_lat_armed.setText("? "+this.avionics.qpac_ap_lateral_armed(), PFE_Color.PFE_COLOR_ARMED);
+    		case 1 : pfe_lat_armed.setText("LOC", FE_Color.ARMED); break;   		
+    		case 2 : pfe_lat_armed.setText("NAV", FE_Color.ARMED); break;
+    		default : pfe_lat_armed.setText("? "+this.avionics.qpac_ap_lateral_armed(), FE_Color.ARMED);
         }
         pfe_lat_armed.paint(g2);
     
         
         // A/THR LIMITED (on ECAM - this is not FCOM)     
         if (this.avionics.qpac_athr_limited()!=0 ) {       	
-        	pfe_thrust_message.setText("A/THR LIMITED", PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust_message.setText("A/THR LIMITED", FE_Color.CAUTION);
         }
 
         // TODO : TOGA LK and A.FLOOR
         String str_thr_warning = "THR MSG " + this.avionics.qpac_fma_thr_warning();       
         if (this.avionics.qpac_fma_thr_warning()==1) { 
         	str_thr_warning = "LVR CLB";        	
-        	pfe_thrust_message.setText("LVR CLB", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust_message.setText("LVR CLB", FE_Color.MARK);
         } else if (this.avionics.qpac_fma_thr_warning()==4) { 
         	str_thr_warning = "THR LK";
-        	pfe_thrust_message.setText("THR LK", PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust_message.setText("THR LK", FE_Color.CAUTION);
         } else if (this.avionics.qpac_fma_thr_warning()==2) { 
         	str_thr_warning = "LVR MCT";
-        	pfe_thrust_message.setText("LVR MCT", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust_message.setText("LVR MCT", FE_Color.MARK);
         } else if (this.avionics.qpac_fma_thr_warning()==3) { 
         	str_thr_warning = "LVR ASYM";
-        	pfe_thrust_message.setText("LVR ASYM", PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust_message.setText("LVR ASYM", FE_Color.CAUTION);
         } else if  (this.avionics.qpac_fma_thr_warning()>4) {
-        	pfe_thrust_message.setText(str_thr_warning, PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust_message.setText(str_thr_warning, FE_Color.CAUTION);
         } else if (this.avionics.qpac_athr_limited()!=0 ) {     
             // A/THR LIMITED (on ECAM - this is not FCOM)
-            pfe_thrust_message.setText("A/THR LIMITED", PFE_Color.PFE_COLOR_CAUTION);
+            pfe_thrust_message.setText("A/THR LIMITED", FE_Color.CAUTION);
         } else if (this.avionics.qpac_presel_clb() > 0 && (ap_phase == 1)) {
         	str_thr_warning = "SPEED SEL: "+this.avionics.qpac_presel_clb();
-        	pfe_thrust_message.setText(str_thr_warning, PFE_Color.PFE_COLOR_ARMED);
+        	pfe_thrust_message.setText(str_thr_warning, FE_Color.ARMED);
        	} else if (this.avionics.qpac_presel_crz() > 0 && (ap_phase == 2)) {
         	str_thr_warning = "SPEED SEL: "+this.avionics.qpac_presel_crz();
-        	pfe_thrust_message.setText(str_thr_warning, PFE_Color.PFE_COLOR_ARMED);
+        	pfe_thrust_message.setText(str_thr_warning, FE_Color.ARMED);
        	} else pfe_thrust_message.clearText();
         pfe_thrust_message.paint(g2);
         // TODO : display : qpac_presel_mach()
@@ -641,26 +641,26 @@ public class FMA_A320 extends PFDSubcomponent {
         if (this.avionics.qpac_thr_lever_mode()>0) {
         	pfe_thrust.setFrame();
         	if (this.avionics.qpac_athr_mode()==1) {       		
-        		pfe_athr.setText("A/THR", PFE_Color.PFE_COLOR_ARMED);       		
+        		pfe_athr.setText("A/THR", FE_Color.ARMED);       		
         	} 
         }   
         if (this.avionics.qpac_thr_lever_mode()==3) {
         	str_speed_mode = "TOGA";
-        	pfe_thrust.setText(str_man, "TOGA", PFE_Color.PFE_COLOR_MARK);        	
+        	pfe_thrust.setText(str_man, "TOGA", FE_Color.MARK);        	
         } else  if (this.avionics.qpac_thr_lever_mode()==2) {
         	str_speed_mode = "FLX ";
         	String str_speed_val = "+"+this.avionics.qpac_flex_temp();
-        	pfe_thrust.setTextValue(str_man, "FLX ", str_speed_val, PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust.setTextValue(str_man, "FLX ", str_speed_val, FE_Color.MARK);
         } else  if (this.avionics.qpac_thr_lever_mode()==1) {
         	str_speed_mode = "THR";
-        	pfe_thrust.setText(str_man, "THR", PFE_Color.PFE_COLOR_MARK);
-        	pfe_thrust.setFrameColor(PFE_Color.PFE_COLOR_ALARM);
+        	pfe_thrust.setText(str_man, "THR", FE_Color.MARK);
+        	pfe_thrust.setFrameColor(FE_Color.ALARM);
         } else  if (this.avionics.qpac_thr_lever_mode()==4) {
         	str_speed_mode = "MCT";
-        	pfe_thrust.setText(str_man, "MCT", PFE_Color.PFE_COLOR_MARK);
-        	pfe_thrust.setFrameColor(PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust.setText(str_man, "MCT", FE_Color.MARK);
+        	pfe_thrust.setFrameColor(FE_Color.CAUTION);
         } else if (this.avionics.qpac_thr_lever_mode()>4) {
-        	pfe_thrust.setText(str_man, str_speed_mode, PFE_Color.PFE_COLOR_ALARM);
+        	pfe_thrust.setText(str_man, str_speed_mode, FE_Color.ALARM);
         } 
         
         // Autothrust (it's not autothrottle !!!)
@@ -679,12 +679,12 @@ public class FMA_A320 extends PFDSubcomponent {
         }
         if (this.avionics.qpac_thr_lever_mode()==0) {       	              
         	if (this.avionics.qpac_athr_mode()==1) {
-        		pfe_athr.setText(str_athr_mode, PFE_Color.PFE_COLOR_ARMED);
+        		pfe_athr.setText(str_athr_mode, FE_Color.ARMED);
         		pfe_thrust.clearText();
         	}  else if (this.avionics.qpac_athr_mode()==2) {
-        		pfe_athr.setText(str_athr_mode, PFE_Color.PFE_COLOR_MARK);
-        		pfe_thrust.setText(str_athr_mode2, PFE_Color.PFE_COLOR_ACTIVE);
-        		if (this.avionics.qpac_athr_mode2()>10) pfe_thrust.setFrameColor(PFE_Color.PFE_COLOR_CAUTION);
+        		pfe_athr.setText(str_athr_mode, FE_Color.MARK);
+        		pfe_thrust.setText(str_athr_mode2, FE_Color.ACTIVE);
+        		if (this.avionics.qpac_athr_mode2()>10) pfe_thrust.setFrameColor(FE_Color.CAUTION);
         	} else {
         		pfe_athr.clearText();
         		pfe_thrust.clearText();
@@ -714,20 +714,20 @@ public class FMA_A320 extends PFDSubcomponent {
         		if (this.aircraft.ra_bug(true) != -10.0f) {         	
         			str_dh_mda_value = "" + this.aircraft.ra_bug(true);
         			// draw2Mode(g2, 3, 2, str_dh_mda, str_dh_mda_value, false, pfd_gc.pfd_markings_color, pfd_gc.pfd_armed_color);
-        			pfe_land_minimums.setTextValue("DH ", str_dh_mda_value, PFE_Color.PFE_COLOR_MARK);
+        			pfe_land_minimums.setTextValue("DH ", str_dh_mda_value, FE_Color.MARK);
         		} else {
-        			pfe_land_minimums.setText("NO DH", PFE_Color.PFE_COLOR_MARK);
+        			pfe_land_minimums.setText("NO DH", FE_Color.MARK);
         		}
         		break;
         	case 1:         	 
         		str_dh_mda_value = "" + (int)Math.round(this.avionics.qpac_appr_mda());         	
         		// draw2Mode(g2, 3, 2, str_dh_mda, str_dh_mda_value, false, pfd_gc.pfd_markings_color, pfd_gc.pfd_armed_color);
-        		pfe_land_minimums.setTextValue("MDA ", str_dh_mda_value, PFE_Color.PFE_COLOR_MARK);
+        		pfe_land_minimums.setTextValue("MDA ", str_dh_mda_value, FE_Color.MARK);
         		break;
         	case 2:         	
         		str_dh_mda_value = "" + this.aircraft.da_bug(true); 
         		// draw2Mode(g2, 3, 2, str_dh_mda, str_dh_mda_value, false, pfd_gc.pfd_markings_color, pfd_gc.pfd_armed_color);
-        		pfe_land_minimums.setTextValue("BARO ", str_dh_mda_value, PFE_Color.PFE_COLOR_MARK);
+        		pfe_land_minimums.setTextValue("BARO ", str_dh_mda_value, FE_Color.MARK);
         		break;
         	}      	
         } else pfe_land_minimums.clearText();
@@ -735,21 +735,21 @@ public class FMA_A320 extends PFDSubcomponent {
         
         // Landing capabilities
         if ( this.avionics.qpac_npa_no_points()==2 && this.avionics.qpac_npa_valid()>0 && this.avionics.qpac_ap_vertical_mode()==8 ) {
-        	pfe_land_cat.setText("F-APP", PFE_Color.PFE_COLOR_MARK);
-        	pfe_land_mode.setText("+RAW", PFE_Color.PFE_COLOR_MARK);
+        	pfe_land_cat.setText("F-APP", FE_Color.MARK);
+        	pfe_land_mode.setText("+RAW", FE_Color.MARK);
 
         } else if ( (ap_phase < 6) && (appr_type == 0) && (this.avionics.qpac_appr_illuminated() || this.avionics.qpac_loc_illuminated()) ) {
         	if (dual_ap) { 
-            	pfe_land_cat.setText("CAT 3", PFE_Color.PFE_COLOR_MARK);
-            	pfe_land_mode.setText("DUAL", PFE_Color.PFE_COLOR_MARK);
+            	pfe_land_cat.setText("CAT 3", FE_Color.MARK);
+            	pfe_land_mode.setText("DUAL", FE_Color.MARK);
 
         	} else {
         		if (single_ap) { 
-        			pfe_land_mode.setText("SINGLE", PFE_Color.PFE_COLOR_MARK);
+        			pfe_land_mode.setText("SINGLE", FE_Color.MARK);
         		} else { 
         			pfe_land_mode.clearText(); 
         		}
-            	pfe_land_cat.setText("CAT 1", PFE_Color.PFE_COLOR_MARK);
+            	pfe_land_cat.setText("CAT 1", FE_Color.MARK);
             	
         	}
         } else {
@@ -824,7 +824,7 @@ public class FMA_A320 extends PFDSubcomponent {
         } else if (this.avionics.jar_a320neo_ap2()) {
         	ap_str="AP 2";
         }
-        pfe_ap.setText(ap_str, PFE_Color.PFE_COLOR_MARK);
+        pfe_ap.setText(ap_str, FE_Color.MARK);
         pfe_ap.paint(g2);
  
         
@@ -833,7 +833,7 @@ public class FMA_A320 extends PFDSubcomponent {
         if (this.avionics.jar_a320neo_fd()) {fd_str="1";} else {fd_str="-";}
         fd_str+=" FD ";
         if (this.avionics.jar_a320neo_fd()) {fd_str+="2";} else {fd_str+="-";}
-        pfe_fd.setText(fd_str, PFE_Color.PFE_COLOR_MARK);
+        pfe_fd.setText(fd_str, FE_Color.MARK);
         pfe_fd.paint(g2);        
 
         
@@ -883,10 +883,10 @@ public class FMA_A320 extends PFDSubcomponent {
         		// TODO : fix the FPA value display 
         		String str_vv = "" + ap_vv;
         		if ( ap_vv >0 ) { str_vv = "+" + ap_vv; }
-        		pfe_vert_mode.setTextValue(ap_vertical_mode, str_vv, PFE_Color.PFE_COLOR_ACTIVE);
+        		pfe_vert_mode.setTextValue(ap_vertical_mode, str_vv, FE_Color.ACTIVE);
         		pfe_vert_mode.paint(g2);
         	} else {
-        		pfe_vert_mode.setText(ap_vertical_mode, PFE_Color.PFE_COLOR_ACTIVE);
+        		pfe_vert_mode.setText(ap_vertical_mode, FE_Color.ACTIVE);
         		pfe_vert_mode.paint(g2);
         	}
         }
@@ -894,18 +894,18 @@ public class FMA_A320 extends PFDSubcomponent {
         // Autopilote vertical armed mode
         switch (this.avionics.jar_a320neo_ap_vertical_armed()) {
     		case 0 : pfe_vert_armed.clearText(); break;
-    		case 1 : pfe_vert_armed.setText("CLB", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 2 : pfe_vert_armed.setText("ALT", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 3 : pfe_vert_armed.setText("ALT", PFE_Color.PFE_COLOR_MANAGED); break;
-    		case 4 : pfe_vert_armed.setText("DES", PFE_Color.PFE_COLOR_ARMED); break;    			    			    		
-        	case 5 : pfe_vert_armed.setText("G/S", PFE_Color.PFE_COLOR_ARMED); break;
-        	case 6 : pfe_vert_armed.setText("FINAL", PFE_Color.PFE_COLOR_ARMED); break;         		 
-        	case 7 : pfe_vert_armed.setText("ALT G/S", PFE_Color.PFE_COLOR_ARMED); break;
-        	case 8 : pfe_vert_armed.setTextValue("ALT", " G/S", PFE_Color.PFE_COLOR_MANAGED); break;
-        	case 9 : pfe_vert_armed.setText("ALT FINAL", PFE_Color.PFE_COLOR_ARMED); break;        	
-        	case 10 : pfe_vert_armed.setTextValue("ALT", " FINAL", PFE_Color.PFE_COLOR_MANAGED); break;
-        	case 11 : pfe_vert_armed.setText("DES G/S", PFE_Color.PFE_COLOR_ARMED); break;
-        	case 12 : pfe_vert_armed.setText("DES FINAL", PFE_Color.PFE_COLOR_ARMED); break;
+    		case 1 : pfe_vert_armed.setText("CLB", FE_Color.ARMED); break;
+    		case 2 : pfe_vert_armed.setText("ALT", FE_Color.ARMED); break;
+    		case 3 : pfe_vert_armed.setText("ALT", FE_Color.MANAGED); break;
+    		case 4 : pfe_vert_armed.setText("DES", FE_Color.ARMED); break;    			    			    		
+        	case 5 : pfe_vert_armed.setText("G/S", FE_Color.ARMED); break;
+        	case 6 : pfe_vert_armed.setText("FINAL", FE_Color.ARMED); break;         		 
+        	case 7 : pfe_vert_armed.setText("ALT G/S", FE_Color.ARMED); break;
+        	case 8 : pfe_vert_armed.setTextValue("ALT", " G/S", FE_Color.MANAGED); break;
+        	case 9 : pfe_vert_armed.setText("ALT FINAL", FE_Color.ARMED); break;        	
+        	case 10 : pfe_vert_armed.setTextValue("ALT", " FINAL", FE_Color.MANAGED); break;
+        	case 11 : pfe_vert_armed.setText("DES G/S", FE_Color.ARMED); break;
+        	case 12 : pfe_vert_armed.setText("DES FINAL", FE_Color.ARMED); break;
         }       
         pfe_vert_armed.paint(g2);
         
@@ -914,16 +914,16 @@ public class FMA_A320 extends PFDSubcomponent {
         String ap_lateral_mode="Lat " + this.avionics.jar_a320neo_ap_lateral_mode();
         switch (this.avionics.jar_a320neo_ap_lateral_mode()) {
 			case 0 : pfe_lat_mode.clearText(); break; 
-			case 1 : pfe_lat_mode.setText("RWY", PFE_Color.PFE_COLOR_ACTIVE); break; 
-       		case 2 : pfe_lat_mode.setText("RWY TRK", PFE_Color.PFE_COLOR_ACTIVE);break; 
-    		case 3 : pfe_lat_mode.setText("HDG", PFE_Color.PFE_COLOR_ACTIVE); break; 
-    		case 4 : pfe_lat_mode.setText("TRACK", PFE_Color.PFE_COLOR_ACTIVE); break; 
-    		case 5 : pfe_lat_mode.setText("NAV", PFE_Color.PFE_COLOR_ACTIVE); break; 
-    		case 6 : pfe_lat_mode.setText("LOC*", PFE_Color.PFE_COLOR_ACTIVE); break;
-    		case 7 : pfe_lat_mode.setText("LOC", PFE_Color.PFE_COLOR_ACTIVE); break;
-    		case 8 : pfe_lat_mode.setText("APP NAV", PFE_Color.PFE_COLOR_ACTIVE); break;
-    		case 9 : pfe_lat_mode.setText("GA TRK", PFE_Color.PFE_COLOR_ACTIVE); break;
-    		default : pfe_lat_mode.setText(ap_lateral_mode, PFE_Color.PFE_COLOR_ACTIVE); 
+			case 1 : pfe_lat_mode.setText("RWY", FE_Color.ACTIVE); break; 
+       		case 2 : pfe_lat_mode.setText("RWY TRK", FE_Color.ACTIVE);break; 
+    		case 3 : pfe_lat_mode.setText("HDG", FE_Color.ACTIVE); break; 
+    		case 4 : pfe_lat_mode.setText("TRACK", FE_Color.ACTIVE); break; 
+    		case 5 : pfe_lat_mode.setText("NAV", FE_Color.ACTIVE); break; 
+    		case 6 : pfe_lat_mode.setText("LOC*", FE_Color.ACTIVE); break;
+    		case 7 : pfe_lat_mode.setText("LOC", FE_Color.ACTIVE); break;
+    		case 8 : pfe_lat_mode.setText("APP NAV", FE_Color.ACTIVE); break;
+    		case 9 : pfe_lat_mode.setText("GA TRK", FE_Color.ACTIVE); break;
+    		default : pfe_lat_mode.setText(ap_lateral_mode, FE_Color.ACTIVE); 
     		}
         
         if (col_2_3) { 
@@ -943,16 +943,16 @@ public class FMA_A320 extends PFDSubcomponent {
         // Autopilote lateral armed mode
         switch (this.avionics.jar_a320neo_ap_lateral_armed()) {
     		case 0 : pfe_lat_armed.clearText(); break;
-    		case 1 : pfe_lat_armed.setText("NAV", PFE_Color.PFE_COLOR_ARMED); break;   		
-    		case 2 : pfe_lat_armed.setText("LOC", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 3 : pfe_lat_armed.setText("APP NAV", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 4 : pfe_lat_armed.setText("NAV", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 5 : pfe_lat_armed.setText("LOC", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 6 : pfe_lat_armed.setText("APP NAV", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 7 : pfe_lat_armed.setText("NAV", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 8 : pfe_lat_armed.setText("LOC", PFE_Color.PFE_COLOR_ARMED); break;
-    		case 9 : pfe_lat_armed.setText("APP NAV", PFE_Color.PFE_COLOR_ARMED); break;   		
-    		default : pfe_lat_armed.setText("? "+this.avionics.qpac_ap_lateral_armed(), PFE_Color.PFE_COLOR_ARMED);
+    		case 1 : pfe_lat_armed.setText("NAV", FE_Color.ARMED); break;   		
+    		case 2 : pfe_lat_armed.setText("LOC", FE_Color.ARMED); break;
+    		case 3 : pfe_lat_armed.setText("APP NAV", FE_Color.ARMED); break;
+    		case 4 : pfe_lat_armed.setText("NAV", FE_Color.ARMED); break;
+    		case 5 : pfe_lat_armed.setText("LOC", FE_Color.ARMED); break;
+    		case 6 : pfe_lat_armed.setText("APP NAV", FE_Color.ARMED); break;
+    		case 7 : pfe_lat_armed.setText("NAV", FE_Color.ARMED); break;
+    		case 8 : pfe_lat_armed.setText("LOC", FE_Color.ARMED); break;
+    		case 9 : pfe_lat_armed.setText("APP NAV", FE_Color.ARMED); break;   		
+    		default : pfe_lat_armed.setText("? "+this.avionics.qpac_ap_lateral_armed(), FE_Color.ARMED);
         }
         pfe_lat_armed.paint(g2);
     
@@ -960,7 +960,7 @@ public class FMA_A320 extends PFDSubcomponent {
         // A/THR LIMITED (on ECAM - this is not FCOM)
         /*
         if (this.avionics.jar_a320neo_athr_limited()!=0 ) {       	
-        	pfe_thrust_message.setText("A/THR LIMITED", PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust_message.setText("A/THR LIMITED", FE_Color.CAUTION);
         }
         */
 
@@ -969,27 +969,27 @@ public class FMA_A320 extends PFDSubcomponent {
         String str_thr_warning = "THR MSG " + this.avionics.qpac_fma_thr_warning();       
         if (this.avionics.jar_a320neo_fma_thr_warning()==1) { 
         	str_thr_warning = "LVR CLB";        	
-        	pfe_thrust_message.setText("LVR CLB", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust_message.setText("LVR CLB", FE_Color.MARK);
         } else if (this.avionics.jar_a320neo_fma_thr_warning()==4) { 
         	str_thr_warning = "THR LK";
-        	pfe_thrust_message.setText("THR LK", PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust_message.setText("THR LK", FE_Color.CAUTION);
         } else if (this.avionics.jar_a320neo_fma_thr_warning()==2) { 
         	str_thr_warning = "LVR MCT";
-        	pfe_thrust_message.setText("LVR MCT", PFE_Color.PFE_COLOR_MARK);
+        	pfe_thrust_message.setText("LVR MCT", FE_Color.MARK);
         } else if (this.avionics.jar_a320neo_fma_thr_warning()==3) { 
         	str_thr_warning = "LVR ASYM";
-        	pfe_thrust_message.setText("LVR ASYM", PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust_message.setText("LVR ASYM", FE_Color.CAUTION);
         } else if  (this.avionics.jar_a320neo_fma_thr_warning()>4) {
-        	pfe_thrust_message.setText(str_thr_warning, PFE_Color.PFE_COLOR_CAUTION);
+        	pfe_thrust_message.setText(str_thr_warning, FE_Color.CAUTION);
         } else if (this.avionics.jar_a320neo_athr_limited()!=0 ) {     
             // A/THR LIMITED (on ECAM - this is not FCOM)
-            pfe_thrust_message.setText("A/THR LIMITED", PFE_Color.PFE_COLOR_CAUTION);
+            pfe_thrust_message.setText("A/THR LIMITED", FE_Color.CAUTION);
 //        } else if (this.avionics.jar_a320neo_presel_clb() > 0 && (ap_phase == 1)) {
 //        	str_thr_warning = "SPEED SEL: "+this.avionics.qpac_presel_clb();
-//        	pfe_thrust_message.setText(str_thr_warning, PFE_Color.PFE_COLOR_ARMED);
+//        	pfe_thrust_message.setText(str_thr_warning, FE_Color.ARMED);
 //       	} else if (this.avionics.jar_a320neo_presel_crz() > 0 && (ap_phase == 2)) {
 //        	str_thr_warning = "SPEED SEL: "+this.avionics.qpac_presel_crz();
-//        	pfe_thrust_message.setText(str_thr_warning, PFE_Color.PFE_COLOR_ARMED);
+//        	pfe_thrust_message.setText(str_thr_warning, FE_Color.ARMED);
        	} else pfe_thrust_message.clearText();
         pfe_thrust_message.paint(g2);
         */
@@ -1002,42 +1002,42 @@ public class FMA_A320 extends PFDSubcomponent {
         String str_thr_mode = "A/THR"; 
         switch (this.avionics.jar_a320neo_thr_mode()) {
         case 0 : pfe_thrust.clearText(); break;
-        case 1 : pfe_thrust.setText(str_man, "TOGA", PFE_Color.PFE_COLOR_MARK); 
+        case 1 : pfe_thrust.setText(str_man, "TOGA", FE_Color.MARK); 
         		 pfe_thrust.setFrame();
         		 break; 
         case 2 : 
     			 String str_speed_val = "+"+this.avionics.jar_a320neo_flex_temp();
-    			 pfe_thrust.setTextValue(str_man, "FLX ", str_speed_val, PFE_Color.PFE_COLOR_MARK);
+    			 pfe_thrust.setTextValue(str_man, "FLX ", str_speed_val, FE_Color.MARK);
     			 pfe_thrust.setFrame();
     			 break;
-        case 3 : pfe_thrust.setText(str_man, "MCT", PFE_Color.PFE_COLOR_MARK); 
-        		 pfe_thrust.setFrameColor(PFE_Color.PFE_COLOR_CAUTION);
+        case 3 : pfe_thrust.setText(str_man, "MCT", FE_Color.MARK); 
+        		 pfe_thrust.setFrameColor(FE_Color.CAUTION);
         		 pfe_thrust.setFrame();
         		 break;
-        case 4 : pfe_thrust.setText(str_man, "THR", PFE_Color.PFE_COLOR_MARK);
-        		 pfe_thrust.setFrameColor(PFE_Color.PFE_COLOR_ALARM); 
+        case 4 : pfe_thrust.setText(str_man, "THR", FE_Color.MARK);
+        		 pfe_thrust.setFrameColor(FE_Color.ALARM); 
         		 pfe_thrust.setFrame();
         		 break;
-        case 5 : pfe_thrust.setText("THR MCT", PFE_Color.PFE_COLOR_ACTIVE); break;
-        case 6 : pfe_thrust.setText("THR CLB", PFE_Color.PFE_COLOR_ACTIVE); break;
-        case 7 : pfe_thrust.setText("THR IDLE", PFE_Color.PFE_COLOR_ACTIVE); break;
-        case 8 : pfe_thrust.setText("THR LVR", PFE_Color.PFE_COLOR_ACTIVE); break;
-        case 9 : pfe_thrust.setText("SPEED", PFE_Color.PFE_COLOR_ACTIVE); break;
-        case 10 : pfe_thrust.setText("MACH", PFE_Color.PFE_COLOR_ACTIVE); break;
-        case 11 : pfe_thrust.setText("A FLOOR", PFE_Color.PFE_COLOR_ACTIVE);  
-        		  pfe_thrust.setFrameColor(PFE_Color.PFE_COLOR_CAUTION);
+        case 5 : pfe_thrust.setText("THR MCT", FE_Color.ACTIVE); break;
+        case 6 : pfe_thrust.setText("THR CLB", FE_Color.ACTIVE); break;
+        case 7 : pfe_thrust.setText("THR IDLE", FE_Color.ACTIVE); break;
+        case 8 : pfe_thrust.setText("THR LVR", FE_Color.ACTIVE); break;
+        case 9 : pfe_thrust.setText("SPEED", FE_Color.ACTIVE); break;
+        case 10 : pfe_thrust.setText("MACH", FE_Color.ACTIVE); break;
+        case 11 : pfe_thrust.setText("A FLOOR", FE_Color.ACTIVE);  
+        		  pfe_thrust.setFrameColor(FE_Color.CAUTION);
         		  break; 
-        case 12 : pfe_thrust.setText("TOGA LK", PFE_Color.PFE_COLOR_ACTIVE); 
-        		  pfe_thrust.setFrameColor(PFE_Color.PFE_COLOR_CAUTION);
+        case 12 : pfe_thrust.setText("TOGA LK", FE_Color.ACTIVE); 
+        		  pfe_thrust.setFrameColor(FE_Color.CAUTION);
         		  break; 
         }
     	pfe_thrust.paint(g2);
     	
     	// A/THR display on column 5
     	if (this.avionics.jar_a320neo_athr_mode()==1) {
-    		pfe_athr.setText(str_thr_mode, PFE_Color.PFE_COLOR_ARMED);
+    		pfe_athr.setText(str_thr_mode, FE_Color.ARMED);
     	}  else if (this.avionics.jar_a320neo_athr_mode()==2) {
-    		pfe_athr.setText(str_thr_mode, PFE_Color.PFE_COLOR_MARK);
+    		pfe_athr.setText(str_thr_mode, FE_Color.MARK);
     	} else {
     		pfe_athr.clearText();
     	}
@@ -1057,22 +1057,22 @@ public class FMA_A320 extends PFDSubcomponent {
         			str_dh_mda = "DH ";
         			str_dh_mda_value = "" + (int)Math.round(this.avionics.jar_a320neo_appr_dh());
         			// draw2Mode(g2, 3, 2, str_dh_mda, str_dh_mda_value, false, pfd_gc.pfd_markings_color, pfd_gc.pfd_armed_color);
-        			pfe_land_minimums.setTextValue("DH ", str_dh_mda_value, PFE_Color.PFE_COLOR_MARK);
+        			pfe_land_minimums.setTextValue("DH ", str_dh_mda_value, FE_Color.MARK);
         		} else {
-        			pfe_land_minimums.setText("NO DH", PFE_Color.PFE_COLOR_MARK);
+        			pfe_land_minimums.setText("NO DH", FE_Color.MARK);
         		}
         		break;
         	case 1: 
         		str_dh_mda = "MDA "; 
         		str_dh_mda_value = "" + (int)Math.round(this.avionics.jar_a320neo_appr_mda());         	
         		// draw2Mode(g2, 3, 2, str_dh_mda, str_dh_mda_value, false, pfd_gc.pfd_markings_color, pfd_gc.pfd_armed_color);
-        		pfe_land_minimums.setTextValue("MDA ", str_dh_mda_value, PFE_Color.PFE_COLOR_MARK);
+        		pfe_land_minimums.setTextValue("MDA ", str_dh_mda_value, FE_Color.MARK);
         		break;
         	case 2: 
         		str_dh_mda = "BARO ";
         		str_dh_mda_value = "" + this.aircraft.da_bug(); 
         		// draw2Mode(g2, 3, 2, str_dh_mda, str_dh_mda_value, false, pfd_gc.pfd_markings_color, pfd_gc.pfd_armed_color);
-        		pfe_land_minimums.setTextValue("BARO ", str_dh_mda_value, PFE_Color.PFE_COLOR_MARK);
+        		pfe_land_minimums.setTextValue("BARO ", str_dh_mda_value, FE_Color.MARK);
         		break;
         	}      	
         } else pfe_land_minimums.clearText();
@@ -1083,24 +1083,24 @@ public class FMA_A320 extends PFDSubcomponent {
         String ldg_cap_1 = "";
         String ldg_cap_2 = "";
         if ( this.avionics.qpac_npa_no_points()==2 && this.avionics.qpac_npa_valid()>0 && this.avionics.qpac_ap_vertical_mode()==8 ) {
-        	pfe_land_cat.setText("F-APP", PFE_Color.PFE_COLOR_MARK);
-        	pfe_land_mode.setText("+RAW", PFE_Color.PFE_COLOR_MARK);
+        	pfe_land_cat.setText("F-APP", FE_Color.MARK);
+        	pfe_land_mode.setText("+RAW", FE_Color.MARK);
             ldg_cap_1 = "F-APP";
             ldg_cap_2 = "+RAW";
         } else if ( (ap_phase < 6) && (appr_type == 0) && (this.avionics.qpac_appr_illuminated() || this.avionics.qpac_loc_illuminated()) ) {
         	if (dual_ap) { 
-            	pfe_land_cat.setText("CAT 3", PFE_Color.PFE_COLOR_MARK);
-            	pfe_land_mode.setText("DUAL", PFE_Color.PFE_COLOR_MARK);
+            	pfe_land_cat.setText("CAT 3", FE_Color.MARK);
+            	pfe_land_mode.setText("DUAL", FE_Color.MARK);
         		ldg_cap_2="DUAL"; ldg_cap_1="CAT 3";
         	} else {
         		if (single_ap) { 
         			ldg_cap_2="SINGLE";
-        			pfe_land_mode.setText("SINGLE", PFE_Color.PFE_COLOR_MARK);
+        			pfe_land_mode.setText("SINGLE", FE_Color.MARK);
         		} else { 
         			pfe_land_mode.clearText(); 
         		}
         		ldg_cap_1="CAT 1";
-            	pfe_land_cat.setText("CAT 1", PFE_Color.PFE_COLOR_MARK);
+            	pfe_land_cat.setText("CAT 1", FE_Color.MARK);
             	
         	}
         } else {

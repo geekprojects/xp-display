@@ -21,22 +21,11 @@
 */
 package net.sourceforge.xhsi.flightdeck.nd;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.text.DecimalFormat;
 
-import net.sourceforge.xhsi.model.Avionics;
-import net.sourceforge.xhsi.model.Localizer;
 import net.sourceforge.xhsi.model.ModelFactory;
-import net.sourceforge.xhsi.model.NavigationRadio;
-import net.sourceforge.xhsi.model.RadioNavBeacon;
-import net.sourceforge.xhsi.model.RadioNavigationObject;
-
-//import net.sourceforge.xhsi.panel.GraphicsConfig;
-//import net.sourceforge.xhsi.panel.Subcomponent;
-
-
 
 public class APHeadingReadout extends NDSubcomponent {
 

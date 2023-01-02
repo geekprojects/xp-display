@@ -9,7 +9,7 @@
 *  
 * 
 * Copyright (C) 2007  Georg Gruetter (gruetter@gmail.com)
-* Copyright (C) 2017  Nicolas Carel
+* Copyright (C) 2017,2023  Nicolas Carel
 * 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -37,10 +37,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 
 import net.sourceforge.xhsi.XHSIStatus;
-import net.sourceforge.xhsi.flightdeck.nd.NDFramedElement.FE_Color;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 
 public class CompassRose extends NDSubcomponent {
@@ -63,7 +61,7 @@ public class CompassRose extends NDSubcomponent {
         this.refreshed_timestamp=0;
         this.drawn_map_up=0.0f;
         this.failed_hsi=false;
-        failed_flag = new NDFramedElement(NDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.FE_COLOR_ALARM);
+        failed_flag = new NDFramedElement(NDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.ALARM);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
         failed_flag.setBigFont(true);
@@ -104,7 +102,7 @@ public class CompassRose extends NDSubcomponent {
             	refresh_rose=true;
             	failed_hsi=!this.avionics.hdg_valid() || (! XHSIStatus.receiving && nd_gc.airbus_style );
             	if (failed_hsi) {
-            		failed_flag.setText(nd_gc.airbus_style ? "HDG" : "MAP", nd_gc.airbus_style ? FE_Color.FE_COLOR_ALARM : FE_Color.FE_COLOR_CAUTION);
+            		failed_flag.setText(nd_gc.airbus_style ? "HDG" : "MAP", nd_gc.airbus_style ? FE_Color.ALARM : FE_Color.CAUTION);
             		if (nd_gc.boeing_style)
             			failed_flag.enableFraming();
             		else

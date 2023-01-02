@@ -22,31 +22,27 @@
 package net.sourceforge.xhsi.flightdeck.nd;
 
 import java.awt.BasicStroke;
-//import java.awt.Color;
+
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
-import java.util.logging.Logger;
+
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.XHSISettings;
 
-//import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.FMSEntry;
 import net.sourceforge.xhsi.model.CoordinateSystem;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.NavigationObject;
 import net.sourceforge.xhsi.model.NavigationObjectRepository;
 
-//import net.sourceforge.xhsi.panel.GraphicsConfig;
-//import net.sourceforge.xhsi.panel.Subcomponent;
-
-
 
 public class CDUFixHolding extends NDSubcomponent {
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
     private static final long serialVersionUID = 1L;
 

@@ -33,8 +33,8 @@ import java.awt.geom.AffineTransform;
 
 import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.XHSIPreferences.DrawYokeInputMode;
-import net.sourceforge.xhsi.flightdeck.pfd.PFDFramedElement.PFE_Color;
 import net.sourceforge.xhsi.model.ModelFactory;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
 
 
 public class ADI extends PFDSubcomponent {
@@ -51,23 +51,23 @@ public class ADI extends PFDSubcomponent {
 
     public ADI(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
-        failed_att_flag = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
-        failed_att_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_att_flag = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_att_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_att_flag.disableFlashing();
         
-        failed_fd_flag = new PFDFramedElement(PFDFramedElement.FD_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
-        failed_fd_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_fd_flag = new PFDFramedElement(PFDFramedElement.FD_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_fd_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_fd_flag.disableFlashing();
         
-        failed_fpv_flag = new PFDFramedElement(PFDFramedElement.FPV_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
-        failed_fpv_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_fpv_flag = new PFDFramedElement(PFDFramedElement.FPV_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_fpv_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_fpv_flag.disableFlashing();
         
-        failed_ra_flag = new PFDFramedElement(PFDFramedElement.RA_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_CAUTION);
-        failed_ra_flag.setFrameOptions(true, false, false, PFE_Color.PFE_COLOR_CAUTION);
+        failed_ra_flag = new PFDFramedElement(PFDFramedElement.RA_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_ra_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_ra_flag.disableFlashing();
         
-        stick_priority_box = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, PFE_Color.PFE_COLOR_ALARM);
+        stick_priority_box = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, FE_Color.ALARM);
         stick_priority_box.enableFlashing();
         stick_priority_box.disableFraming();
         stick_priority_box.setBigFont(true);
@@ -108,11 +108,11 @@ public class ADI extends PFDSubcomponent {
 		 * g2.draw(pfd_gc.adi_airbus_horizon_area);
 		 */
 		drawBankMarks(g2);
-    	failed_att_flag.setText("ATT", PFE_Color.PFE_COLOR_CAUTION);
+    	failed_att_flag.setText("ATT", FE_Color.CAUTION);
     	failed_att_flag.paint(g2);
-    	failed_fpv_flag.setText("FPV", PFE_Color.PFE_COLOR_CAUTION);
+    	failed_fpv_flag.setText("FPV", FE_Color.CAUTION);
     	failed_fpv_flag.paint(g2);
-    	failed_fd_flag.setText("FD", PFE_Color.PFE_COLOR_CAUTION);
+    	failed_fd_flag.setText("FD", FE_Color.CAUTION);
     	failed_fd_flag.paint(g2);
     	// failed_ra_flag.setText("RA", PFE_Color.PFE_COLOR_CAUTION);
     	// failed_ra_flag.paint(g2);
