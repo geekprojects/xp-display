@@ -21,42 +21,70 @@
 */
 package net.sourceforge.xhsi.flightdeck.pfd;
 
-//import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-//import net.sourceforge.xhsi.XHSIPreferences;
-//import net.sourceforge.xhsi.XHSISettings;
-
+import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.Localizer;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.NavigationRadio;
 import net.sourceforge.xhsi.model.RadioNavigationObject;
-
-//import net.sourceforge.xhsi.panel.GraphicsConfig;
-//import net.sourceforge.xhsi.panel.Subcomponent;
-
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
+import net.sourceforge.xhsi.util.FramedElement.FE_Orientation;
 
 
 public class ILS extends PFDSubcomponent {
 
     private static final long serialVersionUID = 1L;
 
-
+    PFDFramedElement failed_gs_flag;
+    PFDFramedElement failed_loc_flag;
+    PFDFramedElement failed_dme_flag;
+    
     public ILS(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
+        failed_gs_flag = new PFDFramedElement(PFDFramedElement.GS_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_gs_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
+        failed_gs_flag.disableFlashing();
+        failed_gs_flag.setFontSize(FE_FontSize.NORMAL);
+        failed_gs_flag.setTextOrientation(FE_Orientation.VERTICAL);
+        failed_loc_flag = new PFDFramedElement(PFDFramedElement.LOC_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_loc_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
+        failed_loc_flag.disableFlashing();
+        failed_loc_flag.setFontSize(FE_FontSize.NORMAL);
+        failed_dme_flag = new PFDFramedElement(PFDFramedElement.DME_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_dme_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
+        failed_dme_flag.disableFlashing();
+        failed_dme_flag.setFontSize(FE_FontSize.NORMAL);
     }
 
-    public void paint(Graphics2D g2) {
-        if ( pfd_gc.boeing_style && pfd_gc.powered ) {
-            drawILS(g2);
-        }
+    public void paint(Graphics2D g2) {     
+		if ( pfd_gc.boeing_style ) {
+			if ( ! XHSIStatus.receiving ) {
+				if ( pfd_gc.powered ) {
+					drawFailedILS(g2);
+				}
+			} else if ( pfd_gc.powered ) {
+				failed_gs_flag.clearText();
+				failed_loc_flag.clearText();
+				drawILS(g2);
+			} 
+		} 
     }
 
-
+	private void drawFailedILS(Graphics2D g2) {
+		failed_gs_flag.setText("G/S", FE_Color.CAUTION);
+		failed_gs_flag.paint(g2);
+		failed_loc_flag.setText("LOC", FE_Color.CAUTION);
+		failed_loc_flag.paint(g2);
+		failed_dme_flag.setText("DME", FE_Color.CAUTION);
+		failed_dme_flag.paint(g2);
+	}
+	
     public void drawILS(Graphics2D g2) {
 
         int diamond_w = Math.round(7.0f * pfd_gc.scaling_factor); // half-width

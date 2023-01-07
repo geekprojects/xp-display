@@ -35,6 +35,7 @@ import net.sourceforge.xhsi.XHSIStatus;
 
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 
 public class HeadingLabel extends NDSubcomponent {
 
@@ -53,7 +54,7 @@ public class HeadingLabel extends NDSubcomponent {
         failed_flag = new NDFramedElement(NDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.ALARM);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
-        failed_flag.setBigFont(true);
+        failed_flag.setFontSize(FE_FontSize.XXL);
     }
 
 
@@ -67,10 +68,13 @@ public class HeadingLabel extends NDSubcomponent {
             	failed_hdg=!this.avionics.hdg_valid() || (! XHSIStatus.receiving && nd_gc.airbus_style );
             	if (failed_hdg) {
             		failed_flag.setText("HDG", nd_gc.airbus_style ? FE_Color.ALARM : FE_Color.CAUTION);
-            		if (nd_gc.boeing_style)
-            			failed_flag.enableFraming();
-            		else
+            		if (nd_gc.boeing_style) {
+            			failed_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
+            		    failed_flag.setFontSize(FE_FontSize.XL);
+            		} else {
             			failed_flag.disableFraming();
+            		    failed_flag.setFontSize(FE_FontSize.XXL);
+            		}
             	} else {
             		failed_flag.clearText();
             	}

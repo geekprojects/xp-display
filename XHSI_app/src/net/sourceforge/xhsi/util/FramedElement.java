@@ -45,7 +45,9 @@ public class FramedElement {
 	protected boolean frame_flashing; // True if frame should flash when displayed
 	protected boolean frame_flash;    // True if frame is flashing
 	protected boolean frame_delayed;  // True if frame is disabled after framed_milli delay (default 10s)
-	protected boolean big_font;
+	
+	protected boolean display_text;   // True if text is paint according to text delay and flashing
+	protected boolean display_frame;  // True if frame is paint according to frame delay and flashing
 	
 	protected int line_height;
 	protected int digit_width;
@@ -113,7 +115,6 @@ public class FramedElement {
 		frame_color = FE_Color.MARK;
 		text_style = FE_Style.ONE_LINE;
 		text_align = FE_Align.CENTER;
-		big_font = false;
 		font_size = FE_FontSize.XL;
 		text_orientation = FE_Orientation.HORIZONTAL;
 		
@@ -133,17 +134,119 @@ public class FramedElement {
 		text_w = 1;
 	}
 
-    protected void update_config () {
+	/**
+	 * Paint the frame and prepare text painting
+	 * This method must be override beginning with super.paint(g2).
+	 * paint method must draw the text
+	 * frame is paint before
+	 * @param g2: Graphic context
+	 */
+	public void paint(Graphics2D g2) {    	 
+		// Check GraphicConfig reconfiguration timestamp
+		if (gc.reconfigured_timestamp > this.reconfigured_timestamp ) update_config(g2);
+
+		// Compute frame display when delay applies, true if frame must be displayed
+		if (framed) {
+			if (gc.current_time_millis > paint_start + framed_milli ) framed = false;
+		}
+		
+		// Compute flash, true is the element must be displayed while flashing 
+		if (flash) {
+			if (gc.current_time_millis > paint_start + flashed_milli ) flash = false;    		 
+		}
+		
+		display_text = (!cleared) && ((flash && flashing) ? ((gc.current_time_millis % 1000) < 500) : true);    		 
+		display_frame = (frame_flash && frame_flashing) ? ((gc.current_time_millis % 1000) < 500) : true;
+		// TODO: No frame flashing - condition to be merged with previous line
+		display_frame = (!cleared) && (((framed || !frame_delayed) && framing));
+		
+		if (display_frame) drawFrame(g2); 
+		
+		// Set text font and color
+        setTextColor(g2);
+        g2.setFont(text_font);
+	}
+	
+	/**
+	 * Return the text width regarding text orientation
+	 * @param g2: Graphic context
+	 * @return: int text width
+	 */
+    protected int textWidth(Graphics2D g2) {
+    	if (text_orientation==FE_Orientation.HORIZONTAL) {
+        	return gc.get_text_width(g2, text_font, str_line1_left);
+    	} else {
+    		return digit_width;
+    	}
+    }
+    
+	/**
+	 * Return the text width regarding text orientation
+	 * @param g2: Graphic context
+	 * @param text: text to measure
+	 * @return: int text width
+	 */
+    protected int textWidth(Graphics2D g2, String text) {
+    	if (text_orientation==FE_Orientation.HORIZONTAL) {
+        	return gc.get_text_width(g2, text_font, text);
+    	} else {
+    		return digit_width;
+    	}
+    }
+    
+    /**
+     * Return the text height regarding text orientation
+     * @param g2: Graphic context
+     * @return: int text height
+     */
+    protected int textHeight(Graphics2D g2) {
+    	if (text_orientation==FE_Orientation.HORIZONTAL) {
+    		return line_height;
+    	} else {
+        	return str_line1_left.length() * line_height;
+    	}
+    }
+    
+    /**
+     * Return the text heigth regarding text orientation
+     * @param g2: Graphic context
+     * @param text: text to measure
+     * @return: int text heigth
+     */
+    protected int textHeight(Graphics2D g2, String text) {
+    	if (text_orientation==FE_Orientation.HORIZONTAL) {
+    		return line_height;
+    	} else {
+        	return text.length() * line_height;
+    	}
+    }
+    
+    /**
+     * Force update config before next paint
+     */
+    protected void update_config() {
+    	this.reconfigured_timestamp=0;
+    }
+    
+    /**
+     * Update elements positions and sizes
+     * @param g2: Graphic context
+     */
+    protected void update_config(Graphics2D g2) {
     	reconfigured_timestamp = gc.current_time_millis;
     	
         switch (font_size) {
-    		case SMALL :  text_font = gc.font_s;      line_height = gc.line_height_s;      break;
-    		case NORMAL : text_font = gc.font_normal; line_height = gc.line_height_normal; break;
-    		case LARGE :  text_font = gc.font_l;      line_height = gc.line_height_l;      break;
-    		case XL :     text_font = gc.font_xl;     line_height = gc.line_height_xl;     break;
-    		case XXL :    text_font = gc.font_xxl ;   line_height = gc.line_height_xxl;    break;
-    		default :     text_font = gc.font_normal; line_height = gc.line_height_normal; 
+    		case SMALL :  text_font = gc.font_s;      line_height = gc.line_height_s;      digit_width = gc.digit_width_s;      break;
+    		case NORMAL : text_font = gc.font_normal; line_height = gc.line_height_normal; digit_width = gc.digit_width_normal; break;
+    		case LARGE :  text_font = gc.font_l;      line_height = gc.line_height_l;      digit_width = gc.digit_width_l;      break;
+    		case XL :     text_font = gc.font_xl;     line_height = gc.line_height_xl;     digit_width = gc.digit_width_xl;     break;
+    		case XXL :    text_font = gc.font_xxl ;   line_height = gc.line_height_xxl;    digit_width = gc.digit_width_xxl;    break;
+    		default :     text_font = gc.font_normal; line_height = gc.line_height_normal; digit_width = gc.digit_width_normal;
         }
+        
+        // Default frame size
+    	frame_w = textWidth(g2) + digit_width*11/10;
+    	frame_h = textHeight(g2) + line_height*2/12;
     }
     
     public void setTwoColumns ( ) {
@@ -213,10 +316,12 @@ public class FramedElement {
     	frame_delayed = false;
     }
     
+    /*
     public void setBigFont(boolean new_font_status) {
     	big_font = new_font_status;
     	this.update_config();
     }
+    */
     
     public void setFontSize(FE_FontSize size) {
     	font_size = size;

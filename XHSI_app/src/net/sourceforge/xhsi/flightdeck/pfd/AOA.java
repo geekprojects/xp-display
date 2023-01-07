@@ -35,6 +35,7 @@ import net.sourceforge.xhsi.XHSIStatus;
 
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 
 
 
@@ -53,6 +54,7 @@ public class AOA extends PFDSubcomponent {
         failed_aoa_flag = new PFDFramedElement(PFDFramedElement.AOA_FLAG, 0, hsi_gc, FE_Color.CAUTION);
         failed_aoa_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_aoa_flag.disableFlashing();
+        failed_aoa_flag.setFontSize(FE_FontSize.NORMAL);
         deg_formatter = new DecimalFormat("0.0");
         format_symbols = deg_formatter.getDecimalFormatSymbols();
         format_symbols.setDecimalSeparator('.');

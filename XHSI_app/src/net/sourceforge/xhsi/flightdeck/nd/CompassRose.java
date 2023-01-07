@@ -39,6 +39,7 @@ import java.awt.geom.Arc2D;
 import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 
 
 public class CompassRose extends NDSubcomponent {
@@ -62,9 +63,8 @@ public class CompassRose extends NDSubcomponent {
         this.drawn_map_up=0.0f;
         this.failed_hsi=false;
         failed_flag = new NDFramedElement(NDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.ALARM);
-        failed_flag.enableFlashing();
-        failed_flag.disableFraming();
-        failed_flag.setBigFont(true);
+        failed_flag.setFrameOptions(false, false, false, FE_Color.CAUTION);
+        failed_flag.setFontSize(FE_FontSize.XXL);
     }
 
 
@@ -95,18 +95,20 @@ public class CompassRose extends NDSubcomponent {
             	this.drawn_map_up=map_up;
             } 
         	
-			
+			// TODO: bad conditions - does not properly apply style changes
             if (failed_hsi != (!this.avionics.hdg_valid() || (! XHSIStatus.receiving && nd_gc.airbus_style ))) {
             	// FCOM 1.31.40 p26 (18) 
             	// if the heading information fails, the HDG flag replaces the heading scale (red)
             	refresh_rose=true;
             	failed_hsi=!this.avionics.hdg_valid() || (! XHSIStatus.receiving && nd_gc.airbus_style );
             	if (failed_hsi) {
-            		failed_flag.setText(nd_gc.airbus_style ? "HDG" : "MAP", nd_gc.airbus_style ? FE_Color.ALARM : FE_Color.CAUTION);
-            		if (nd_gc.boeing_style)
-            			failed_flag.enableFraming();
-            		else
+            		failed_flag.setFontSize(nd_gc.airbus_style ? FE_FontSize.XXL : FE_FontSize.XL);            		
+            		if (nd_gc.boeing_style) {
+            			failed_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);            			
+            		} else {
             			failed_flag.disableFraming();
+            		}
+            		failed_flag.setText(nd_gc.airbus_style ? "HDG" : "MAP", nd_gc.airbus_style ? FE_Color.ALARM : FE_Color.CAUTION);
             	} else {
             		failed_flag.clearText();
             	}

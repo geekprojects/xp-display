@@ -37,6 +37,7 @@ import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.util.FramedElement.FE_Align;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 
 public class VSI_A320 extends PFDSubcomponent {
 
@@ -52,7 +53,7 @@ public class VSI_A320 extends PFDSubcomponent {
         failed_flag = new PFDFramedElement(PFDFramedElement.VS_FLAG, 0, hsi_gc, FE_Color.ALARM, FE_Align.LEFT);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
-        failed_flag.setBigFont(true);
+        failed_flag.setFontSize(FE_FontSize.XXL);
     }
 
 

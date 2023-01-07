@@ -22,25 +22,18 @@
 package net.sourceforge.xhsi.flightdeck.pfd;
 
 import java.awt.BasicStroke;
-//import java.awt.Color;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-//import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import java.util.logging.Logger;
+import net.sourceforge.xhsi.XHSIStatus;
 
-//import net.sourceforge.xhsi.XHSISettings;
+// import java.util.logging.Logger;
 
 import net.sourceforge.xhsi.model.Avionics;
 import net.sourceforge.xhsi.model.FMS;
@@ -49,15 +42,16 @@ import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.NavigationObject;
 import net.sourceforge.xhsi.model.NavigationRadio;
 import net.sourceforge.xhsi.model.RadioNavigationObject;
+import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 import net.sourceforge.xhsi.model.RadioNavBeacon;
-
 
 
 public class HSI extends PFDSubcomponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
+    // private static Logger logger = Logger.getLogger("net.sourceforge.xhsi");
 
     private DecimalFormat degrees_formatter;
     private DecimalFormat hms_formatter;
@@ -80,10 +74,16 @@ public class HSI extends PFDSubcomponent {
 
     private AffineTransform original_at;
 
+    PFDFramedElement failed_flag;
 
     public HSI(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
-
+        
+        failed_flag = new PFDFramedElement(PFDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
+        failed_flag.disableFlashing();
+        failed_flag.setFontSize(FE_FontSize.NORMAL);
+        
         degrees_formatter = new DecimalFormat("000");
         hms_formatter = new DecimalFormat("00");
         integer_formatter = new DecimalFormat("0");
@@ -96,6 +96,7 @@ public class HSI extends PFDSubcomponent {
 
 
     public void paint(Graphics2D g2) {
+    	/*
         if ( pfd_gc.boeing_style && pfd_gc.powered && !this.preferences.get_pfd_adi_centered() ) {
             drawDisc(g2);
             drawRose(g2);
@@ -106,9 +107,31 @@ public class HSI extends PFDSubcomponent {
             drawWind(g2);
             drawTime(g2);
         }
+        */
+        if ( pfd_gc.boeing_style && !this.preferences.get_pfd_adi_centered() ) {
+        	if ( ! XHSIStatus.receiving || ! this.avionics.hdg_valid() ) {
+        		// FCOM 10.11.33 
+        		// Heading information failed. Heading cannot be displayed.
+        		if ( pfd_gc.powered ) drawFailedHSI(g2);
+        	} else if ( pfd_gc.powered ) {
+        		failed_flag.clearText();
+        		drawDisc(g2);
+        		drawRose(g2);
+        		drawTrack(g2);
+        		drawBug(g2);
+        		drawHSISource(g2);
+        		drawHSI(g2);
+        		drawWind(g2);
+        		drawTime(g2);
+        	} 
+        }
     }
 
-
+	private void drawFailedHSI(Graphics2D g2) {
+    	failed_flag.setText("HDG", FE_Color.CAUTION);    	
+    	failed_flag.paint(g2);
+	}
+	
     private void drawDisc(Graphics2D g2) {
 
         // special cutout, only for full-width horizon with DG

@@ -38,6 +38,7 @@ import net.sourceforge.xhsi.XHSIStatus;
 
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 import net.sourceforge.xhsi.util.FramedElement.FE_Orientation;
 
 public class SpeedTape extends PFDSubcomponent {
@@ -53,6 +54,7 @@ public class SpeedTape extends PFDSubcomponent {
         failed_flag = new PFDFramedElement(PFDFramedElement.SPD_FLAG, 0, hsi_gc, FE_Color.CAUTION);
         failed_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_flag.disableFlashing();
+        failed_flag.setFontSize(FE_FontSize.NORMAL);
         failed_flag.setTextOrientation(FE_Orientation.VERTICAL);
     }
 
@@ -66,14 +68,13 @@ public class SpeedTape extends PFDSubcomponent {
 			} else if ( pfd_gc.powered ) {
 				failed_flag.clearText();
 				drawTape(g2);
-
 			} 
 		} 
     }
 
 	private void drawFailedTape(Graphics2D g2) {
     	failed_flag.setText("SPD", FE_Color.CAUTION);
-    	// failed_flag.paint(g2);
+    	failed_flag.paint(g2);
 	}
 	
     private void drawTape(Graphics2D g2) {

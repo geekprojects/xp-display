@@ -41,6 +41,7 @@ import net.sourceforge.xhsi.XHSIPreferences.DrawYokeInputMode;
 import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 import net.sourceforge.xhsi.model.Aircraft.StickPriorityMessage;
 
 
@@ -71,11 +72,11 @@ public class ADI_A320 extends PFDSubcomponent {
         failed_flag = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, FE_Color.ALARM);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
-        failed_flag.setBigFont(true);
+        failed_flag.setFontSize(FE_FontSize.XXL);
         stick_priority_box = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, FE_Color.ALARM);
         stick_priority_box.enableFlashing();
         stick_priority_box.disableFraming();
-        stick_priority_box.setBigFont(true);
+        stick_priority_box.setFontSize(FE_FontSize.XXL);
 	}
 
 

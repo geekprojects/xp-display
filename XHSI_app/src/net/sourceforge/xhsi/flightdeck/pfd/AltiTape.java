@@ -36,6 +36,7 @@ import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.NavigationRadio;
 import net.sourceforge.xhsi.model.RadioNavigationObject;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 import net.sourceforge.xhsi.util.FramedElement.FE_Orientation;
 
 
@@ -62,6 +63,7 @@ public class AltiTape extends PFDSubcomponent {
         failed_alt_flag = new PFDFramedElement(PFDFramedElement.ALT_FLAG, 0, hsi_gc, FE_Color.CAUTION);
         failed_alt_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_alt_flag.disableFlashing();
+        failed_alt_flag.setFontSize(FE_FontSize.NORMAL);
         failed_alt_flag.setTextOrientation(FE_Orientation.VERTICAL);
     }
 
@@ -82,7 +84,7 @@ public class AltiTape extends PFDSubcomponent {
 
 	private void drawFailedTape(Graphics2D g2) {
     	failed_alt_flag.setText("ALT", FE_Color.CAUTION);
-    	// failed_alt_flag.paint(g2);
+    	failed_alt_flag.paint(g2);
 	}
 	
     private void drawTape(Graphics2D g2) {

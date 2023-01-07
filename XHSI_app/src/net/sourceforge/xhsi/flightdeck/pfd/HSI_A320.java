@@ -48,6 +48,7 @@ import net.sourceforge.xhsi.model.RadioNavBeacon;
 import net.sourceforge.xhsi.model.RadioNavigationObject;
 import net.sourceforge.xhsi.util.FramedElement.FE_Align;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 
 
 public class HSI_A320 extends PFDSubcomponent {
@@ -92,7 +93,7 @@ public class HSI_A320 extends PFDSubcomponent {
         failed_flag = new PFDFramedElement(PFDFramedElement.HDG_FLAG, 0, hsi_gc, FE_Color.ALARM, FE_Align.CENTER);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
-        failed_flag.setBigFont(true);
+        failed_flag.setFontSize(FE_FontSize.XXL);
 	}
 
 

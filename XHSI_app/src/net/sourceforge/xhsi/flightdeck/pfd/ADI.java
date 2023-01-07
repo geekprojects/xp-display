@@ -35,6 +35,7 @@ import net.sourceforge.xhsi.XHSIStatus;
 import net.sourceforge.xhsi.XHSIPreferences.DrawYokeInputMode;
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 
 
 public class ADI extends PFDSubcomponent {
@@ -54,23 +55,27 @@ public class ADI extends PFDSubcomponent {
         failed_att_flag = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, FE_Color.CAUTION);
         failed_att_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_att_flag.disableFlashing();
+        failed_att_flag.setFontSize(FE_FontSize.NORMAL);
         
         failed_fd_flag = new PFDFramedElement(PFDFramedElement.FD_FLAG, 0, hsi_gc, FE_Color.CAUTION);
         failed_fd_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
+        failed_fd_flag.setFontSize(FE_FontSize.NORMAL);
         failed_fd_flag.disableFlashing();
         
         failed_fpv_flag = new PFDFramedElement(PFDFramedElement.FPV_FLAG, 0, hsi_gc, FE_Color.CAUTION);
         failed_fpv_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_fpv_flag.disableFlashing();
+        failed_fpv_flag.setFontSize(FE_FontSize.NORMAL);
         
         failed_ra_flag = new PFDFramedElement(PFDFramedElement.RA_FLAG, 0, hsi_gc, FE_Color.CAUTION);
         failed_ra_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_ra_flag.disableFlashing();
+        failed_ra_flag.setFontSize(FE_FontSize.NORMAL);
         
         stick_priority_box = new PFDFramedElement(PFDFramedElement.ATT_FLAG, 0, hsi_gc, FE_Color.ALARM);
         stick_priority_box.enableFlashing();
         stick_priority_box.disableFraming();
-        stick_priority_box.setBigFont(true);
+        stick_priority_box.setFontSize(FE_FontSize.XXL);
     }
 
 

@@ -1,7 +1,7 @@
 /**
-* PFDFramedElement.java
+* NDFramedElement.java
 * 
-* Manage framing and flashing elements for PFD 
+* Manage framing and flashing elements for ND 
 * 
 * Copyright (C) 2018,2023 Nicolas Carel
 * 
@@ -31,8 +31,6 @@ public class NDFramedElement extends FramedElement {
 
 	private NDGraphicsConfig nd_gc;
 
-	private boolean config_changed;
-	
 	public final static int MAP_FLAG = 10;
 	public final static int LOC_FLAG = 11;
 	public final static int HDG_FLAG = 12;
@@ -47,7 +45,6 @@ public class NDFramedElement extends FramedElement {
 		this.nd_gc = nd_gc;
 		text_color = default_fe_color;
 		text_align = default_text_align;
-		config_changed = true; // force reconfig at first paint
 	}
     
 	public NDFramedElement(int col, int raw, NDGraphicsConfig nd_gc, FE_Color default_fe_color) {
@@ -56,39 +53,25 @@ public class NDFramedElement extends FramedElement {
 		this.raw = raw;		
 		this.nd_gc = nd_gc;
 		text_color = default_fe_color;
-		config_changed = true; // force reconfig at first paint
 	}
 
-	public void paint(Graphics2D g2) {    	 
-		 // Check GraphicConfig reconfiguration timestamp
-		 if (nd_gc.reconfigured_timestamp > this.reconfigured_timestamp ) config_changed = true;
-	     if (config_changed) update_config(g2);
-    	 
-    	 if (framed) {
-    		 if (nd_gc.current_time_millis > paint_start + framed_milli ) framed = false;
-    	 }
-    	 if (flash) {
-    		 if (nd_gc.current_time_millis > paint_start + flashed_milli ) flash = false;    		 
-    	 }
-    	 boolean display_text = (flash && flashing) ? ((nd_gc.current_time_millis % 1000) < 500) : true;    		 
+	public void paint(Graphics2D g2) {    
+		super.paint(g2);		 
 
-    	 if (!cleared) {
-    		 if (display_text) {
-    			 switch (text_style) {
-    			 	case ONE_LINE 		: draw1Mode(g2, 0, str_line1_left); break;
-    			 	case ONE_LINE_LR 	: draw2Mode(g2, 0, str_line1_left, str_line1_right); break;
-    			 	case TWO_COLUMNS 	: draw1Mode(g2, 0, str_line1_left); break; // UNUSED
-    			 	case TWO_LINES 		: draw1Mode(g2, 0, str_line1_left); draw1Mode(g2, 1, str_line2_left); break;
-    			 	case THREE_LINES 	: draw1Mode(g2, 0, str_line1_left); 
-    			 						  draw1Mode(g2, 1, str_line2_left); 
-    			 						  draw1Mode(g2, 2, str_line3_left);
-    			 						  break;
-    			 	case TWO_LINES_LR 	: draw1Mode(g2, 0, str_line1_left); draw2Mode(g2, 1, str_line2_left, str_line2_right); break;
-    			 } 
-    		 }
-    		 if (framed && framing) drawFrame(g2); 
-    	 }
-    }
+		if (display_text) {
+			switch (text_style) {
+			case ONE_LINE 		: draw1Mode(g2, 0, str_line1_left); break;
+			case ONE_LINE_LR 	: draw2Mode(g2, 0, str_line1_left, str_line1_right); break;
+			case TWO_COLUMNS 	: draw1Mode(g2, 0, str_line1_left); break; // UNUSED
+			case TWO_LINES 		: draw1Mode(g2, 0, str_line1_left); draw1Mode(g2, 1, str_line2_left); break;
+			case THREE_LINES 	: draw1Mode(g2, 0, str_line1_left); 
+			draw1Mode(g2, 1, str_line2_left); 
+			draw1Mode(g2, 2, str_line3_left);
+			break;
+			case TWO_LINES_LR 	: draw1Mode(g2, 0, str_line1_left); draw2Mode(g2, 1, str_line2_left, str_line2_right); break;
+			} 
+		}
+	}
     
     public void setText ( String text, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text)) || (color != text_color) ) {
@@ -96,10 +79,9 @@ public class NDFramedElement extends FramedElement {
     		paint_start = nd_gc.current_time_millis;    		
     		str_line1_left = text;
     		text_color = color;
-    		frame_color = FE_Color.MARK;
     		cleared = false;
     		text_style = FE_Style.ONE_LINE;
-    		config_changed=true;
+    		update_config();
     	}    	
     }
     
@@ -110,10 +92,9 @@ public class NDFramedElement extends FramedElement {
     		str_line1_left = text1;
     		str_line2_left = text2;
     		text_color = color;
-    		frame_color = FE_Color.MARK;
     		cleared = false;
     		text_style = FE_Style.TWO_LINES;
-    		config_changed=true;
+    		update_config();
     	}    	
     }
    
@@ -125,10 +106,9 @@ public class NDFramedElement extends FramedElement {
     		str_line2_left = text2;
     		str_line3_left = text3;
     		text_color = color;
-    		frame_color = FE_Color.MARK;
     		cleared = false;
     		text_style = FE_Style.THREE_LINES;
-    		config_changed=true;
+    		update_config();
     	}    	
     }
     
@@ -139,10 +119,9 @@ public class NDFramedElement extends FramedElement {
     		str_line1_left = text;
     		str_line1_right = value;
     		text_color = color;
-    		frame_color = FE_Color.MARK;
     		cleared = false;
     		text_style = FE_Style.ONE_LINE_LR;
-    		config_changed=true;
+    		update_config();
     	}    	
     }
     
@@ -154,20 +133,12 @@ public class NDFramedElement extends FramedElement {
     		str_line2_left = text2;
     		str_line2_right = value;
     		text_color = color;
-    		frame_color = FE_Color.MARK;
     		cleared = false;
     		text_style = FE_Style.TWO_LINES_LR;
-    		config_changed=true;
+    		update_config();
     	}    	
     }
-    
-    
-    public void setBigFont(boolean new_font_status) {
-    	big_font = new_font_status;
-    	config_changed=true;
-    }
-    
-    
+     
     /*
     private void drawFlag(Graphics2D g2,  String mode) {
         int mode_w = pfd_gc.get_text_width(g2, text_font, mode);
@@ -204,11 +175,9 @@ public class NDFramedElement extends FramedElement {
     }
     
     
-    private void update_config (Graphics2D g2) {
-    	super.update_config();
-    	
-        text_font=big_font ? nd_gc.font_xxl : nd_gc.font_xl;
-        
+    protected void update_config (Graphics2D g2) {
+    	super.update_config(g2);
+      
     	/*
     	 * Default Frame position
     	 */
@@ -221,8 +190,6 @@ public class NDFramedElement extends FramedElement {
     	
     	frame_x = nd_gc.map_center_x - mode_w/2 - nd_gc.digit_width_xl / 4;
     	frame_y = hdg_message_y + nd_gc.line_height_xl/2 - 2 - nd_gc.line_height_xl*15/16; 
-    	frame_w = 0;
-    	frame_h = nd_gc.line_height_xl*18/16;
     	
     	/*
     	 * Default Text position
@@ -251,7 +218,5 @@ public class NDFramedElement extends FramedElement {
 
         // TODO : WARNING : text_style is not part of Graphic Context        
         if (text_style == FE_Style.TWO_LINES || text_style == FE_Style.TWO_LINES_LR ) frame_h += nd_gc.line_height_xl*18/16; 
-
-        config_changed = false;
     }
 }

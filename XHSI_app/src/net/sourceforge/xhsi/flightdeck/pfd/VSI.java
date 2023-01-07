@@ -35,6 +35,7 @@ import net.sourceforge.xhsi.XHSIStatus;
 
 import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 import net.sourceforge.xhsi.util.FramedElement.FE_Orientation;
 
 
@@ -48,9 +49,10 @@ public class VSI extends PFDSubcomponent {
 
     public VSI(ModelFactory model_factory, PFDGraphicsConfig hsi_gc, Component parent_component) {
         super(model_factory, hsi_gc, parent_component);
-        failed_flag = new PFDFramedElement(PFDFramedElement.SPD_FLAG, 0, hsi_gc, FE_Color.CAUTION);
+        failed_flag = new PFDFramedElement(PFDFramedElement.VS_FLAG, 0, hsi_gc, FE_Color.CAUTION);
         failed_flag.setFrameOptions(true, false, false, FE_Color.CAUTION);
         failed_flag.disableFlashing();
+        failed_flag.setFontSize(FE_FontSize.NORMAL);
         failed_flag.setTextOrientation(FE_Orientation.VERTICAL);
     }
 
@@ -70,7 +72,7 @@ public class VSI extends PFDSubcomponent {
 
 	private void drawFailedDial(Graphics2D g2) {
     	failed_flag.setText("VERT", FE_Color.CAUTION);
-    	// failed_flag.paint(g2);
+    	failed_flag.paint(g2);
 	}
 	
     private void drawDial(Graphics2D g2) {

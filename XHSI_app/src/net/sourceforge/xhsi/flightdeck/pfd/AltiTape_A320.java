@@ -42,6 +42,7 @@ import net.sourceforge.xhsi.model.ModelFactory;
 import net.sourceforge.xhsi.model.NavigationRadio;
 import net.sourceforge.xhsi.model.RadioNavigationObject;
 import net.sourceforge.xhsi.util.FramedElement.FE_Color;
+import net.sourceforge.xhsi.util.FramedElement.FE_FontSize;
 
 public class AltiTape_A320 extends PFDSubcomponent {
 
@@ -78,7 +79,7 @@ public class AltiTape_A320 extends PFDSubcomponent {
         failed_flag = new PFDFramedElement(PFDFramedElement.ALT_FLAG, 0, hsi_gc, FE_Color.ALARM);
         failed_flag.enableFlashing();
         failed_flag.disableFraming();
-        failed_flag.setBigFont(true);
+        failed_flag.setFontSize(FE_FontSize.XXL);
     }
 
 

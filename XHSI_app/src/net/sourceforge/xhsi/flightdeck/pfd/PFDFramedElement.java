@@ -71,36 +71,23 @@ public class PFDFramedElement extends FramedElement {
 		text_color = default_pfe_color;
 	}
 
-	public void paint(Graphics2D g2) {    	 
-		 // Check GraphicConfig reconfiguration timestamp
-		 if (pfd_gc.reconfigured_timestamp > this.reconfigured_timestamp ) update_config();
-    	 
-    	 if (framed) {
-    		 if (pfd_gc.current_time_millis > paint_start + framed_milli ) framed = false;
-    	 }
-    	 if (flash) {
-    		 if (pfd_gc.current_time_millis > paint_start + flashed_milli ) flash = false;    		 
-    	 }
-    	 boolean display_text = (flash && flashing) ? ((pfd_gc.current_time_millis % 1000) < 500) : true;    		 
-    	 boolean display_frame = (frame_flash && frame_flashing) ? ((pfd_gc.current_time_millis % 1000) < 500) : true;
-    	 
-    	 if (!cleared) {
-    		 if (display_text) {
-    			 switch (text_style) {
-    			 	case ONE_LINE 		: draw1Mode(g2, 0, str_line1_left); break;
-    			 	case ONE_LINE_LR 	: draw2Mode(g2, 0, str_line1_left, str_line1_right); break;
-    			 	case TWO_COLUMNS 	: drawFinalMode(g2, 0, str_line1_left); break;
-    			 	case TWO_LINES 		: draw1Mode(g2, 0, str_line1_left); draw1Mode(g2, 1, str_line2_left); break;
-    			 	case THREE_LINES 	: draw1Mode(g2, 0, str_line1_left); 
-    			 						  draw1Mode(g2, 1, str_line2_left); 
-    			 						  draw1Mode(g2, 2, str_line3_left);
-    			 						  break;
-    			 	case TWO_LINES_LR 	: draw1Mode(g2, 0, str_line1_left); draw2Mode(g2, 1, str_line2_left, str_line2_right); break;
-    			 } 
-    		 }
-    		 if ((framed || !frame_delayed) && framing) drawFrame(g2); 
-    	 }
-    }
+	public void paint(Graphics2D g2) {   
+		super.paint(g2);
+
+		if (display_text) {
+			switch (text_style) {
+			case ONE_LINE 		: draw1Mode(g2, 0, str_line1_left); break;
+			case ONE_LINE_LR 	: draw2Mode(g2, 0, str_line1_left, str_line1_right); break;
+			case TWO_COLUMNS 	: drawFinalMode(g2, 0, str_line1_left); break;
+			case TWO_LINES 		: draw1Mode(g2, 0, str_line1_left); draw1Mode(g2, 1, str_line2_left); break;
+			case THREE_LINES 	: draw1Mode(g2, 0, str_line1_left); 
+			draw1Mode(g2, 1, str_line2_left); 
+			draw1Mode(g2, 2, str_line3_left);
+			break;
+			case TWO_LINES_LR 	: draw1Mode(g2, 0, str_line1_left); draw2Mode(g2, 1, str_line2_left, str_line2_right); break;
+			} 
+		}
+	}	
     
 	private void drawVerticalString(Graphics2D g2, String text, int x, int y, int vertical_step) {
 		int v_pos=y;
@@ -183,24 +170,24 @@ public class PFDFramedElement extends FramedElement {
     */
     
     private void draw1Mode(Graphics2D g2, int raw, String mode) {
-        int mode_w = pfd_gc.get_text_width(g2, text_font, mode);
-        int mode_x = pfd_gc.fma_left + pfd_gc.digit_width_xl/2;;  
+        int mode_w = textWidth(g2, mode);
+        int mode_x = pfd_gc.fma_left + digit_width/2;
         setTextColor(g2);      
         g2.setFont(text_font);
+        if ( text_align == FE_Align.CENTER ) {
+        	mode_x = text_c  - mode_w/2;
+        } else {           	
+            switch (col) {
+        		case 2: mode_x += pfd_gc.fma_col_2;
+        			mode_x += pfd_gc.fma_col_2 + (pfd_gc.fma_col_3 - pfd_gc.fma_col_2)/2 - mode_w/2;
+        			break;
+        		default: 
+        			mode_x = text_x;
+        			break;
+            }
+        }
         
         if (text_orientation==FE_Orientation.HORIZONTAL) {
-            if ( text_align == FE_Align.CENTER ) {
-            	mode_x = text_c  - mode_w/2;
-            } else {           	
-                switch (col) {
-            		case 2: mode_x += pfd_gc.fma_col_2;
-            			mode_x += pfd_gc.fma_col_2 + (pfd_gc.fma_col_3 - pfd_gc.fma_col_2)/2 - mode_w/2;
-            			break;
-            		default: 
-            			mode_x = text_x;
-            			break;
-                }
-            }
             g2.drawString(mode, mode_x, text_y[raw]);
         } else {
         	// Vertical orientation
@@ -232,31 +219,19 @@ public class PFDFramedElement extends FramedElement {
         g2.setFont(text_font);
         g2.drawString(mode, mode_x, text_y[raw]);
     }
-    
-    private int textWidth(Graphics2D g2) {
-    	int w = pfd_gc.get_text_width(g2, text_font, str_line1_left);
-    	return w;
-    }
-    
-    private int textHeigth(Graphics2D g2) {
-    	int h = pfd_gc.get_text_width(g2, text_font, str_line1_left);
-    	return h;
-    }
-    
-    protected void update_config () {
-    	super.update_config();
+   
+    protected void update_config (Graphics2D g2) {
+    	super.update_config(g2);
         
     	frame_x = pfd_gc.fma_left + pfd_gc.digit_width_xl / 4;
     	frame_y = pfd_gc.fma_top + pfd_gc.fma_height*raw/3 + pfd_gc.line_height_xl - 2 - pfd_gc.line_height_xl*15/16; 
-    	frame_w = 0;
-    	frame_h = pfd_gc.line_height_xl*18/16;
+
         text_c = pfd_gc.fma_left;
         text_x = pfd_gc.fma_left + pfd_gc.digit_width_xl/2;
         text_y[0] = pfd_gc.fma_top + pfd_gc.fma_height*raw/3 + pfd_gc.line_height_xl - 2;
         text_y[1] = pfd_gc.fma_top + pfd_gc.fma_height*(raw+1)/3 + pfd_gc.line_height_xl - 2;
         text_y[2] = pfd_gc.fma_top + pfd_gc.fma_height*(raw+2)/3 + pfd_gc.line_height_xl - 2;
-        line_height = pfd_gc.line_height_xl;
-        
+                
         switch (col) {
     		case FMA_COL1:  
     			frame_x += pfd_gc.fma_col_1;
@@ -283,87 +258,95 @@ public class PFDFramedElement extends FramedElement {
     			text_x += pfd_gc.fma_col_4; 
     			break;
     		case ALT_FLAG:
-    			frame_x = pfd_gc.altitape_left;
-    			frame_w = pfd_gc.tape_width*60/100;
-    			text_c = frame_x + frame_w/2;
-    			text_x = pfd_gc.altitape_left; 
-    			text_y[0] = pfd_gc.adi_cy + pfd_gc.line_height_l/2;			
+    			text_c = pfd_gc.alti_flag_cx;
+    			text_x = pfd_gc.alti_flag_x; // Not used
+    			text_y[0] = pfd_gc.alti_flag_y;
+    			frame_y = pfd_gc.alti_flag_y + line_height*6/10 - frame_h/2;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
     			break;
     		case HDG_FLAG:
-    			frame_x = pfd_gc.hdg_left;
-    			frame_w = pfd_gc.hdg_width;
+    			frame_x = pfd_gc.adi_cx - digit_width * 2;
+    			frame_y = pfd_gc.hdg_top + line_height * 2/16;
     			text_c = pfd_gc.adi_cx;
     			text_x = frame_x; 
-    			text_y[0] = pfd_gc.hdg_top + pfd_gc.line_height_xxl;			
+    			text_y[0] = pfd_gc.hdg_top + line_height;			
     			break; 		
     		case ATT_FLAG:
-    			text_w = (big_font ? pfd_gc.digit_width_xxl : pfd_gc.digit_width_xl) * 3;
-    			frame_x = pfd_gc.adi_cx - pfd_gc.digit_width_xxl * 2;
-    	    	frame_y = pfd_gc.adi_att_flag_y - pfd_gc.line_height_xxl*15/16; 
-    	    	frame_w = pfd_gc.digit_width_xxl * 4;   // 3 characters big font
-    	    	frame_h = pfd_gc.line_height_xxl*18/16; // 1 line big font
+    			text_w = digit_width * 3;
+    			frame_x = pfd_gc.adi_cx - digit_width * 2;
+    	    	frame_y = pfd_gc.adi_att_flag_y - line_height*15/16; 
+    	    	frame_w = digit_width * 4;   // 3 characters big font
     			text_c = pfd_gc.adi_cx;
-    			text_x = text_c - pfd_gc.digit_width_xl * 2; // not used for ATT flag
+    			text_x = text_c - digit_width; // not used for ATT flag
     			text_y[0] = pfd_gc.adi_att_flag_y;
     			break; 	    						
     		case SPD_FLAG:
-    			frame_x = pfd_gc.speedtape_left+pfd_gc.tape_width*1/16;  
-    			frame_w = pfd_gc.tape_width*11/16;
-    			text_c = frame_x + frame_w/2;
-    			text_x = frame_x;  
-    			text_y[0] = pfd_gc.adi_cy + pfd_gc.line_height_l/2;			
+    			text_c = pfd_gc.speed_flag_cx;
+    			text_x = pfd_gc.speed_flag_cx;
+    			text_y[0] = pfd_gc.speed_flag_y;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
+    			frame_y = pfd_gc.alti_flag_y + line_height*6/10 - frame_h/2;
     			break; 	     			    			
     		case VS_FLAG:
-    			frame_x = pfd_gc.vsi_left+pfd_gc.vsi_width/5;  
-    			frame_w = pfd_gc.vsi_width;
-    			text_c = pfd_gc.vsi_left+pfd_gc.vsi_width/5;
-    			text_x = frame_x;  
-    			text_y[0] = pfd_gc.adi_cy - pfd_gc.line_height_xxl/2 - 4;
-    			text_y[1] = pfd_gc.adi_cy + pfd_gc.line_height_xxl/2 - 4;
-    			text_y[2] = pfd_gc.adi_cy + pfd_gc.line_height_xxl*3/2 - 4;
+    			text_c = pfd_gc.vsi_flag_cx;
+    			text_x = pfd_gc.vsi_left+pfd_gc.vsi_width/5;
+    			text_y[0] = pfd_gc.vsi_flag_y;
+    			text_y[1] = pfd_gc.adi_cy + line_height/2 - 4;
+    			text_y[2] = pfd_gc.adi_cy + line_height*3/2 - 4;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
+    			frame_y = pfd_gc.vsi_flag_y - line_height*9/10;
     			break;
     		case FD_FLAG:
-    			frame_x = pfd_gc.adi_fd_flag_x - pfd_gc.digit_width_xxl * 3/2;
-    	    	frame_y = pfd_gc.adi_fd_flag_y - pfd_gc.line_height_xxl*15/16; 
-    	    	frame_w = pfd_gc.digit_width_xxl * 3;   // 2 characters big font
-    	    	frame_h = pfd_gc.line_height_xxl*18/16; // 1 line big font
+    	    	frame_y = pfd_gc.adi_fd_flag_y - line_height * 15/16; 
     			text_c = pfd_gc.adi_fd_flag_x;
-    			text_x = text_c - pfd_gc.digit_width_xl * 2; // not used
+    			text_x = text_c - digit_width * 2; // not used
     			text_y[0] = pfd_gc.adi_fd_flag_y;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
     			break;
     		case FPV_FLAG:
-    			frame_x = pfd_gc.adi_fpv_flag_x - (big_font ? pfd_gc.digit_width_xxl : pfd_gc.digit_width_xl) * 2;
-    	    	frame_y = pfd_gc.adi_fd_flag_y - (big_font ? pfd_gc.line_height_xxl : pfd_gc.line_height_xxl) * 15/16; 
-    	    	frame_w = (big_font ? pfd_gc.digit_width_xxl : pfd_gc.digit_width_xl) * 4;   // 3 characters big font
-    	    	frame_h = (big_font ? pfd_gc.line_height_xxl : pfd_gc.line_height_xxl) * 18/16; // 1 line big font
+    	    	frame_y = pfd_gc.adi_fd_flag_y - line_height * 15/16; 
     			text_c = pfd_gc.adi_fpv_flag_x;
     			text_x = text_c - pfd_gc.digit_width_xl * 2; // not used
     			text_y[0] = pfd_gc.adi_fd_flag_y;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
     			break;
     		case RA_FLAG:
-    			frame_x = pfd_gc.adi_ra_flag_x - (big_font ? pfd_gc.digit_width_xxl : pfd_gc.digit_width_xl) * 3/2;
-    	    	frame_y = pfd_gc.adi_ra_flag_y - (big_font ? pfd_gc.line_height_xxl : pfd_gc.line_height_xxl) * 15/16; 
-    	    	frame_w = (big_font ? pfd_gc.digit_width_xxl : pfd_gc.digit_width_xl) * 3;   // 2 characters big font
-    	    	frame_h = (big_font ? pfd_gc.line_height_xxl : pfd_gc.line_height_xxl) * 18/16; // 1 line big font
+    	    	frame_y = pfd_gc.adi_ra_flag_y - line_height * 15/16; 
     			text_c = pfd_gc.adi_ra_flag_x;
     			text_x = text_c - pfd_gc.digit_width_xl * 2; // not used
     			text_y[0] = pfd_gc.adi_ra_flag_y;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
     			break;
     		case AOA_FLAG:
-    			frame_x = pfd_gc.adi_aoa_flag_x - (big_font ? pfd_gc.digit_width_xxl : pfd_gc.digit_width_xl) * 3/2;
-    	    	frame_y = pfd_gc.adi_aoa_flag_y - (big_font ? pfd_gc.line_height_xxl : pfd_gc.line_height_xxl) * 15/16; 
-    	    	frame_w = (big_font ? pfd_gc.digit_width_xxl : pfd_gc.digit_width_xl) * 3;   // 2 characters big font
-    	    	frame_h = (big_font ? pfd_gc.line_height_xxl : pfd_gc.line_height_xxl) * 18/16; // 1 line big font
+    	    	frame_y = pfd_gc.adi_aoa_flag_y - line_height * 15/16; 
     			text_c = pfd_gc.adi_aoa_flag_x;
     			text_x = text_c - pfd_gc.digit_width_xl * 2; // not used
     			text_y[0] = pfd_gc.adi_aoa_flag_y;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
     			break;
     		case LOC_FLAG:
+    			text_c = pfd_gc.adi_cx;
+    			text_x = frame_x; 
+    			text_y[0] = pfd_gc.adi_cy + pfd_gc.adi_size_down + line_height*3/2;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
+    			frame_y = text_y[0] - line_height * 9/10;
+    			break;
     		case GS_FLAG:
+    			text_c = pfd_gc.adi_cx + pfd_gc.adi_size_right*9/8;
+    			text_x = frame_x; 
+    			text_y[0] = pfd_gc.alti_flag_y;
+    			frame_x = text_c - frame_w/2 - digit_width*2/12;
+    			frame_y = pfd_gc.alti_flag_y + line_height*6/10 - frame_h/2;
+    			break;
     		case DME_FLAG:
+                text_c = pfd_gc.adi_cx - pfd_gc.adi_size_left*6/8;
+                text_y[0] = pfd_gc.adi_cy - pfd_gc.adi_size_up - 2*pfd_gc.line_height_m - pfd_gc.line_height_l;
+                frame_x = text_c - frame_w/2 - digit_width*2/12;
+                frame_y = text_y[0] - line_height * 9/10;
+                break;
     		case LDG_ALT_FLAG:
     		case NO_VSPEED_FLAG:
-    			// Containts horizonal and vertical text
+    			// Contains horizontal and vertical text
     		case SPEED_LIM_FLAG:
     		case SEL_SPEED_FLAG:
 
