@@ -97,69 +97,6 @@ public class PFDFramedElement extends FramedElement {
 		}
 	}
 	
-	
-    public void setText ( String text, FE_Color color ) {    	
-    	if ((! str_line1_left.equals(text)) || (color != text_color) ) {
-    		if (text.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
-    		paint_start = pfd_gc.current_time_millis;    		
-    		str_line1_left = text;
-    		text_color = color;
-    		cleared = false;
-    		text_style = FE_Style.ONE_LINE;
-    	}    	
-    }
-    
-    public void setText ( String text1, String text2, FE_Color color ) {    	
-    	if ((! str_line1_left.equals(text1)) || (! str_line2_left.equals(text2)) || (color != text_color) ) {
-    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
-    		paint_start = pfd_gc.current_time_millis; 
-    		str_line1_left = text1;
-    		str_line2_left = text2;
-    		text_color = color;
-    		cleared = false;
-    		text_style = FE_Style.TWO_LINES;
-    	}    	
-    }
-   
-    public void setText ( String text1, String text2, String text3, FE_Color color ) {    	
-    	if ((! str_line1_left.equals(text1)) || (! str_line2_left.equals(text2)) || (color != text_color) ) {
-    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
-    		paint_start = pfd_gc.current_time_millis; 
-    		str_line1_left = text1;
-    		str_line2_left = text2;
-    		str_line3_left = text3;
-    		text_color = color;
-    		cleared = false;
-    		text_style = FE_Style.THREE_LINES;
-    	}    	
-    }
-    
-    public void setTextValue ( String text, String value, FE_Color color ) {    	
-    	if ((! str_line1_left.equals(text)) || (color != text_color) || (! str_line1_right.equals(value))) {
-    		if (text.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
-    		paint_start = pfd_gc.current_time_millis; 
-    		str_line1_left = text;
-    		str_line1_right = value;
-    		text_color = color;
-    		cleared = false;
-    		text_style = FE_Style.ONE_LINE_LR;
-    	}    	
-    }
-    
-    public void setTextValue ( String text1, String text2, String value, FE_Color color ) {    	
-    	if ((! str_line1_left.equals(text1)) || (color != text_color) || (! str_line2_right.equals(value)) || (! str_line2_left.equals(text2))) {
-    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
-    		paint_start = pfd_gc.current_time_millis; 
-    		str_line1_left = text1;
-    		str_line2_left = text2;
-    		str_line2_right = value;
-    		text_color = color;
-    		cleared = false;
-    		text_style = FE_Style.TWO_LINES_LR;
-    	}    	
-    }
-    
-    
     /*
     private void drawFlag(Graphics2D g2,  String mode) {
         int mode_w = pfd_gc.get_text_width(g2, text_font, mode);
@@ -220,8 +157,8 @@ public class PFDFramedElement extends FramedElement {
         g2.drawString(mode, mode_x, text_y[raw]);
     }
    
-    protected void update_config (Graphics2D g2) {
-    	super.update_config(g2);
+    protected void updateConfig (Graphics2D g2) {
+    	super.updateConfig(g2);
         
     	frame_x = pfd_gc.fma_left + pfd_gc.digit_width_xl / 4;
     	frame_y = pfd_gc.fma_top + pfd_gc.fma_height*raw/3 + pfd_gc.line_height_xl - 2 - pfd_gc.line_height_xl*15/16; 

@@ -143,7 +143,7 @@ public class FramedElement {
 	 */
 	public void paint(Graphics2D g2) {    	 
 		// Check GraphicConfig reconfiguration timestamp
-		if (gc.reconfigured_timestamp > this.reconfigured_timestamp ) update_config(g2);
+		if (gc.reconfigured_timestamp > this.reconfigured_timestamp ) updateConfig(g2);
 
 		// Compute frame display when delay applies, true if frame must be displayed
 		if (framed) {
@@ -224,7 +224,7 @@ public class FramedElement {
     /**
      * Force update config before next paint
      */
-    protected void update_config() {
+    protected void updateConfig() {
     	this.reconfigured_timestamp=0;
     }
     
@@ -232,7 +232,7 @@ public class FramedElement {
      * Update elements positions and sizes
      * @param g2: Graphic context
      */
-    protected void update_config(Graphics2D g2) {
+    protected void updateConfig(Graphics2D g2) {
     	reconfigured_timestamp = gc.current_time_millis;
     	
         switch (font_size) {
@@ -250,7 +250,10 @@ public class FramedElement {
     }
     
     public void setTwoColumns ( ) {
-    	text_style = FE_Style.TWO_COLUMNS;
+    	if (text_style != FE_Style.TWO_COLUMNS) {
+    		text_style = FE_Style.TWO_COLUMNS;
+    		updateConfig();
+    	}
     }
     
     public void setFrameColor(FE_Color color) {
@@ -315,22 +318,19 @@ public class FramedElement {
     public void disableFrameDelayed() {
     	frame_delayed = false;
     }
-    
-    /*
-    public void setBigFont(boolean new_font_status) {
-    	big_font = new_font_status;
-    	this.update_config();
-    }
-    */
-    
+      
     public void setFontSize(FE_FontSize size) {
-    	font_size = size;
-    	this.update_config();
+    	if (font_size != size) {
+    		font_size = size;
+    		updateConfig();
+    	}
     }
-    
     
     public void setTextOrientation(FE_Orientation orientation) {
-    	text_orientation = orientation;
+    	if (text_orientation != orientation ) {
+    		text_orientation = orientation;
+    		updateConfig();
+    	}
     }
     
     public void setFrameOptions(boolean frame_enabled, boolean delayed, boolean flashing, FE_Color color) {
@@ -348,6 +348,72 @@ public class FramedElement {
 		str_line1_right = "";
 		str_line2_left = "";
 		str_line2_right = "";   	   	
+    }
+    
+    public void setText ( String text, FE_Color color ) {    	
+    	if ((! str_line1_left.equals(text)) || (color != text_color) ) {
+    		if (text.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		paint_start = gc.current_time_millis;    		
+    		str_line1_left = text;
+    		text_color = color;
+    		cleared = false;
+    		text_style = FE_Style.ONE_LINE;
+    		updateConfig();
+    	}    	
+    }
+    
+    public void setText ( String text1, String text2, FE_Color color ) {    	
+    	if ((! str_line1_left.equals(text1)) || (! str_line2_left.equals(text2)) || (color != text_color) ) {
+    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		paint_start = gc.current_time_millis; 
+    		str_line1_left = text1;
+    		str_line2_left = text2;
+    		text_color = color;
+    		cleared = false;
+    		text_style = FE_Style.TWO_LINES;
+    		updateConfig();
+    	}
+    }
+    
+    public void setText ( String text1, String text2, String text3, FE_Color color ) {    	
+    	if ((! str_line1_left.equals(text1)) || (! str_line2_left.equals(text2)) || (color != text_color) ) {
+    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		paint_start = gc.current_time_millis; 
+    		str_line1_left = text1;
+    		str_line2_left = text2;
+    		str_line3_left = text3;
+    		text_color = color;
+    		cleared = false;
+    		text_style = FE_Style.THREE_LINES;
+    		updateConfig();
+    	}    	
+    }
+    
+    public void setTextValue ( String text, String value, FE_Color color ) {    	
+    	if ((! str_line1_left.equals(text)) || (color != text_color) || (! str_line1_right.equals(value))) {
+    		if (text.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		paint_start = gc.current_time_millis; 
+    		str_line1_left = text;
+    		str_line1_right = value;
+    		text_color = color;
+    		cleared = false;
+    		text_style = FE_Style.ONE_LINE_LR;
+    		updateConfig();
+    	}    	
+    }
+    
+    public void setTextValue ( String text1, String text2, String value, FE_Color color ) {    	
+    	if ((! str_line1_left.equals(text1)) || (color != text_color) || (! str_line2_right.equals(value)) || (! str_line2_left.equals(text2))) {
+    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		paint_start = gc.current_time_millis; 
+    		str_line1_left = text1;
+    		str_line2_left = text2;
+    		str_line2_right = value;
+    		text_color = color;
+    		cleared = false;
+    		text_style = FE_Style.TWO_LINES_LR;
+    		updateConfig();
+    	}    	
     }
     
     protected Color getColor(FE_Color fe_color) {

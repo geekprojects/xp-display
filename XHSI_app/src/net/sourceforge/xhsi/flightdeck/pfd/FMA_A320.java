@@ -638,6 +638,8 @@ public class FMA_A320 extends PFDSubcomponent {
         // Manual Lever modes
         String str_speed_mode = "LVR " + this.avionics.qpac_thr_lever_mode();
         String str_man = "MAN";
+        pfe_thrust.enableFrameDelayed();
+        pfe_thrust.setFrameColor(FE_Color.MARK);
         if (this.avionics.qpac_thr_lever_mode()>0) {
         	pfe_thrust.setFrame();
         	if (this.avionics.qpac_athr_mode()==1) {       		
@@ -646,19 +648,19 @@ public class FMA_A320 extends PFDSubcomponent {
         }   
         if (this.avionics.qpac_thr_lever_mode()==3) {
         	str_speed_mode = "TOGA";
-        	pfe_thrust.setText(str_man, "TOGA", FE_Color.MARK);        	
+        	pfe_thrust.setText(str_man, "TOGA", FE_Color.MARK);
         } else  if (this.avionics.qpac_thr_lever_mode()==2) {
         	str_speed_mode = "FLX ";
-        	String str_speed_val = "+"+this.avionics.qpac_flex_temp();
+        	String str_speed_val = " "+this.avionics.qpac_flex_temp();
         	pfe_thrust.setTextValue(str_man, "FLX ", str_speed_val, FE_Color.MARK);
         } else  if (this.avionics.qpac_thr_lever_mode()==1) {
         	str_speed_mode = "THR";
         	pfe_thrust.setText(str_man, "THR", FE_Color.MARK);
-        	pfe_thrust.setFrameColor(FE_Color.ALARM);
+        	pfe_thrust.setFrameColor(FE_Color.CAUTION);
+        	pfe_thrust.disableFrameDelayed();
         } else  if (this.avionics.qpac_thr_lever_mode()==4) {
         	str_speed_mode = "MCT";
         	pfe_thrust.setText(str_man, "MCT", FE_Color.MARK);
-        	pfe_thrust.setFrameColor(FE_Color.CAUTION);
         } else if (this.avionics.qpac_thr_lever_mode()>4) {
         	pfe_thrust.setText(str_man, str_speed_mode, FE_Color.ALARM);
         } 
@@ -674,8 +676,16 @@ public class FMA_A320 extends PFDSubcomponent {
         case 3 : str_athr_mode2 = "THR IDLE"; break;
         case 4 : str_athr_mode2 = "SPEED"; break;
         case 5 : str_athr_mode2 = "MACH"; break;
-        case 11 : str_athr_mode2 = "A FLOOR"; break; 
-        case 12 : str_athr_mode2 = "TOGA LK"; break; 
+        case 11 :
+        	str_athr_mode2 = "A FLOOR";
+        	pfe_thrust.setFrameColor(FE_Color.CAUTION);
+        	pfe_thrust.disableFrameDelayed();
+        	break; 
+        case 12 : 
+        	str_athr_mode2 = "TOGA LK"; 
+        	pfe_thrust.setFrameColor(FE_Color.CAUTION);
+        	pfe_thrust.disableFrameDelayed();
+        	break;
         }
         if (this.avionics.qpac_thr_lever_mode()==0) {       	              
         	if (this.avionics.qpac_athr_mode()==1) {
