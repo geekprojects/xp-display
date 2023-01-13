@@ -150,15 +150,22 @@ public class FramedElement {
 			if (gc.current_time_millis > paint_start + framed_milli ) framed = false;
 		}
 		
-		// Compute flash, true is the element must be displayed while flashing 
+		// Compute text flash, true is the text element must be displayed while flashing 
 		if (flash) {
 			if (gc.current_time_millis > paint_start + flashed_milli ) flash = false;    		 
 		}
 		
+		// Compute frame flash, true is the text element must be displayed while flashing 
+		// if frame is not delayed, flash for ever
+		if (frame_flash && frame_delayed) {
+			if (gc.current_time_millis > paint_start + flashed_milli ) frame_flash = false;    		 
+		}
+		
 		display_text = (!cleared) && ((flash && flashing) ? ((gc.current_time_millis % 1000) < 500) : true);    		 
-		display_frame = (frame_flash && frame_flashing) ? ((gc.current_time_millis % 1000) < 500) : true;
+		// display_frame = (frame_flash && frame_flashing) ? ((gc.current_time_millis % 1000) < 500) : true;
 		// TODO: No frame flashing - condition to be merged with previous line
-		display_frame = (!cleared) && (((framed || !frame_delayed) && framing));
+		// display_frame = (!cleared) && (((framed || !frame_delayed) && framing));
+		display_frame = (!cleared) && framing && (framed || !frame_delayed) && ((frame_flash && frame_flashing) ? ((gc.current_time_millis % 1000) < 500) : true);
 		
 		if (display_frame) drawFrame(g2); 
 		
@@ -344,6 +351,7 @@ public class FramedElement {
     	framed = false;
     	cleared = true;
     	flash = false;
+    	frame_flash=false;
 		str_line1_left = "";
 		str_line1_right = "";
 		str_line2_left = "";
@@ -352,7 +360,7 @@ public class FramedElement {
     
     public void setText ( String text, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text)) || (color != text_color) ) {
-    		if (text.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		if (text.equals("")) { framed=false; flash=false; frame_flash=false;} else { framed=true; flash=true; frame_flash=true;}
     		paint_start = gc.current_time_millis;    		
     		str_line1_left = text;
     		text_color = color;
@@ -364,7 +372,7 @@ public class FramedElement {
     
     public void setText ( String text1, String text2, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text1)) || (! str_line2_left.equals(text2)) || (color != text_color) ) {
-    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		if (text1.equals("")) { framed=false; flash=false; frame_flash=false;} else { framed=true; flash=true; frame_flash=true;}
     		paint_start = gc.current_time_millis; 
     		str_line1_left = text1;
     		str_line2_left = text2;
@@ -377,7 +385,7 @@ public class FramedElement {
     
     public void setText ( String text1, String text2, String text3, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text1)) || (! str_line2_left.equals(text2)) || (color != text_color) ) {
-    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		if (text1.equals("")) { framed=false; flash=false; frame_flash=false;} else { framed=true; flash=true; frame_flash=true;}
     		paint_start = gc.current_time_millis; 
     		str_line1_left = text1;
     		str_line2_left = text2;
@@ -391,7 +399,7 @@ public class FramedElement {
     
     public void setTextValue ( String text, String value, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text)) || (color != text_color) || (! str_line1_right.equals(value))) {
-    		if (text.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		if (text.equals("")) { framed=false; flash=false; frame_flash=false;} else { framed=true; flash=true; frame_flash=true;}
     		paint_start = gc.current_time_millis; 
     		str_line1_left = text;
     		str_line1_right = value;
@@ -404,7 +412,7 @@ public class FramedElement {
     
     public void setTextValue ( String text1, String text2, String value, FE_Color color ) {    	
     	if ((! str_line1_left.equals(text1)) || (color != text_color) || (! str_line2_right.equals(value)) || (! str_line2_left.equals(text2))) {
-    		if (text1.equals("")) { framed=false; flash=false; } else { framed=true; flash=true;}
+    		if (text1.equals("")) { framed=false; flash=false; frame_flash=false;} else { framed=true; flash=true; frame_flash=true;}
     		paint_start = gc.current_time_millis; 
     		str_line1_left = text1;
     		str_line2_left = text2;

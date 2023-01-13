@@ -680,11 +680,13 @@ public class FMA_A320 extends PFDSubcomponent {
         	str_athr_mode2 = "A FLOOR";
         	pfe_thrust.setFrameColor(FE_Color.CAUTION);
         	pfe_thrust.disableFrameDelayed();
+        	pfe_thrust.enableFrameFlashing();
         	break; 
         case 12 : 
         	str_athr_mode2 = "TOGA LK"; 
         	pfe_thrust.setFrameColor(FE_Color.CAUTION);
         	pfe_thrust.disableFrameDelayed();
+        	pfe_thrust.enableFrameFlashing();
         	break;
         }
         if (this.avionics.qpac_thr_lever_mode()==0) {       	              
@@ -1007,6 +1009,8 @@ public class FMA_A320 extends PFDSubcomponent {
         
         // Manual Lever modes
         String str_man = "MAN";
+        pfe_thrust.enableFrameDelayed();
+        pfe_thrust.setFrameColor(FE_Color.MARK);
         
         // Autothrust (it's not autothrottle !!!)
         String str_thr_mode = "A/THR"; 
@@ -1021,11 +1025,11 @@ public class FMA_A320 extends PFDSubcomponent {
     			 pfe_thrust.setFrame();
     			 break;
         case 3 : pfe_thrust.setText(str_man, "MCT", FE_Color.MARK); 
-        		 pfe_thrust.setFrameColor(FE_Color.CAUTION);
         		 pfe_thrust.setFrame();
         		 break;
         case 4 : pfe_thrust.setText(str_man, "THR", FE_Color.MARK);
-        		 pfe_thrust.setFrameColor(FE_Color.ALARM); 
+        		 pfe_thrust.setFrameColor(FE_Color.CAUTION);
+        		 pfe_thrust.disableFrameDelayed();
         		 pfe_thrust.setFrame();
         		 break;
         case 5 : pfe_thrust.setText("THR MCT", FE_Color.ACTIVE); break;
@@ -1036,9 +1040,13 @@ public class FMA_A320 extends PFDSubcomponent {
         case 10 : pfe_thrust.setText("MACH", FE_Color.ACTIVE); break;
         case 11 : pfe_thrust.setText("A FLOOR", FE_Color.ACTIVE);  
         		  pfe_thrust.setFrameColor(FE_Color.CAUTION);
+        		  pfe_thrust.disableFrameDelayed();
+        		  pfe_thrust.enableFrameFlashing();
         		  break; 
         case 12 : pfe_thrust.setText("TOGA LK", FE_Color.ACTIVE); 
         		  pfe_thrust.setFrameColor(FE_Color.CAUTION);
+        		  pfe_thrust.disableFrameDelayed();
+        		  pfe_thrust.enableFrameFlashing();
         		  break; 
         }
     	pfe_thrust.paint(g2);
