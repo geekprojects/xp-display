@@ -89,7 +89,7 @@ public class XHSI implements ActionListener {
 
     public enum Mode { REPLAY, LIVE, RECORD }
 
-    private Image logo_image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("XHSI_logo32.png"));
+    private Image logo_image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/XHSI_logo32.png"));
 
     // menu item commands must be unique...
     public static final String ACTION_QUIT  = "Quit";
@@ -523,7 +523,7 @@ public class XHSI implements ActionListener {
             logger.config("Mac detected. Disable Menu Bar.");
 
             System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XHSI_PLUGIN");       	
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XHSI_PLUGIN");
         }
         
 //        if (isMac()) {

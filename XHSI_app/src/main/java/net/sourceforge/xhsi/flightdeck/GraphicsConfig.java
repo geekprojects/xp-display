@@ -549,7 +549,7 @@ public class GraphicsConfig implements ComponentListener {
         // our children will call init()
         // init();
     	try {
-    		InputStream font_stream =  GraphicsConfig.class.getResourceAsStream("AircraftInstruments.ttf");    		    		
+    		InputStream font_stream =  GraphicsConfig.class.getResourceAsStream("/flightdeck/AircraftInstruments.ttf");    		    		
     		font_aircraft_instrument = Font.createFont(Font.TRUETYPE_FONT, font_stream);    		 
     		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     		ge.registerFont(font_aircraft_instrument);
@@ -562,7 +562,7 @@ public class GraphicsConfig implements ComponentListener {
     		font_aircraft_instrument = null;
     	} 
     	try {
-    		InputStream font_stream =  GraphicsConfig.class.getResourceAsStream("AircraftInstruments-Bold.ttf");    		    		
+    		InputStream font_stream =  GraphicsConfig.class.getResourceAsStream("/flightdeck/AircraftInstruments-Bold.ttf");    		    		
     		font_aircraft_instrument_bold = Font.createFont(Font.TRUETYPE_FONT, font_stream);    		 
     		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     		ge.registerFont(font_aircraft_instrument_bold);
@@ -575,7 +575,7 @@ public class GraphicsConfig implements ComponentListener {
     		font_aircraft_instrument_bold = null;
     	} 
     	try {
-    		InputStream font_stream =  GraphicsConfig.class.getResourceAsStream("AircraftCDU.ttf");    		    		
+    		InputStream font_stream =  GraphicsConfig.class.getResourceAsStream("/flightdeck/AircraftCDU.ttf");    		    		
     		font_aircraft_cdu = Font.createFont(Font.TRUETYPE_FONT, font_stream);    		 
     		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     		ge.registerFont(font_aircraft_cdu);
