@@ -7,6 +7,7 @@ Welcome to XP Display, an open source project to build high-fidelity airplane si
 
 Done
 ---
+* Migrate to git
 * Add CMake file to simplify building of the plugin (Mac only so far)
 * Add pom.xml to make building the App easier
 
